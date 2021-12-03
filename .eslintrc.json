@@ -1,0 +1,86 @@
+{
+	"root": true,
+	"extends": [
+		"airbnb",
+		"airbnb-typescript",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:eslint-comments/recommended",
+		"plugin:etc/recommended",
+		"plugin:react-etc/recommended",
+		"plugin:tailwindcss/recommended",
+		"prettier",
+		"prettier/prettier"
+	],
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"extraFileExtensions": [".mjs"]
+	},
+	"plugins": ["simple-import-sort"],
+
+	"rules": {
+		"simple-import-sort/imports": "error",
+		"simple-import-sort/exports": "error",
+		"sort-imports": "off",
+		"import/order": "off",
+
+		"@typescript-eslint/array-type": "error",
+		"@typescript-eslint/consistent-indexed-object-style": [
+			"error",
+			"index-signature"
+		],
+		"@typescript-eslint/consistent-type-assertions": "error",
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/method-signature-style": "error",
+		"@typescript-eslint/no-dynamic-delete": "error",
+		"@typescript-eslint/no-invalid-void-type": "error",
+		"@typescript-eslint/no-unnecessary-type-constraint": "error",
+		"@typescript-eslint/prefer-optional-chain": "error",
+		"@typescript-eslint/prefer-ts-expect-error": "error",
+		"import/extensions": "off",
+		"import/no-anonymous-default-export": "error",
+		"import/no-default-export": "error",
+		"import/prefer-default-export": "off",
+		"prefer-exponentiation-operator": "error",
+		"react/jsx-sort-props": "error",
+		"react/react-in-jsx-scope": "off",
+		"react/require-default-props": "off",
+
+		"react/function-component-definition": [
+			"error",
+			{
+				"namedComponents": "function-declaration",
+				"unnamedComponents": "function-expression"
+			}
+		]
+	},
+
+	"overrides": [
+		{
+			"files": ["*.js"],
+			"rules": {
+				"@typescript-eslint/no-var-requires": "off"
+			}
+		},
+		{
+			"files": ["*.tsx"],
+			"rules": {
+				"@typescript-eslint/consistent-type-definitions": ["error", "type"],
+				"react/jsx-props-no-spreading": "off"
+			}
+		},
+		{
+			"files": ["./app/routes/**", "./app/root.tsx", "*.config.mjs"],
+			"rules": {
+				"import/no-default-export": "off",
+				"import/prefer-default-export": "error"
+			}
+		},
+		{
+			"files": ["./src/pages/api/**", "*.config.mjs"],
+			"rules": {
+				"import/no-anonymous-default-export": "off",
+				"import/prefer-default-export": "off"
+			}
+		}
+	]
+}
