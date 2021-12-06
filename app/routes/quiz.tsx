@@ -77,9 +77,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 		(cardA, cardB) => cardA.responses.length - cardB.responses.length,
 	)[0];
 
+	console.log({ card });
+
 	const session = await storage.getSession(request.headers.get("Cookie"));
 
 	session.set("cardId", card.id);
+
+	console.log(session.get("cardId"));
 
 	return json(card, {
 		headers: {
@@ -99,6 +103,8 @@ export default function QuizRoute() {
 			answerRef.current.select();
 		}
 	}, [actionMessage]);
+
+	throw Error("No cardId found");
 
 	return (
 		<>

@@ -1,7 +1,9 @@
+import { XCircleIcon } from "@heroicons/react/solid";
 import { ReactNode } from "react";
-import type { LinksFunction } from "remix";
 import {
+	Link,
 	Links,
+	LinksFunction,
 	LiveReload,
 	Meta,
 	Outlet,
@@ -10,7 +12,7 @@ import {
 	useCatch,
 } from "remix";
 
-import styles from "./styles/tailwind.css";
+import styles from "~/styles/tailwind.css";
 
 export const links: LinksFunction = () => {
 	return [{ rel: "stylesheet", href: styles }];
@@ -18,7 +20,7 @@ export const links: LinksFunction = () => {
 
 function Document({ children }: { children: ReactNode }) {
 	return (
-		<html lang="en">
+		<html className="h-full" lang="en">
 			<head>
 				<title>Your Page Title</title>
 
@@ -28,7 +30,7 @@ function Document({ children }: { children: ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body className="p-8 mx-auto antialiased text-gray-900 prose">
+			<body className="h-full antialiased text-gray-900">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
@@ -41,7 +43,9 @@ function Document({ children }: { children: ReactNode }) {
 export default function App() {
 	return (
 		<Document>
-			<Outlet />
+			<div className="p-8 mx-auto prose">
+				<Outlet />
+			</div>
 		</Document>
 	);
 }
@@ -49,15 +53,12 @@ export default function App() {
 export function ErrorBoundary({ error }: { error: Error }) {
 	return (
 		<Document>
-			<>
-				<h1>There was an error</h1>
-				<p>{error.message}</p>
-				<hr />
-				<p>
-					Hey, developer, you should replace this with what you want your users
-					to see.
-				</p>
-			</>
+			<div className="p-8 mx-auto prose">
+				<h1>
+					{error.name}: {error.message}
+				</h1>
+				<pre>{error.stack}</pre>
+			</div>
 		</Document>
 	);
 }
@@ -89,10 +90,31 @@ export function CatchBoundary() {
 
 	return (
 		<Document>
-			<h1>
-				{caught.status}: {caught.statusText}
-			</h1>
-			{message}
+			<div className="md:grid md:place-items-center py-16 sm:py-24 px-4 sm:px-6 lg:px-8 min-h-full bg-white">
+				<div className="mx-auto max-w-max">
+					<main className="sm:flex">
+						<p className="text-4xl sm:text-5xl font-extrabold text-blue-600">
+							{caught.status}
+						</p>
+						<div className="sm:ml-6">
+							<div className="sm:pl-6 sm:border-l sm:border-gray-200">
+								<h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+									{caught.statusText}
+								</h1>
+								<p className="mt-1 text-base text-gray-500">{message}</p>
+							</div>
+							<div className="flex sm:pl-6 mt-10 space-x-3 sm:border-l sm:border-transparent">
+								<Link
+									className="inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md border border-transparent focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm focus:outline-none"
+									to="/"
+								>
+									Go back home
+								</Link>
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
 		</Document>
 	);
 }
