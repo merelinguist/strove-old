@@ -2,7 +2,7 @@
 	"name": "strove",
 	"private": true,
 	"scripts": {
-		"build": "npm run build:css && remix build",
+		"build": "npm run prisma migrate deploy && npm run build:css && remix build",
 		"build:css": "tailwindcss -o ./app/styles/tailwind.css",
 		"clean": "git clean --force -dx --exclude .env.local --exclude .env.*.local --exclude node_modules/ --exclude .husky/",
 		"dev": "concurrently \"npm run dev:css\" \"npm run dev:remix\"",
