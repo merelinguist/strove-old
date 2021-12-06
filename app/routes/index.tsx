@@ -1,26 +1,39 @@
-import type { LoaderFunction } from "remix";
-import { json, useLoaderData } from "remix";
+import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { db } from "~/utils/db.server";
+import { Card, db, Deck, User } from "~/utils/db.server";
 
-type IndexData = {
-	resources: { name: string; url: string }[];
-	demos: { name: string; to: string }[];
+type LoaderData = {
+	decks: (Deck & {
+		user: User;
+		cards: Card[];
+	})[];
 };
 
 export const loader: LoaderFunction = async () => {
-	const decks = await db.deck.findMany();
+	const decks = await db.deck.findMany({
+		include: { user: true, cards: true },
+	});
 
-	return json(decks);
+	return json({ decks });
 };
 
 export default function IndexRoute() {
-	const decks = useLoaderData<IndexData>();
+	const data = useLoaderData<LoaderData>();
 
 	return (
 		<>
-			<h1>Welcome to Strove!</h1>
-			<pre>{JSON.stringify(decks, null, 2)}</pre>
+			<h1>Decks</h1>
+			<ul>
+				{data.decks.map((deck) => (
+					<li>
+						<Link to={`/decks/${deck.id}`}>{deck.name}</Link>
+						<p>
+							{deck.cards.length} cards created by{" "}
+							<Link to={`/users/${deck.user.id}`}>{deck.user.name}</Link>
+						</p>
+					</li>
+				))}
+			</ul>
 		</>
 	);
 }

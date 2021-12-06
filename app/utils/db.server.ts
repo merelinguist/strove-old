@@ -20,4 +20,6 @@ const getPrismaClient = () => {
 	return newGlobalThis[prismaClientPropertyName];
 };
 
+export * from "@prisma/client";
+
 export const db = getPrismaClient();

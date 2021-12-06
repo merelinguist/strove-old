@@ -1,34 +1,23 @@
-# Welcome to Remix!
+# `strove`
 
-- [Remix Docs](https://remix.run/docs)
+This is a [Remix](https://remix.run/) project built upon:
 
-## Deployment
+- [Tailwind CSS](https://tailwindcss.com/)
+  - [clsx](https://github.com/lukeed/clsx) for style composition
+- [TypeScript](https://www.typescriptlang.org/) for refactoring with confidence
+- [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript), enforced through [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/) for consistency and clean diffs
 
-After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
+Auto-fixes are performed on save with [Visual Studio Code](https://code.visualstudio.com/) or by using `npm run fix`.
 
-If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
+## Getting Started
 
-```sh
-npm i -g vercel
-vercel
-```
+First, run the development server:
 
-It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
-
-## Development
-
-To run your Remix app locally, make sure your project's local dependencies are installed:
-
-```sh
-npm install
-```
-
-Afterwards, start the Remix development server like so:
-
-```sh
+```bash
 npm run dev
 ```
 
-Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
+You can start editing the page by modifying `app/routes/index.tsx`. The page auto-updates as you edit the file.

@@ -1,4 +1,3 @@
-import { XCircleIcon } from "@heroicons/react/solid";
 import { ReactNode } from "react";
 import {
 	Link,
