@@ -1,17 +1,19 @@
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { Card, db, Deck, User } from "~/utils/db.server";
+import { db, Deck, User } from "~/utils/db.server";
 
 type LoaderData = {
 	decks: (Deck & {
 		user: User;
-		cards: Card[];
+		_count: {
+			cards: number;
+		};
 	})[];
 };
 
 export const loader: LoaderFunction = async () => {
 	const decks = await db.deck.findMany({
-		include: { user: true, cards: true },
+		include: { user: true, _count: { select: { cards: true } } },
 	});
 
 	return json({ decks });
@@ -28,7 +30,8 @@ export default function IndexRoute() {
 					<li>
 						<Link to={`/decks/${deck.id}`}>{deck.name}</Link>
 						<p>
-							{deck.cards.length} cards created by{" "}
+							{/* eslint-disable-next-line no-underscore-dangle */}
+							{deck._count.cards} cards created by{" "}
 							<Link to={`/users/${deck.user.id}`}>{deck.user.name}</Link>
 						</p>
 					</li>
