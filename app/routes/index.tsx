@@ -1,6 +1,6 @@
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { db, Deck, User } from "~/utils/db.server";
+import { Deck, prisma, User } from "~/utils/prisma.server";
 
 type LoaderData = {
 	decks: (Deck & {
@@ -12,7 +12,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async () => {
-	const decks = await db.deck.findMany({
+	const decks = await prisma.deck.findMany({
 		include: { user: true, _count: { select: { cards: true } } },
 	});
 
@@ -27,7 +27,7 @@ export default function IndexRoute() {
 			<h1>Decks</h1>
 			<ul>
 				{data.decks.map((deck) => (
-					<li>
+					<li key={deck.id}>
 						<Link to={`/decks/${deck.id}`}>{deck.name}</Link>
 						<p>
 							{/* eslint-disable-next-line no-underscore-dangle */}

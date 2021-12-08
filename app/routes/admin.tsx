@@ -1,8 +1,8 @@
 import { LoaderFunction, useLoaderData } from "remix";
 
-import { db } from "~/utils/db.server";
+import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = () => db.user.findMany();
+export const loader: LoaderFunction = () => prisma.user.findMany();
 
 export default function AdminRoute() {
 	const data = useLoaderData();
