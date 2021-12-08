@@ -84,7 +84,7 @@ export default function QuizRoute() {
 			answerRef.current.value = "";
 			answerRef.current.select();
 		}
-	}, [actionMessage, data.card.front]);
+	}, [transition.state]);
 
 	return (
 		<>
