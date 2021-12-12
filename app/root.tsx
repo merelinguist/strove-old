@@ -66,10 +66,21 @@ export default function App() {
 	const transition = useTransition();
 
 	useEffect(() => {
-		if (transition.state === "idle") {
+		let timeout: NodeJS.Timeout;
+
+		const start = () => {
+			timeout = setTimeout(NProgress.start, 100);
+		};
+
+		const done = () => {
+			clearTimeout(timeout);
 			NProgress.done();
+		};
+
+		if (transition.state === "idle") {
+			done();
 		} else {
-			NProgress.start();
+			start();
 		}
 	}, [transition.state]);
 
