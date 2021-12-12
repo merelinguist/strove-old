@@ -78,8 +78,12 @@ const IndexRoute = () => {
 										"text-sm",
 									)}
 								>
-									<time dateTime={new Date(entry.createdAt).toDateString()}>
-										{new Date(entry.createdAt).toDateString()}
+									<time dateTime={new Date(entry.createdAt).toISOString()}>
+										{new Date(entry.createdAt).toLocaleDateString("en", {
+											day: "numeric",
+											month: "short",
+											year: "numeric",
+										})}
 									</time>
 								</p>
 							</NavLink>
