@@ -17,11 +17,17 @@ export const links: LinksFunction = () => {
 	return [{ rel: "stylesheet", href: styles }];
 };
 
-function Document({ children }: { children: ReactNode }) {
+function Document({
+	children,
+	title,
+}: {
+	children: ReactNode;
+	title?: string;
+}) {
 	return (
-		<html className="h-full" lang="en">
+		<html lang="en">
 			<head>
-				<title>Your Page Title</title>
+				{title && <title>Your Page Title</title>}
 
 				<meta charSet="utf-8" />
 				<meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -29,7 +35,7 @@ function Document({ children }: { children: ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body className="h-full antialiased text-gray-900">
+			<body className="antialiased text-gray-900">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
@@ -42,9 +48,7 @@ function Document({ children }: { children: ReactNode }) {
 export default function App() {
 	return (
 		<Document>
-			{/* <div className="p-8 mx-auto prose"> */}
 			<Outlet />
-			{/* </div> */}
 		</Document>
 	);
 }
