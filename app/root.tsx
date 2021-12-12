@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import {
 	Link,
 	Links,
@@ -10,11 +10,17 @@ import {
 	ScrollRestoration,
 	useCatch,
 } from "remix";
-
+import NProgress from "nprogress";
+import nProgressStyles from "nprogress/nprogress.css";
+import { useTransition } from "remix";
 import styles from "~/styles/tailwind.css";
+import colors from "tailwindcss/colors";
 
 export const links: LinksFunction = () => {
-	return [{ rel: "stylesheet", href: styles }];
+	return [
+		{ rel: "stylesheet", href: styles },
+		{ rel: "stylesheet", href: nProgressStyles },
+	];
 };
 
 function Document({
@@ -34,6 +40,17 @@ function Document({
 
 				<Meta />
 				<Links />
+				<style>
+					{`
+						#nprogress .bar {
+							background: ${colors.blue["500"]} !important;
+						}
+
+						#nprogress .spinner {
+							display: none;
+						}
+					`}
+				</style>
 			</head>
 			<body className="antialiased text-gray-900">
 				{children}
@@ -46,6 +63,16 @@ function Document({
 }
 
 export default function App() {
+	const transition = useTransition();
+
+	useEffect(() => {
+		if (transition.state === "idle") {
+			NProgress.done();
+		} else {
+			NProgress.start();
+		}
+	}, [transition.state]);
+
 	return (
 		<Document>
 			<Outlet />
