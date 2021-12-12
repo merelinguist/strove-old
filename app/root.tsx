@@ -42,9 +42,9 @@ function Document({ children }: { children: ReactNode }) {
 export default function App() {
 	return (
 		<Document>
-			<div className="p-8 mx-auto prose">
-				<Outlet />
-			</div>
+			{/* <div className="p-8 mx-auto prose"> */}
+			<Outlet />
+			{/* </div> */}
 		</Document>
 	);
 }

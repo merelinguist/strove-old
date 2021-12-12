@@ -38,6 +38,7 @@
 		"@tailwindcss/typography": "^0.4.1",
 		"chalk": "^4.1.2",
 		"faker": "^5.5.3",
+		"md5-hash": "^1.0.1",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"remix": "^1.0.6",

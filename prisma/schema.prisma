@@ -8,8 +8,8 @@ datasource db {
 }
 
 enum Role {
-	ADMIN
-	USER
+  ADMIN
+  USER
 }
 
 model User {
@@ -17,11 +17,12 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   name           String
-  email          String  @unique
+  email          String   @unique
   hashedPassword String
-	role					 Role @default(USER)
+  role           Role     @default(USER)
 
-  decks          Deck[]
+  decks Deck[]
+  tasks Task[]
 }
 
 model Deck {
@@ -30,15 +31,15 @@ model Deck {
   updatedAt DateTime @updatedAt
   name      String
 
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  cards     Card[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  cards  Card[]
 }
 
 model Card {
-  id        String     @id @default(cuid())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   front     String
   back      String
 
@@ -53,6 +54,17 @@ model Response {
   updatedAt   DateTime @updatedAt
   correctness Float
 
-  card        Card     @relation(fields: [cardId], references: [id])
-  cardId      String
+  card   Card   @relation(fields: [cardId], references: [id])
+  cardId String
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  complete  Boolean  @default(false)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

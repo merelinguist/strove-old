@@ -1,14 +1,19 @@
 import { Link, LoaderFunction } from "remix";
 import { useLoaderData } from "remix";
 
-import { Card, Deck, Response, prisma } from "~/utils/prisma.server";
+import {
+	Card,
+	Deck,
+	Response as PrismaResponse,
+	prisma,
+} from "~/utils/prisma.server";
 import { routes } from "~/utils/routes";
 import { score } from "~/utils/score";
 
 type LoaderData = {
 	deck: Deck & {
 		cards: (Card & {
-			responses: Response[];
+			responses: PrismaResponse[];
 		})[];
 	};
 };
@@ -20,7 +25,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 	});
 
 	if (!deck) {
-		throw new Error("Deck not found");
+		throw new Response("Not Found", { status: 404 });
 	}
 
 	deck.cards.sort(

@@ -12,8 +12,7 @@
 		"prettier/prettier"
 	],
 	"parserOptions": {
-		"project": "./tsconfig.json",
-		"extraFileExtensions": [".mjs"]
+		"project": "./tsconfig.json"
 	},
 	"plugins": ["simple-import-sort"],
 
@@ -36,12 +35,10 @@
 		"@typescript-eslint/no-unnecessary-type-constraint": "error",
 		"@typescript-eslint/prefer-optional-chain": "error",
 		"@typescript-eslint/prefer-ts-expect-error": "error",
-		"import/extensions": "off",
 		"import/no-anonymous-default-export": "error",
 		"import/no-default-export": "error",
 		"import/prefer-default-export": "off",
 		"prefer-exponentiation-operator": "error",
-		"react/jsx-sort-props": "error",
 		"react/react-in-jsx-scope": "off",
 		"react/require-default-props": "off",
 
@@ -69,17 +66,10 @@
 			}
 		},
 		{
-			"files": ["./app/routes/**", "./app/root.tsx", "*.config.mjs"],
+			"files": ["./app/routes/**"],
 			"rules": {
 				"import/no-default-export": "off",
 				"import/prefer-default-export": "error"
-			}
-		},
-		{
-			"files": ["./src/pages/api/**", "*.config.mjs"],
-			"rules": {
-				"import/no-anonymous-default-export": "off",
-				"import/prefer-default-export": "off"
 			}
 		}
 	]
