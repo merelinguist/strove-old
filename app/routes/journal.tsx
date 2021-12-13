@@ -1,4 +1,3 @@
-import { PlusIcon } from "@heroicons/react/solid";
 import { useRef } from "react";
 import { LoaderFunction, Outlet, useLoaderData } from "remix";
 
