@@ -1,7 +1,7 @@
-const __BROWSER__ = typeof document !== "undefined";
+const browser = typeof document !== "undefined";
 
-const __APPLE_OS__ =
-	__BROWSER__ && /^(Mac|iPhone|iPad|iPod)/.test(navigator.platform);
+// eslint-disable-next-line etc/no-deprecated
+const appleOS = browser && /^(Mac|iPhone|iPad|iPod)/.test(navigator.platform);
 
 type ModifierKey = "CmdOrCtrl" | "Ctrl" | "Meta" | "Alt" | "Shift";
 
@@ -19,17 +19,16 @@ type KeyboardEventBase = Pick<
 export const captureKeys = (
 	...keys: [
 		modifierKey: ModifierKey,
-		...restKeys: Array<string & (ModifierKey | {})>
+		...restKeys: (string & (ModifierKey | unknown))[]
 	]
 ): ((event: KeyboardEventBase) => boolean) => {
 	const setOfKeys = new Set(keys);
 
 	const expectsCtrlKey =
-		setOfKeys.delete("Ctrl") ||
-		(!__APPLE_OS__ && setOfKeys.delete("CmdOrCtrl"));
+		setOfKeys.delete("Ctrl") || (!appleOS && setOfKeys.delete("CmdOrCtrl"));
 
 	const expectsMetaKey =
-		setOfKeys.delete("Meta") || (__APPLE_OS__ && setOfKeys.delete("CmdOrCtrl"));
+		setOfKeys.delete("Meta") || (appleOS && setOfKeys.delete("CmdOrCtrl"));
 
 	const expectsShiftKey = setOfKeys.delete("Shift");
 	const expectsAltKey = setOfKeys.delete("Alt");
@@ -45,7 +44,8 @@ export const captureKeys = (
 			event.altKey !== expectsAltKey ||
 			(event.key.length > 1
 				? event.key
-				: String.fromCharCode(event.keyCode).toUpperCase()) !== expectedKey
+				: // eslint-disable-next-line etc/no-deprecated
+				  String.fromCharCode(event.keyCode).toUpperCase()) !== expectedKey
 		) {
 			return false;
 		}

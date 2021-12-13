@@ -22,11 +22,11 @@ const getTitleAndBody = (text: string) => {
 		throw new Error("no title found");
 	}
 
-	const title = match && match[1];
+	const title = match?.[1];
 
 	const body = lines.slice(2).join("\n");
 
-	return { title: title.trim(), body: body };
+	return { title: title.trim(), body };
 };
 
 const getEntries = (): Promise<{

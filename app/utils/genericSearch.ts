@@ -1,6 +1,6 @@
 export const genericSearch = <T>(
 	object: T,
-	properties: Array<keyof T>,
+	properties: (keyof T)[],
 	query: string,
 ): boolean => {
 	if (query === "") {

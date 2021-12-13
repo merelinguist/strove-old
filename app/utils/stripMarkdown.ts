@@ -3,14 +3,14 @@ export const stripMarkdown = (string: string) =>
 		// Remove HTML tags
 		.replace(/<[^>]*>/g, "")
 		// Remove setext-style headers
-		.replace(/^[=\-]{2,}\s*$/g, "")
+		.replace(/^[=-]{2,}\s*$/g, "")
 		// Remove footnotes?
-		.replace(/\[\^.+?\](\: .*?$)?/g, "")
+		.replace(/\[\^.+?\](: .*?$)?/g, "")
 		.replace(/\s{0,2}\[.*?\]: .*?$/g, "")
 		// Remove images
-		.replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, "$1")
+		.replace(/!\[(.*?)\][[(].*?[\])]/g, "$1")
 		// Remove inline links
-		.replace(/\[(.*?)\][\[\(].*?[\]\)]/g, "$1")
+		.replace(/\[(.*?)\][[(].*?[\])]/g, "$1")
 		// Remove blockquotes
 		.replace(/^\s{0,3}>\s?/g, "")
 		// Remove reference-style links?
@@ -21,8 +21,8 @@ export const stripMarkdown = (string: string) =>
 			"$1$2$3",
 		)
 		// Remove emphasis (repeat the line to remove double emphasis)
-		.replace(/([\*_]{1,3})(\S.*?\S{0,1})\1/g, "$2")
-		.replace(/([\*_]{1,3})(\S.*?\S{0,1})\1/g, "$2")
+		.replace(/([*_]{1,3})(\S.*?\S{0,1})\1/g, "$2")
+		.replace(/([*_]{1,3})(\S.*?\S{0,1})\1/g, "$2")
 		// Remove code blocks
 		.replace(/(`{3,})(.*?)\1/gm, "$2")
 		// Remove inline code

@@ -1,3 +1,6 @@
+import { Tab } from "@headlessui/react";
+import { marked } from "marked";
+import { useRef } from "react";
 import {
 	ActionFunction,
 	Form,
@@ -7,11 +10,9 @@ import {
 	useLoaderData,
 	useSubmit,
 } from "remix";
-import { Entry, prisma } from "~/utils/prisma.server";
-import { marked } from "marked";
-import { Tab } from "@headlessui/react";
+
 import { captureKeys } from "~/utils/captureKeys";
-import { useRef } from "react";
+import { Entry, prisma } from "~/utils/prisma.server";
 
 export const meta: MetaFunction = ({
 	data,
@@ -37,7 +38,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 	const entry = await prisma.entry.findUnique({ where: { id: params.id } });
 
 	if (!entry) {
-		throw redirect("/journal");
+		return redirect("/journal");
 	}
 
 	const data: LoaderData = { entry, html: marked(entry.body) };
@@ -49,7 +50,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	const data = Object.fromEntries(await request.formData());
 
 	if (typeof data.body !== "string") {
-		throw new Response("Invalid entry body", { status: 400 });
+		return new Response("Invalid entry body", { status: 400 });
 	}
 
 	return prisma.entry.update({
@@ -58,7 +59,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	});
 };
 
-const ShowEntryRoute = () => {
+function ShowEntryRoute() {
 	const { entry, html } = useLoaderData<LoaderData>();
 	const formRef = useRef<HTMLFormElement>(null);
 	const submit = useSubmit();
@@ -73,6 +74,7 @@ const ShowEntryRoute = () => {
 				</Tab.List>
 				<Tab.Panels>
 					<Tab.Panel>
+						{/* eslint-disable-next-line react/no-danger */}
 						<div dangerouslySetInnerHTML={{ __html: html }} />
 					</Tab.Panel>
 					<Tab.Panel>
@@ -100,6 +102,6 @@ const ShowEntryRoute = () => {
 			</Tab.Group>
 		</div>
 	);
-};
+}
 
 export default ShowEntryRoute;

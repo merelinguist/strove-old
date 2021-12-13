@@ -11,11 +11,13 @@ export const genericSort = <T>(
 	const result = () => {
 		if (objectA[sorter.property] > objectB[sorter.property]) {
 			return 1;
-		} else if (objectA[sorter.property] < objectB[sorter.property]) {
-			return -1;
-		} else {
-			return 0;
 		}
+
+		if (objectA[sorter.property] < objectB[sorter.property]) {
+			return -1;
+		}
+
+		return 0;
 	};
 
 	return sorter.isDescending ? result() * -1 : result();

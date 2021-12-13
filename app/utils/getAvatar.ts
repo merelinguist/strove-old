@@ -1,5 +1,6 @@
-const defaultAvatarSize = 128;
 import md5 from "md5-hash";
+
+const defaultAvatarSize = 128;
 
 export const getAvatar = (
 	email: string,

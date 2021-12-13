@@ -1,3 +1,6 @@
+import Inspect from "inspx";
+import NProgress from "nprogress";
+import nProgressStyles from "nprogress/nprogress.css";
 import { ReactNode, useEffect } from "react";
 import {
 	Link,
@@ -9,13 +12,11 @@ import {
 	Scripts,
 	ScrollRestoration,
 	useCatch,
+	useTransition,
 } from "remix";
-import NProgress from "nprogress";
-import nProgressStyles from "nprogress/nprogress.css";
-import { useTransition } from "remix";
-import styles from "~/styles/tailwind.css";
 import colors from "tailwindcss/colors";
-import Inspect from "inspx";
+
+import styles from "~/styles/tailwind.css";
 
 export const links: LinksFunction = () => {
 	return [
@@ -70,7 +71,7 @@ export default function App() {
 		if (transition.state === "idle") {
 			NProgress.done();
 		} else {
-			NProgress.start;
+			NProgress.start();
 		}
 	}, [transition.state]);
 
