@@ -15,6 +15,7 @@ import nProgressStyles from "nprogress/nprogress.css";
 import { useTransition } from "remix";
 import styles from "~/styles/tailwind.css";
 import colors from "tailwindcss/colors";
+import Inspect from "inspx";
 
 export const links: LinksFunction = () => {
 	return [
@@ -75,7 +76,9 @@ export default function App() {
 
 	return (
 		<Document>
-			<Outlet />
+			<Inspect>
+				<Outlet />
+			</Inspect>
 		</Document>
 	);
 }

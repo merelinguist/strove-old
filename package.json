@@ -38,6 +38,7 @@
 		"@tailwindcss/line-clamp": "^0.3.0",
 		"@tailwindcss/typography": "^0.5.0",
 		"chalk": "^4.1.2",
+		"inspx": "0.0.1-alpha.6",
 		"marked": "^4.0.7",
 		"md5-hash": "^1.0.1",
 		"nprogress": "^0.2.0",
