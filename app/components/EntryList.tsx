@@ -15,7 +15,7 @@ export function EntryList({ entries }: { entries: Entry[] }) {
 				<NavLink
 					key={entry.id}
 					className={classNames(
-						isActive(entry) ? "bg-black" : "bg-white hover:bg-gray-200",
+						isActive(entry) ? "bg-black" : "bg-white hover:bg-neutral-200",
 						"block py-3 lg:py-2 px-3.5 space-y-1 rounded-lg",
 					)}
 					to={`/journal/${entry.id}`}
@@ -30,7 +30,7 @@ export function EntryList({ entries }: { entries: Entry[] }) {
 					</p>
 					<p
 						className={classNames(
-							isActive(entry) ? "text-gray-400" : "text-gray-500",
+							isActive(entry) ? "text-neutral-400" : "text-neutral-500",
 							"text-sm",
 						)}
 					>
@@ -38,7 +38,7 @@ export function EntryList({ entries }: { entries: Entry[] }) {
 					</p>
 					<p
 						className={classNames(
-							isActive(entry) ? "text-gray-500" : "text-gray-400",
+							isActive(entry) ? "text-neutral-500" : "text-neutral-400",
 							"text-sm",
 						)}
 					>

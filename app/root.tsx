@@ -54,7 +54,7 @@ function Document({
 					`}
 				</style>
 			</head>
-			<body className="antialiased text-gray-900">
+			<body className="antialiased text-neutral-900">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
@@ -131,11 +131,11 @@ export function CatchBoundary() {
 							{caught.status}
 						</p>
 						<div className="sm:ml-6">
-							<div className="sm:pl-6 sm:border-l sm:border-gray-200">
-								<h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+							<div className="sm:pl-6 sm:border-l sm:border-neutral-200">
+								<h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900">
 									{caught.statusText}
 								</h1>
-								<p className="mt-1 text-base text-gray-500">{message}</p>
+								<p className="mt-1 text-base text-neutral-500">{message}</p>
 							</div>
 							<div className="flex sm:pl-6 mt-10 space-x-3 sm:border-l sm:border-transparent">
 								<Link
