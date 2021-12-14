@@ -484,7 +484,7 @@ function ShowEntryRoute() {
 										<div className="py-3 xl:pt-6 xl:pb-0">
 											<h2 className="sr-only">Description</h2>
 											<div className="prose max-w-none" dangerouslySetInnerHTML={{__html:data.html}} />
- </div>
+
 										</div>
 									</div>
 								</div>
