@@ -21,7 +21,14 @@ import {
 } from "@heroicons/react/solid";
 import { marked } from "marked";
 import { Fragment, useState } from "react";
-import { ActionFunction, LoaderFunction, MetaFunction, redirect, useLoaderData } from "remix";
+import {
+	ActionFunction,
+	Link,
+	LoaderFunction,
+	MetaFunction,
+	redirect,
+	useLoaderData,
+} from "remix";
 
 import { classNames } from "~/utils/classNames";
 import { Entry, prisma } from "~/utils/prisma.server";
@@ -351,13 +358,13 @@ function ShowEntryRoute() {
 												</h1>
 												<p className="mt-2 text-sm text-neutral-500">
 													#400 opened by{" "}
-													<a href="#" className="font-medium text-neutral-900">
+													<Link to="/" className="font-medium text-neutral-900">
 														Hilary Mahy
-													</a>{" "}
+													</Link>{" "}
 													in{" "}
-													<a href="#" className="font-medium text-neutral-900">
+													<Link to="/" className="font-medium text-neutral-900">
 														Customer Portal
-													</a>
+													</Link>
 												</p>
 											</div>
 											<div className="mt-4 flex space-x-3 md:mt-0">
@@ -420,10 +427,10 @@ function ShowEntryRoute() {
 													<h2 className="text-sm font-medium text-neutral-500">
 														Assignees
 													</h2>
-													<ul role="list" className="mt-3 space-y-3">
+													<ul className="mt-3 space-y-3">
 														<li className="flex justify-start">
-															<a
-																href="#"
+															<Link
+																to="/"
 																className="flex items-center space-x-3"
 															>
 																<div className="flex-shrink-0">
@@ -436,7 +443,7 @@ function ShowEntryRoute() {
 																<div className="text-sm font-medium text-neutral-900">
 																	Eduardo Benz
 																</div>
-															</a>
+															</Link>
 														</li>
 													</ul>
 												</div>
@@ -444,10 +451,10 @@ function ShowEntryRoute() {
 													<h2 className="text-sm font-medium text-neutral-500">
 														Tags
 													</h2>
-													<ul role="list" className="mt-2 leading-8">
+													<ul className="mt-2 leading-8">
 														<li className="inline">
-															<a
-																href="#"
+															<Link
+																to="/"
 																className="relative inline-flex items-center rounded-full border border-neutral-300 px-3 py-0.5"
 															>
 																<div className="absolute flex-shrink-0 flex items-center justify-center">
@@ -459,11 +466,11 @@ function ShowEntryRoute() {
 																<div className="ml-3.5 text-sm font-medium text-neutral-900">
 																	Bug
 																</div>
-															</a>{" "}
+															</Link>{" "}
 														</li>
 														<li className="inline">
-															<a
-																href="#"
+															<Link
+																to="/"
 																className="relative inline-flex items-center rounded-full border border-neutral-300 px-3 py-0.5"
 															>
 																<div className="absolute flex-shrink-0 flex items-center justify-center">
@@ -475,7 +482,7 @@ function ShowEntryRoute() {
 																<div className="ml-3.5 text-sm font-medium text-neutral-900">
 																	Accessibility
 																</div>
-															</a>{" "}
+															</Link>{" "}
 														</li>
 													</ul>
 												</div>
@@ -483,8 +490,11 @@ function ShowEntryRoute() {
 										</aside>
 										<div className="py-3 xl:pt-6 xl:pb-0">
 											<h2 className="sr-only">Description</h2>
-											<div className="prose max-w-none" dangerouslySetInnerHTML={{__html:data.html}} />
-
+											<div
+												className="prose max-w-none"
+												//  eslint-disable-next-line react/no-danger
+												dangerouslySetInnerHTML={{ __html: data.html }}
+											/>
 										</div>
 									</div>
 								</div>
@@ -505,7 +515,7 @@ function ShowEntryRoute() {
 											<div className="pt-6">
 												{/* Activity feed */}
 												<div className="flow-root">
-													<ul role="list" className="-mb-8">
+													<ul className="-mb-8">
 														{activity.map((item, itemIdx) => (
 															<li key={item.id}>
 																<div className="relative pb-8">
@@ -516,6 +526,7 @@ function ShowEntryRoute() {
 																		/>
 																	) : null}
 																	<div className="relative flex items-start space-x-3">
+																		{/* eslint-disable-next-line no-nested-ternary */}
 																		{item.type === "comment" ? (
 																			<>
 																				<div className="relative">
@@ -573,10 +584,10 @@ function ShowEntryRoute() {
 																						</a>{" "}
 																						assigned{" "}
 																						<a
-																							href={item.assigned.href}
+																							href={item.assigned?.href}
 																							className="font-medium text-neutral-900"
 																						>
-																							{item.assigned.name}
+																							{item.assigned?.name}
 																						</a>{" "}
 																						<span className="whitespace-nowrap">
 																							{item.date}
@@ -608,7 +619,7 @@ function ShowEntryRoute() {
 																							added tags
 																						</span>{" "}
 																						<span className="mr-0.5">
-																							{item.tags.map((tag) => (
+																							{item.tags?.map((tag) => (
 																								<Fragment key={tag.name}>
 																									<a
 																										href={tag.href}
@@ -739,9 +750,9 @@ function ShowEntryRoute() {
 										<h2 className="text-sm font-medium text-neutral-500">
 											Assignees
 										</h2>
-										<ul role="list" className="mt-3 space-y-3">
+										<ul className="mt-3 space-y-3">
 											<li className="flex justify-start">
-												<a href="#" className="flex items-center space-x-3">
+												<Link to="/" className="flex items-center space-x-3">
 													<div className="flex-shrink-0">
 														<img
 															className="h-5 w-5 rounded-full"
@@ -752,7 +763,7 @@ function ShowEntryRoute() {
 													<div className="text-sm font-medium text-neutral-900">
 														Eduardo Benz
 													</div>
-												</a>
+												</Link>
 											</li>
 										</ul>
 									</div>
@@ -760,10 +771,10 @@ function ShowEntryRoute() {
 										<h2 className="text-sm font-medium text-neutral-500">
 											Tags
 										</h2>
-										<ul role="list" className="mt-2 leading-8">
+										<ul className="mt-2 leading-8">
 											<li className="inline">
-												<a
-													href="#"
+												<Link
+													to="/"
 													className="relative inline-flex items-center rounded-full border border-neutral-300 px-3 py-0.5"
 												>
 													<div className="absolute flex-shrink-0 flex items-center justify-center">
@@ -775,11 +786,11 @@ function ShowEntryRoute() {
 													<div className="ml-3.5 text-sm font-medium text-neutral-900">
 														Bug
 													</div>
-												</a>{" "}
+												</Link>{" "}
 											</li>
 											<li className="inline">
-												<a
-													href="#"
+												<Link
+													to="/"
 													className="relative inline-flex items-center rounded-full border border-neutral-300 px-3 py-0.5"
 												>
 													<div className="absolute flex-shrink-0 flex items-center justify-center">
@@ -791,7 +802,7 @@ function ShowEntryRoute() {
 													<div className="ml-3.5 text-sm font-medium text-neutral-900">
 														Accessibility
 													</div>
-												</a>{" "}
+												</Link>{" "}
 											</li>
 										</ul>
 									</div>

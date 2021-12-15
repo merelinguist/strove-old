@@ -40,6 +40,7 @@
 		"import/no-anonymous-default-export": "error", // For named React components
 		"import/no-default-export": "error", // Default exports are confusing
 		"import/prefer-default-export": "off",
+		"jsx-a11y/label-has-associated-control": "off",
 		"react/require-default-props": "off", // React `defaultProps` are deprecated
 
 		/* TODO: Remove these, see airbnb/javascript#2501 */
