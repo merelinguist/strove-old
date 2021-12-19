@@ -36,11 +36,13 @@
 		"@typescript-eslint/no-invalid-void-type": "error", // Force type safety
 		"@typescript-eslint/prefer-optional-chain": "error",
 		"@typescript-eslint/prefer-ts-expect-error": "error", // Force type safety
+		"id-length": [2, { "exceptions": ["i", "j"], "properties": "never" }],
 		"import/extensions": "off",
 		"import/no-anonymous-default-export": "error", // For named React components
 		"import/no-default-export": "error", // Default exports are confusing
 		"import/prefer-default-export": "off",
 		"jsx-a11y/label-has-associated-control": "off",
+		"react/jsx-sort-props": "error",
 		"react/require-default-props": "off", // React `defaultProps` are deprecated
 
 		/* TODO: Remove these, see airbnb/javascript#2501 */

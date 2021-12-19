@@ -37,7 +37,7 @@ const getEntries = (): Promise<{
 		.fill({})
 		.map(async () => {
 			const res = await fetch(
-				"https://jaspervdj.be/lorem-markdownum/markdown.txt",
+				"https://jaspervdj.be/lorem-markdownum/markdown.txt?no-code=on",
 			);
 
 			const text = await res.text();
@@ -48,11 +48,7 @@ const getEntries = (): Promise<{
 		});
 
 const seed = async () => {
-	await prisma.response.deleteMany();
-	await prisma.card.deleteMany();
-	await prisma.deck.deleteMany();
-	await prisma.entry.deleteMany();
-	await prisma.task.deleteMany();
+	await prisma.note.deleteMany();
 
 	const me = await prisma.user.upsert({
 		where: { email: "me@here.com" },
@@ -69,7 +65,7 @@ const seed = async () => {
 
 	await Promise.all(
 		entries.map((entry, index) => {
-			return prisma.entry.create({
+			return prisma.note.create({
 				data: {
 					...entry,
 					createdAt: new Date(index),
