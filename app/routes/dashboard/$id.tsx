@@ -86,12 +86,12 @@ export default function App() {
 			}}
 			value={value}
 		>
-			<div className="py-8 px-4 sm:px-6 lg:px-8">
-				<div className="prose mx-auto">
+			<div className="bg-white h-full overflow-y-scroll">
+				<div className="prose mx-auto px-6 pt-8">
 					<h1>Hello world</h1>
 				</div>
 				<Editable
-					className="prose mx-auto mt-5"
+					className="prose mx-auto mt-5 px-6"
 					onKeyDown={(event) => {
 						if (captureKeys("CmdOrCtrl", "l")(event)) {
 							event.preventDefault();
