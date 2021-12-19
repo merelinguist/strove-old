@@ -1,15 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
 	ActionFunction,
 	LoaderFunction,
 	useFetcher,
 	useLoaderData,
 } from "remix";
-import { createEditor, Descendant, Node } from "slate";
-import { Editable, RenderElementProps, Slate, withReact } from "slate-react";
+import { Descendant, Node } from "slate";
+import { Editable, RenderElementProps, Slate } from "slate-react";
 
 import { captureKeys } from "~/utils/captureKeys";
 import { Note, prisma } from "~/utils/prisma.server";
+import { useEditor } from "~/utils/useEditor";
 
 type LoaderData = {
 	note: Note;
@@ -60,16 +61,24 @@ export default function App() {
 	const data = useLoaderData<LoaderData>();
 	const fetcher = useFetcher();
 
-	const editor = useMemo(() => withReact(createEditor()), []);
-
+	const editor = useEditor();
 	const [value, setValue] = useState<Descendant[]>(deserialize(data.note.body));
 
-	const renderElement = useCallback((props: RenderElementProps) => {
-		switch (props.element.type) {
-			default:
-				return <p {...props.attributes}>{props.children}</p>;
-		}
-	}, []);
+	const renderElement = useCallback(
+		({ element, attributes, children }: RenderElementProps) => {
+			switch (element.type) {
+				case "unordered-list":
+					return <ul {...attributes}>{children}</ul>;
+				case "list-item":
+					return <li {...attributes}>{children}</li>;
+				case "blockquote":
+					return <blockquote {...attributes}>{children}</blockquote>;
+				default:
+					return <p {...attributes}>{children}</p>;
+			}
+		},
+		[],
+	);
 
 	return (
 		<Slate

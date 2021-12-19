@@ -1,7 +1,11 @@
-import { BaseEditor } from "slate";
+import { BaseEditor, Descendant } from "slate";
 import { ReactEditor } from "slate-react";
 
-type CustomElement = { type: "paragraph"; children: CustomText[] };
+type CustomElement =
+	| { type: "unordered-list"; children: Descendant[] }
+	| { type: "list-item"; children: Descendant[] }
+	| { type: "blockquote"; children: Descendant[] }
+	| { type: "paragraph"; children: Descendant[] };
 
 type CustomText = { text: string };
 
