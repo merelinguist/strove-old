@@ -22,6 +22,7 @@ model User {
   role           Role     @default(USER)
 
   notes Note[]
+	tasks Task[]
 }
 
 model Note {
@@ -32,5 +33,16 @@ model Note {
 	body    String
 
 	user   User   @relation(fields: [userId], references: [id])
+	userId String
+}
+
+model Task {
+	id String @id @default(cuid())
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	title String
+	complete Boolean @default(false)
+
+	user User @relation(fields: [userId], references: [id])
 	userId String
 }

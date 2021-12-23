@@ -34,6 +34,7 @@
 		"@typescript-eslint/method-signature-style": "error", // Force type safety
 		"@typescript-eslint/no-dynamic-delete": "error", // Use Map/Set structures
 		"@typescript-eslint/no-invalid-void-type": "error", // Force type safety
+		"@typescript-eslint/no-throw-literal": "off",
 		"@typescript-eslint/prefer-optional-chain": "error",
 		"@typescript-eslint/prefer-ts-expect-error": "error", // Force type safety
 		"id-length": [2, { "exceptions": ["i", "j"], "properties": "never" }],

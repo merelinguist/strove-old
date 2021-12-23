@@ -33,7 +33,7 @@ function Document({
 	title?: string;
 }) {
 	return (
-		<html className="h-full bg-gray-50" lang="en">
+		<html className="bg-gray-50" lang="en">
 			<head>
 				{title && <title>Your Page Title</title>}
 
@@ -54,7 +54,7 @@ function Document({
 					`}
 				</style>
 			</head>
-			<body className="antialiased text-neutral-900 h-full overflow-hidden">
+			<body className="antialiased text-gray-900">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
