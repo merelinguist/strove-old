@@ -58,7 +58,15 @@ function Label({ children }: { children: ReactNode }) {
 	);
 }
 
-function Field({ type, placeholder }: { type: string; placeholder?: string }) {
+function Field({
+	type,
+	placeholder,
+	name,
+}: {
+	type: string;
+	placeholder?: string;
+	name?: string;
+}) {
 	const {
 		state: { id, descriptionId, errorId },
 	} = useInput();
@@ -71,7 +79,7 @@ function Field({ type, placeholder }: { type: string; placeholder?: string }) {
 					aria-invalid
 					className="block pr-10 w-full sm:text-sm placeholder-red-300 text-red-900 rounded-md border-red-300 focus:border-red-500 focus:ring-red-500 focus:outline-none"
 					id={id}
-					name={id}
+					name={name}
 					placeholder={placeholder}
 					type={type}
 				/>
@@ -88,7 +96,7 @@ function Field({ type, placeholder }: { type: string; placeholder?: string }) {
 				aria-describedby={descriptionId}
 				className="block w-full sm:text-sm rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm"
 				id={id}
-				name={id}
+				name={name}
 				placeholder={placeholder}
 				type={type}
 			/>
