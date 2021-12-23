@@ -1,11 +1,6 @@
-node_modules
-
 .cache
-.vercel
-.output
-
-public/build
+node_modules
 api/_build
-
-app/styles/tailwind.css
+app/styles.css
+public/build
 .env
