@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
-import colors from "tailwindcss/colors";
 
 export function Document({
 	children,
@@ -19,18 +18,6 @@ export function Document({
 
 				<Meta />
 				<Links />
-
-				<style>
-					{`
-						#nprogress .bar {
-							background: ${colors.blue["500"]} !important;
-						}
-
-						#nprogress .spinner {
-							display: none;
-						}
-					`}
-				</style>
 			</head>
 			<body className="antialiased bg-gray-50 text-gray-900">
 				{children}

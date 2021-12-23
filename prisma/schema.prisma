@@ -20,5 +20,39 @@ model User {
   email          String   @unique
   hashedPassword String
   role           Role     @default(USER)
+
+  decks Deck[]
 }
 
+model Deck {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  cards  Card[]
+}
+
+model Card {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  front     String
+  back      String
+
+  deck      Deck       @relation(fields: [deckId], references: [id])
+  deckId    String
+  responses Response[]
+}
+
+model Response {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  correctness Float
+
+  card   Card   @relation(fields: [cardId], references: [id])
+  cardId String
+}

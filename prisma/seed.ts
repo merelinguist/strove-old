@@ -1,54 +1,66 @@
 import { PrismaClient } from "@prisma/client";
-import fetch from "node-fetch";
 
 const prisma = new PrismaClient();
 
-const getTitleAndBody = (text: string) => {
-	const titleMatch = /^#+(.*)$/;
-
-	const lines = text.split("\n");
-
-	const notEmptyLines = lines.filter((line) => line.length > 0);
-
-	if (notEmptyLines.length === 0) {
-		throw new Error("no content");
-	}
-
-	const firstLine = notEmptyLines[0];
-
-	const match = firstLine.match(titleMatch);
-
-	if (match === null) {
-		throw new Error("no title found");
-	}
-
-	const title = match?.[1];
-
-	const body = lines.slice(2).join("\n");
-
-	return { title: title.trim(), body };
+const getCards = () => {
+	return [
+		{ front: "ut", back: "as" },
+		{ front: "sum", back: "I" },
+		{ front: "eius", back: "his" },
+		{ front: "quod", back: "that" },
+		{ front: "ipse", back: "he" },
+		{ front: "fuit", back: "was" },
+		{ front: "nam", back: "for" },
+		{ front: "in", back: "on" },
+		{ front: "sunt,", back: "are" },
+		{ front: "cum", back: "with" },
+		{ front: "illi", back: "they" },
+		{ front: "esse", back: "be" },
+		{ front: "at", back: "at" },
+		{ front: "unum", back: "one" },
+		{ front: "habent", back: "have" },
+		{ front: "hoc", back: "this" },
+		{ front: "de", back: "from" },
+		{ front: "by", back: "by" },
+		{ front: "calidum", back: "hot" },
+		{ front: "verbo,", back: "word" },
+		{ front: "sed", back: "but" },
+		{ front: "quod", back: "what" },
+		{ front: "aliqua", back: "some" },
+		{ front: "est", back: "is" },
+		{ front: "quod", back: "it" },
+		{ front: "vos,", back: "you" },
+		{ front: "vel", back: "or" },
+		{ front: "quod", back: "had" },
+		{ front: "in", back: "the" },
+		{ front: "de", back: "of" },
+		{ front: "ut", back: "to" },
+		{ front: "et", back: "and" },
+		{ front: "a", back: "a" },
+		{ front: "in", back: "in" },
+		{ front: "nos", back: "we" },
+		{ front: "potest", back: "can" },
+		{ front: "ex", back: "out" },
+		{ front: "alia", back: "other" },
+		{ front: "erant", back: "were" },
+		{ front: "quibus", back: "which" },
+		{ front: "facite", back: "do" },
+		{ front: "eorum", back: "their" },
+		{ front: "tempore", back: "time" },
+		{ front: "si", back: "if" },
+		{ front: "voluntas", back: "will" },
+		{ front: "quam", back: "how" },
+		{ front: "Dixitque", back: "said" },
+		{ front: "an", back: "an" },
+		{ front: "quisque", back: "each" },
+		{ front: "indica", back: "tell" },
+	];
 };
 
-const getEntries = (): Promise<{
-	title: string;
-	body: string;
-}>[] =>
-	Array(10)
-		.fill({})
-		.map(async () => {
-			const res = await fetch(
-				"https://jaspervdj.be/lorem-markdownum/markdown.txt?no-code=on",
-			);
-
-			const text = await res.text();
-
-			const { title, body } = getTitleAndBody(text);
-
-			return { title, body };
-		});
-
 const seed = async () => {
-	await prisma.note.deleteMany();
+	await prisma.response.deleteMany();
+	await prisma.card.deleteMany();
+	await prisma.deck.deleteMany();
 
 	const me = await prisma.user.upsert({
 		where: { email: "me@here.com" },
@@ -61,19 +73,13 @@ const seed = async () => {
 		},
 	});
 
-	const entries = await Promise.all(getEntries());
-
-	await Promise.all(
-		entries.map((entry, index) => {
-			return prisma.note.create({
-				data: {
-					...entry,
-					createdAt: new Date(index),
-					userId: me.id,
-				},
-			});
-		}),
-	);
+	await prisma.deck.create({
+		data: {
+			name: "Basics",
+			userId: me.id,
+			cards: { createMany: { data: getCards() } },
+		},
+	});
 
 	// eslint-disable-next-line no-console
 	console.log(`Database has been seeded. 🌱`);
