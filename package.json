@@ -35,6 +35,7 @@
 		"@remix-run/react": "^1.1.1",
 		"@remix-run/serve": "^1.1.1",
 		"@remix-run/vercel": "^1.1.1",
+		"@splitbee/web": "^0.3.0",
 		"@tailwindcss/aspect-ratio": "^0.4.0",
 		"@tailwindcss/forms": "^0.4.0",
 		"@tailwindcss/line-clamp": "^0.3.0",

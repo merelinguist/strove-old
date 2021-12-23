@@ -5,6 +5,7 @@ import { LinksFunction, Outlet } from "remix";
 import { Document } from "~/components/Document";
 import styles from "~/styles.css";
 import { useNProgress } from "~/utils/useNProgress";
+import { useSplitbee } from "~/utils/useSplitbee";
 
 export const links: LinksFunction = () => {
 	return [{ rel: "stylesheet", href: styles }];
@@ -12,6 +13,7 @@ export const links: LinksFunction = () => {
 
 export default function App() {
 	useNProgress();
+	useSplitbee();
 
 	return (
 		<Document>
