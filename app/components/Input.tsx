@@ -1,6 +1,6 @@
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { useId } from "@react-aria/utils";
-import { ReactNode, useEffect } from "react";
+import { Children, isValidElement, ReactNode, useEffect } from "react";
 
 import { createReducerContext } from "~/utils/createReducerContext";
 
@@ -34,7 +34,11 @@ function Input({ children }: { children: ReactNode }) {
 
 	return (
 		<InputProvider
-			initialState={{ id, descriptionId: undefined, errorId: undefined }}
+			initialState={{
+				id,
+				descriptionId: undefined,
+				errorId: undefined,
+			}}
 		>
 			<div>{children}</div>
 		</InputProvider>
@@ -129,6 +133,8 @@ function FieldError({ children: errors }: { children?: string[] }) {
 
 	return null;
 }
+
+FieldError.displayName = "Error";
 
 Input.Label = Label;
 Input.Field = Field;

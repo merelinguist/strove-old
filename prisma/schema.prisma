@@ -20,29 +20,5 @@ model User {
   email          String   @unique
   hashedPassword String
   role           Role     @default(USER)
-
-  notes Note[]
-	tasks Task[]
 }
 
-model Note {
-	id        String   @id @default(cuid())
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	title   String
-	body    String
-
-	user   User   @relation(fields: [userId], references: [id])
-	userId String
-}
-
-model Task {
-	id String @id @default(cuid())
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	title String
-	complete Boolean @default(false)
-
-	user User @relation(fields: [userId], references: [id])
-	userId String
-}

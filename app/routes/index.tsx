@@ -1,6 +1,6 @@
 import { Link } from "remix";
 
-export default function AboutRoute() {
+export default function IndexRoute() {
 	return (
 		<div className="prose mx-auto p-8">
 			<h1>Index</h1>
@@ -13,7 +13,7 @@ export default function AboutRoute() {
 			</p>
 			<ul>
 				<li>
-					<Link to="/tasks">Tasks</Link>
+					<Link to="/components">Components</Link>
 				</li>
 			</ul>
 		</div>
