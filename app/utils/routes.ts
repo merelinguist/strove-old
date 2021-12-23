@@ -1,7 +1,7 @@
 export const routes = {
 	index: "/",
-	journal: {
-		index: "/journal",
-		show: (id: string) => `/journal/${id}`,
+	decks: {
+		index: "/",
+		learn: (id: string) => `/decks/${id}/learn`,
 	},
 };

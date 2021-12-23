@@ -81,6 +81,14 @@ const seed = async () => {
 		},
 	});
 
+	await prisma.deck.create({
+		data: {
+			name: "Phrases",
+			userId: me.id,
+			cards: { createMany: { data: getCards() } },
+		},
+	});
+
 	// eslint-disable-next-line no-console
 	console.log(`Database has been seeded. 🌱`);
 };

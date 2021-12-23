@@ -2,6 +2,7 @@ import {
 	ActionFunction,
 	Form,
 	json,
+	Link,
 	LoaderFunction,
 	useLoaderData,
 } from "remix";
@@ -66,6 +67,11 @@ export default function LearnDeckRoute() {
 						<p className="mt-2 text-base text-gray-500">
 							Your order #14034056 has shipped and will be with you soon.
 						</p>
+						<div className="mt-12">
+							<Link className="text-sm font-medium text-blue-600" to="/">
+								Go home →
+							</Link>
+						</div>
 					</div>
 				</div>
 			</main>

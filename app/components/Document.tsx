@@ -19,7 +19,7 @@ export function Document({
 				<Meta />
 				<Links />
 			</head>
-			<body className="antialiased bg-gray-50 text-gray-900">
+			<body className="antialiased text-gray-900">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
