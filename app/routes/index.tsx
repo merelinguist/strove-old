@@ -1,4 +1,3 @@
-import { Avatar } from "alcestis";
 import { Link } from "remix";
 
 export default function AboutRoute() {
@@ -12,7 +11,6 @@ export default function AboutRoute() {
 				Lorem ullamco. Commodo irure veniam voluptate ea magna. Nisi consectetur
 				Lorem aliqua nulla elit mollit sunt deserunt fugiat esse.
 			</p>
-			<Avatar />
 			<ul>
 				<li>
 					<Link to="/tasks">Tasks</Link>
