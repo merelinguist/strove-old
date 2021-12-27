@@ -10,22 +10,22 @@ import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
 import { compareTwoStrings } from "~/utils/compareTwoStrings";
-import { getDailyLesson } from "~/utils/getDailyLesson";
 import { Card, Deck, prisma } from "~/utils/prisma.server";
+import { routes } from "~/utils/routes";
 
 type LoaderData = { deck: Deck; card: Card | null };
 
 export const loader: LoaderFunction = async ({ params }) => {
 	const deck = await prisma.deck.findUnique({
 		where: { id: params.id },
-		include: { cards: { include: { responses: true } } },
+		include: { cards: true },
 	});
 
 	if (!deck) {
 		throw new Error("Deck not found");
 	}
 
-	const card = getDailyLesson(deck.cards).all[0];
+	const card = deck.cards[Math.floor(Math.random() * deck.cards.length)];
 
 	return json<LoaderData>({ deck, card });
 };
@@ -47,7 +47,9 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const correctness = compareTwoStrings(response, card.back);
 
-	return prisma.response.create({ data: { correctness, cardId } });
+	return prisma.response.create({
+		data: { correctness, cardId },
+	});
 };
 
 export default function LearnDeckRoute() {
@@ -68,7 +70,10 @@ export default function LearnDeckRoute() {
 							Your order #14034056 has shipped and will be with you soon.
 						</p>
 						<div className="mt-12">
-							<Link className="text-sm font-medium text-blue-600" to="/">
+							<Link
+								className="text-sm font-medium text-blue-600"
+								to={routes.decks.index}
+							>
 								Go home →
 							</Link>
 						</div>

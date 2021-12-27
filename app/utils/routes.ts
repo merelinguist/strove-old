@@ -1,7 +1,7 @@
 export const routes = {
 	index: "/",
 	decks: {
-		index: "/",
-		learn: (id: string) => `/decks/${id}/learn`,
+		index: "/decks",
+		lesson: (id: string) => `/decks/${id}/lesson`,
 	},
 };

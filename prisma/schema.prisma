@@ -41,18 +41,24 @@ model Card {
   updatedAt DateTime @updatedAt
   front     String
   back      String
+	interval Int @default(0)
+  repetition Int @default(0)
+	easiness Float @default(2.5)
+	dueDate DateTime @default(now())
 
   deck      Deck       @relation(fields: [deckId], references: [id])
   deckId    String
-  responses Response[]
+	responses Response[]
 }
 
-model Response {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  correctness Float
 
-  card   Card   @relation(fields: [cardId], references: [id])
-  cardId String
+
+model Response {
+	id String @id @default(cuid())
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	correctness Float
+
+	card Card @relation(fields: [cardId], references: [id])
+	cardId String
 }

@@ -58,7 +58,6 @@ const getCards = () => {
 };
 
 const seed = async () => {
-	await prisma.response.deleteMany();
 	await prisma.card.deleteMany();
 	await prisma.deck.deleteMany();
 
@@ -79,6 +78,7 @@ const seed = async () => {
 			userId: me.id,
 			cards: { createMany: { data: getCards() } },
 		},
+		include: { cards: true },
 	});
 
 	await prisma.deck.create({
@@ -89,8 +89,13 @@ const seed = async () => {
 		},
 	});
 
-	// eslint-disable-next-line no-console
-	console.log(`Database has been seeded. 🌱`);
+	await prisma.deck.create({
+		data: {
+			name: "French",
+			userId: me.id,
+			cards: { createMany: { data: getCards() } },
+		},
+	});
 };
 
 seed();

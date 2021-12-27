@@ -7,13 +7,13 @@ export const score = (responses: Response[]) => {
 		return -1;
 	}
 
-	const now = Date.now();
-
 	const weightedSum = responses
 		.map(
 			(response) =>
 				response.correctness *
-				Math.exp((new Date(response.createdAt).getTime() - now) / TAO),
+				Math.exp(
+					(new Date(response.createdAt).getTime() - new Date().getTime()) / TAO,
+				),
 		)
 		.reduce(
 			(previousResponse, currentResponse) => previousResponse + currentResponse,
