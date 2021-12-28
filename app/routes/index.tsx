@@ -1,16 +1,19 @@
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { Card, Deck, prisma } from "~/utils/prisma.server";
+import { getDailyLesson } from "~/utils/getDailyLesson";
+import { Card, Deck, prisma, Response } from "~/utils/prisma.server";
 
 type LoaderData = {
 	decks: (Deck & {
-		cards: Card[];
+		cards: (Card & {
+			responses: Response[];
+		})[];
 	})[];
 };
 
 export const loader: LoaderFunction = async () => {
 	const decks = await prisma.deck.findMany({
-		include: { cards: true },
+		include: { cards: { include: { responses: true } } },
 	});
 
 	return json<LoaderData>({ decks });
@@ -39,7 +42,10 @@ export default function IndexRoute() {
 			<ul>
 				{data.decks.map((deck) => (
 					<li key={deck.id}>
-						<Link to={`/decks/${deck.id}/lesson`}>{deck.name}</Link>
+						<Link to={`/decks/${deck.id}/lesson`}>
+							{deck.name} - {getDailyLesson(deck.cards).new},{" "}
+							{getDailyLesson(deck.cards).review}
+						</Link>
 					</li>
 				))}
 			</ul>

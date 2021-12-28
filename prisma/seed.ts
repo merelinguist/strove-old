@@ -58,6 +58,7 @@ const getCards = () => {
 };
 
 const seed = async () => {
+	await prisma.response.deleteMany();
 	await prisma.card.deleteMany();
 	await prisma.deck.deleteMany();
 
