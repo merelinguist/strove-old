@@ -61,15 +61,13 @@ const seed = async () => {
 	await prisma.response.deleteMany();
 	await prisma.card.deleteMany();
 	await prisma.deck.deleteMany();
+	await prisma.user.deleteMany();
 
-	const me = await prisma.user.upsert({
-		where: { email: "me@here.com" },
-		update: {},
-		create: {
+	const me = await prisma.user.create({
+		data: {
 			name: "Me Here",
 			email: "me@here.com",
-			hashedPassword:
-				"$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u",
+			hashedPassword: "pass",
 		},
 	});
 

@@ -1,9 +1,13 @@
-import { json, Link, LoaderFunction, useLoaderData } from "remix";
+import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
 
 import { getDailyLesson } from "~/utils/getDailyLesson";
+import { keys } from "~/utils/keys";
 import { Card, Deck, prisma, Response } from "~/utils/prisma.server";
+import { routes } from "~/utils/routes";
+import { getUserId } from "~/utils/session.server";
 
 type LoaderData = {
+	userId: string | null;
 	decks: (Deck & {
 		cards: (Card & {
 			responses: Response[];
@@ -11,19 +15,69 @@ type LoaderData = {
 	})[];
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+	const userId = await getUserId(request);
+
 	const decks = await prisma.deck.findMany({
 		include: { cards: { include: { responses: true } } },
 	});
 
-	return json<LoaderData>({ decks });
+	return json<LoaderData>({ userId, decks });
 };
+
+function RouteTree() {
+	return (
+		<ul>
+			{keys(routes).map((route) => (
+				<li>
+					<Link
+						to={
+							typeof routes[route] === "string"
+								? routes[route]
+								: routes[route].toString()
+						}
+					>
+						{route}
+					</Link>
+				</li>
+			))}
+		</ul>
+	);
+}
 
 export default function IndexRoute() {
 	const data = useLoaderData<LoaderData>();
 
 	return (
 		<div className="prose mx-auto p-8">
+			<ul>
+				<li>
+					<Link to={routes.index}>Home</Link>
+				</li>
+				{data.userId ? (
+					<>
+						<li>
+							<Link to={routes.me}>Profile</Link>
+						</li>
+						<li>
+							<Form action={routes.logout} method="post">
+								<button className="" type="submit">
+									Logout
+								</button>
+							</Form>
+						</li>
+					</>
+				) : (
+					<>
+						<li>
+							<Link to={routes.login}>Login</Link>
+						</li>
+						<li>
+							<Link to={routes.register}>Register</Link>
+						</li>
+					</>
+				)}
+			</ul>
 			<h1>Index</h1>
 			<p>
 				Labore ipsum non velit fugiat voluptate ad id. Exercitation ut et sit
@@ -33,18 +87,14 @@ export default function IndexRoute() {
 				Lorem aliqua nulla elit mollit sunt deserunt fugiat esse.
 			</p>
 			<h2>Pages</h2>
-			<ul>
-				<li>
-					<Link to="/components">Components</Link>
-				</li>
-			</ul>
+			<RouteTree />
 			<h2>Decks</h2>
 			<ul>
 				{data.decks.map((deck) => (
 					<li key={deck.id}>
 						<Link to={`/decks/${deck.id}/lesson`}>
-							{deck.name} - {getDailyLesson(deck.cards).new},{" "}
-							{getDailyLesson(deck.cards).review}
+							{deck.name} - {getDailyLesson(deck.cards).new.length},{" "}
+							{getDailyLesson(deck.cards).review.length}
 						</Link>
 					</li>
 				))}

@@ -43,6 +43,7 @@
 		"import/extensions": "off",
 		"jsx-a11y/label-has-associated-control": "off",
 		"react/jsx-sort-props": "error",
+		"@typescript-eslint/no-throw-literal": "off",
 
 		"react/function-component-definition": [
 			"error",

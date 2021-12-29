@@ -16,12 +16,30 @@ model User {
   id             String   @id @default(cuid())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  name           String
+  name           String?
   email          String   @unique
   hashedPassword String
   role           Role     @default(USER)
 
+	tokens Token[]
   decks Deck[]
+}
+
+enum TokenType {
+  RESET_PASSWORD
+}
+
+model Token {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hashedToken String  @unique
+  type        TokenType
+  expiresAt   DateTime
+  sentTo      String
+
+  user   User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Deck {
@@ -41,17 +59,11 @@ model Card {
   updatedAt DateTime @updatedAt
   front     String
   back      String
-	interval Int @default(0)
-  repetition Int @default(0)
-	easiness Float @default(2.5)
-	dueDate DateTime @default(now())
 
   deck      Deck       @relation(fields: [deckId], references: [id])
   deckId    String
 	responses Response[]
 }
-
-
 
 model Response {
 	id String @id @default(cuid())
