@@ -39,6 +39,7 @@
 		"import/prefer-default-export": "off",
 		"react/require-default-props": "off",
 
+		"eslint-comments/disable-enable-pair": "off",
 		"id-length": [2, { "properties": "never" }],
 		"import/extensions": "off",
 		"jsx-a11y/label-has-associated-control": "off",

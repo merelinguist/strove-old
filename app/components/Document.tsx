@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
 
 export function Document({
@@ -12,10 +12,8 @@ export function Document({
 		<html lang="en">
 			<head>
 				{title && <title>Your Page Title</title>}
-
 				<meta charSet="utf-8" />
 				<meta content="width=device-width, initial-scale=1" name="viewport" />
-
 				<Meta />
 				<Links />
 			</head>

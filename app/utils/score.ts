@@ -1,4 +1,4 @@
-import { Response } from "~/utils/prisma.server";
+import type { Response } from "~/utils/prisma.server";
 
 const TAO = 1000 * 60 * 60 * 24;
 

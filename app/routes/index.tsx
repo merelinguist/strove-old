@@ -1,7 +1,6 @@
 import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
 
 import { getDailyLesson } from "~/utils/getDailyLesson";
-import { keys } from "~/utils/keys";
 import { Card, Deck, prisma, Response } from "~/utils/prisma.server";
 import { routes } from "~/utils/routes";
 import { getUserId } from "~/utils/session.server";
@@ -24,26 +23,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	return json<LoaderData>({ userId, decks });
 };
-
-function RouteTree() {
-	return (
-		<ul>
-			{keys(routes).map((route) => (
-				<li>
-					<Link
-						to={
-							typeof routes[route] === "string"
-								? routes[route]
-								: routes[route].toString()
-						}
-					>
-						{route}
-					</Link>
-				</li>
-			))}
-		</ul>
-	);
-}
 
 export default function IndexRoute() {
 	const data = useLoaderData<LoaderData>();
@@ -86,8 +65,6 @@ export default function IndexRoute() {
 				Lorem ullamco. Commodo irure veniam voluptate ea magna. Nisi consectetur
 				Lorem aliqua nulla elit mollit sunt deserunt fugiat esse.
 			</p>
-			<h2>Pages</h2>
-			<RouteTree />
 			<h2>Decks</h2>
 			<ul>
 				{data.decks.map((deck) => (

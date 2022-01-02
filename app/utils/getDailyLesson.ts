@@ -1,4 +1,4 @@
-import { Card, Response } from "~/utils/prisma.server";
+import type { Card, Response } from "~/utils/prisma.server";
 import { score } from "~/utils/score";
 
 export const getDailyLesson = (cards: (Card & { responses: Response[] })[]) => {

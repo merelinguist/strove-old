@@ -1,33 +1,28 @@
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { useId } from "@react-aria/utils";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-import { createReducerContext } from "~/utils/createReducerContext";
+import { createContainer } from "~/utils/createContainer";
 
-const { Provider: InputProvider, useValue: useInput } = createReducerContext<
-	{
-		id: string;
-		descriptionId: string | undefined;
-		errorId: string | undefined;
+const { Provider: InputProvider, useContainer: useInput } = createContainer(
+	(
+		initialState: {
+			id: string | undefined;
+			descriptionId: string | undefined;
+			errorId: string | undefined;
+		} = { id: undefined, descriptionId: undefined, errorId: undefined },
+	) => {
+		const [state, setState] = useState(initialState);
+
+		const registerDescription = () =>
+			setState({ ...state, descriptionId: `${state.id}-description` });
+
+		const registerError = () =>
+			setState({ ...state, errorId: `${state.id}-error` });
+
+		return { state, registerDescription, registerError };
 	},
-	| { type: "registerDescription" }
-	| { type: "registerError" }
-	| { type: "never" }
->("InputStateContext", (state, action) => {
-	switch (action.type) {
-		case "registerDescription": {
-			return { ...state, descriptionId: `${state.id}-description` };
-		}
-
-		case "registerError": {
-			return { ...state, errorId: `${state.id}-error` };
-		}
-
-		default: {
-			throw new Error(`Unhandled action type: ${action.type}`);
-		}
-	}
-});
+);
 
 function Input({ children }: { children: ReactNode }) {
 	const id = useId();
@@ -107,10 +102,10 @@ function Field({
 function Description({ children }: { children: ReactNode }) {
 	const {
 		state: { descriptionId, errorId },
-		dispatch,
+		registerDescription,
 	} = useInput();
 
-	useEffect(() => dispatch({ type: "registerDescription" }), []);
+	useEffect(() => registerDescription(), []);
 
 	if (!errorId) {
 		return (
@@ -126,10 +121,10 @@ function Description({ children }: { children: ReactNode }) {
 function FieldError({ children: errors }: { children?: string[] }) {
 	const {
 		state: { errorId },
-		dispatch,
+		registerError,
 	} = useInput();
 
-	useEffect(() => dispatch({ type: "registerError" }), []);
+	useEffect(() => registerError(), []);
 
 	if (errors && errors.length > 0) {
 		return (

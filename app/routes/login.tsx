@@ -21,8 +21,6 @@ export const action: ActionFunction = async ({ request }) => {
 		throw new Error("User not found");
 	}
 
-	console.log(password, user.hashedPassword);
-
 	const isCorrectPassword = password === user.hashedPassword;
 
 	if (!isCorrectPassword) {

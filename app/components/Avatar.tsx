@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 import { classNames } from "~/utils/classNames";
+import { createContainer } from "~/utils/createContainer";
 import { createMaps } from "~/utils/createMaps";
-import { createSimpleContext } from "~/utils/createSimpleContext";
 
 export const avatarSizeMaps = createMaps({
 	extraSmall: "h-6 w-6",
@@ -28,10 +28,17 @@ export const statusStatusMaps = createMaps({
 	busy: "bg-red-400",
 });
 
-const { Provider: AvatarProvider, useValue: useAvatar } =
-	createSimpleContext<{ size: keyof typeof avatarSizeMaps }>(
-		"AvatarStateContext",
-	);
+const { Provider: AvatarProvider, useContainer: useAvatar } = createContainer(
+	(
+		initialState: {
+			size: keyof typeof avatarSizeMaps;
+		} = { size: "default" },
+	) => {
+		const [state] = useState(initialState);
+
+		return { state };
+	},
+);
 
 export function Avatar({
 	size = "default",
@@ -77,17 +84,17 @@ export function Avatar({
 		);
 	};
 
-	return <AvatarProvider value={{ size }}>{getAvatar()}</AvatarProvider>;
+	return <AvatarProvider initialState={{ size }}>{getAvatar()}</AvatarProvider>;
 }
 
 function Status({ status }: { status: keyof typeof statusStatusMaps }) {
-	const { size } = useAvatar();
+	const { state } = useAvatar();
 
 	return (
 		<span
 			className={classNames(
 				"absolute top-0 right-0 block rounded-full ring-2 ring-white",
-				statusSizeMaps[size],
+				statusSizeMaps[state.size],
 				statusStatusMaps[status],
 			)}
 		/>
