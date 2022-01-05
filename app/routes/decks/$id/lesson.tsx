@@ -9,14 +9,14 @@ import {
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { compareTwoStrings } from "~/utils/compareTwoStrings";
-import { Card, Deck, prisma } from "~/utils/prisma.server";
+import { Card, db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
+import { compareTwoStrings } from "~/utils/string/compareTwoStrings";
 
 type LoaderData = { deck: Deck; card: Card | null };
 
 export const loader: LoaderFunction = async ({ params }) => {
-	const deck = await prisma.deck.findUnique({
+	const deck = await db.deck.findUnique({
 		where: { id: params.id },
 		include: { cards: true },
 	});
@@ -34,20 +34,20 @@ export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData();
 
 	const cardId = formData.get("cardId");
-	const response = formData.get("response");
+	const answer = formData.get("answer");
 
 	invariant(typeof cardId === "string");
-	invariant(typeof response === "string");
+	invariant(typeof answer === "string");
 
-	const card = await prisma.card.findUnique({ where: { id: cardId } });
+	const card = await db.card.findUnique({ where: { id: cardId } });
 
 	if (!card) {
 		throw new Error("Card not found");
 	}
 
-	const correctness = compareTwoStrings(response, card.back);
+	const correctness = compareTwoStrings(answer, card.back);
 
-	return prisma.response.create({
+	return db.answer.create({
 		data: { correctness, cardId },
 	});
 };
@@ -95,7 +95,7 @@ export default function LearnDeckRoute() {
 				<input name="cardId" type="hidden" value={data.card.id} />
 				<Input>
 					<Input.Label>{data.card.front}</Input.Label>
-					<Input.Field name="response" type="text" />
+					<Input.Field name="answer" type="text" />
 				</Input>
 			</Form>
 		</div>

@@ -40,7 +40,10 @@
 		"react/require-default-props": "off",
 
 		"eslint-comments/disable-enable-pair": "off",
-		"id-length": [2, { "properties": "never" }],
+		"id-length": [
+			2,
+			{ "properties": "never", "exceptions": ["_", "__", "___"] }
+		],
 		"import/extensions": "off",
 		"jsx-a11y/label-has-associated-control": "off",
 		"react/jsx-sort-props": "error",

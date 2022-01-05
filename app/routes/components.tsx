@@ -3,7 +3,7 @@ import { Children, ReactNode } from "react";
 import { Avatar, avatarSizeMaps, statusStatusMaps } from "~/components/Avatar";
 import { Input } from "~/components/Input";
 import { keys } from "~/utils/keys";
-import { toKebabCase } from "~/utils/toKebabCase";
+import { toKebabCase } from "~/utils/string/toKebabCase";
 
 function Group({ header, children }: { header: string; children: ReactNode }) {
 	return (

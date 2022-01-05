@@ -3,7 +3,7 @@ import { ActionFunction, Form } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { prisma, TokenType } from "~/utils/prisma.server";
+import { db, TokenType } from "~/utils/db.server";
 import { sha256 } from "~/utils/sha256.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	invariant(typeof email === "string", "Email must be a string");
 
-	const user = await prisma.user.findUnique({
+	const user = await db.user.findUnique({
 		where: { email },
 	});
 
@@ -24,11 +24,11 @@ export const action: ActionFunction = async ({ request }) => {
 	expiresAt.setHours(expiresAt.getHours() + 4);
 
 	if (user) {
-		await prisma.token.deleteMany({
+		await db.token.deleteMany({
 			where: { type: TokenType.RESET_PASSWORD, userId: user.id },
 		});
 
-		await prisma.token.create({
+		await db.token.create({
 			data: {
 				hashedToken,
 				type: TokenType.RESET_PASSWORD,

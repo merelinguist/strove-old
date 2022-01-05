@@ -2,7 +2,7 @@ import { ActionFunction, Form } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { prisma } from "~/utils/prisma.server";
+import { db } from "~/utils/db.server";
 import { createUserSession } from "~/utils/session.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -16,7 +16,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const hashedPassword = password;
 
-	const user = await prisma.user.create({ data: { email, hashedPassword } });
+	const user = await db.user.create({ data: { email, hashedPassword } });
 
 	return createUserSession(user.id, "/");
 };

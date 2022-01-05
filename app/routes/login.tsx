@@ -2,7 +2,7 @@ import { ActionFunction, Form, Link } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { prisma } from "~/utils/prisma.server";
+import { db } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
 import { createUserSession } from "~/utils/session.server";
 
@@ -15,7 +15,7 @@ export const action: ActionFunction = async ({ request }) => {
 	invariant(typeof email === "string", "Email must be a string");
 	invariant(typeof password === "string", "Password must be a string");
 
-	const user = await prisma.user.findUnique({ where: { email } });
+	const user = await db.user.findUnique({ where: { email } });
 
 	if (!user) {
 		throw new Error("User not found");

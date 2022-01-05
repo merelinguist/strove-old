@@ -72,4 +72,4 @@ const getPrismaClient = () => {
 
 export * from "@prisma/client";
 
-export const prisma = getPrismaClient();
+export const db = getPrismaClient();

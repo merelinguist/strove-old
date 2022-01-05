@@ -3,6 +3,8 @@ import { useEffect } from "react";
 
 export const useSplitbee = () => {
 	useEffect(() => {
-		splitbee.init();
+		if (process.env.NODE_ENV === "production") {
+			splitbee.init();
+		}
 	}, []);
 };

@@ -1,8 +1,8 @@
 import { matchSorter } from "match-sorter";
 import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
 
+import { Answer, Card, db, Deck } from "~/utils/db.server";
 import { getDailyLesson } from "~/utils/getDailyLesson";
-import { Card, Deck, prisma, Response } from "~/utils/prisma.server";
 import { routes } from "~/utils/routes";
 
 type LoaderData = {
@@ -10,14 +10,14 @@ type LoaderData = {
 	searchTerm: string;
 	decks: (Deck & {
 		cards: (Card & {
-			responses: Response[];
+			answers: Answer[];
 		})[];
 	})[];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const decks = await prisma.deck.findMany({
-		include: { cards: { include: { responses: true } } },
+	const decks = await db.deck.findMany({
+		include: { cards: { include: { answers: true } } },
 	});
 
 	const url = new URL(request.url);
@@ -76,7 +76,7 @@ export default function DecksRoute() {
 				{data.decks.map((deck) => (
 					<Link
 						className="block px-4 py-5 sm:p-6"
-						to={routes.decks.lesson(deck.id)}
+						to={routes.decks.id.lesson(deck.id)}
 					>
 						<h3 className="text-lg font-medium">{deck.name}</h3>
 						<p className="mt-1 text-sm text-gray-500">

@@ -1,23 +1,21 @@
-import type { Response } from "~/utils/prisma.server";
+import type { Answer } from "~/utils/db.server";
 
 const TAO = 1000 * 60 * 60 * 24;
 
-export const score = (responses: Response[]) => {
-	if (responses.length === 0) {
+export const score = (answers: Answer[]) => {
+	if (answers.length === 0) {
 		return -1;
 	}
 
-	const weightedSum = responses
+	const weightedSum = answers
 		.map(
-			(response) =>
-				response.correctness *
+			(answer) =>
+				answer.correctness *
 				Math.exp(
-					(new Date(response.createdAt).getTime() - new Date().getTime()) / TAO,
+					(new Date(answer.createdAt).getTime() - new Date().getTime()) / TAO,
 				),
 		)
-		.reduce(
-			(previousResponse, currentResponse) => previousResponse + currentResponse,
-		);
+		.reduce((previousAnswer, currentAnswer) => previousAnswer + currentAnswer);
 
-	return weightedSum / responses.length;
+	return weightedSum / answers.length;
 };

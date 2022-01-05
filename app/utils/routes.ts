@@ -1,7 +1,10 @@
 export const routes = {
 	decks: {
-		lesson: (id: string) => `/decks/${id}/lesson`,
+		id: {
+			lesson: (id: string) => `/decks/${id}/lesson`,
+		},
 		index: "/decks",
+		new: "/decks/new",
 	},
 	components: "/components",
 	forgotPassword: "/forgot-password",

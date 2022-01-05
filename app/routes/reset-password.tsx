@@ -9,7 +9,7 @@ import {
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { prisma, TokenType } from "~/utils/prisma.server";
+import { db, TokenType } from "~/utils/db.server";
 import { createUserSession } from "~/utils/session.server";
 import { sha256 } from "~/utils/sha256.server";
 
@@ -24,7 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const hashedToken = sha256(token);
 
-	const possibleToken = await prisma.token.findFirst({
+	const possibleToken = await db.token.findFirst({
 		where: { hashedToken, type: TokenType.RESET_PASSWORD },
 		include: { user: true },
 	});
@@ -35,7 +35,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const savedToken = possibleToken;
 
-	await prisma.token.delete({ where: { id: savedToken.id } });
+	await db.token.delete({ where: { id: savedToken.id } });
 
 	if (savedToken.expiresAt < new Date()) {
 		throw new Error("Reset password link is invalid or it has expired.");
@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const hashedPassword = await bcrypt.hash(password, 10);
 
-	const user = await prisma.user.update({
+	const user = await db.user.update({
 		where: { id: savedToken.userId },
 		data: { hashedPassword },
 	});
