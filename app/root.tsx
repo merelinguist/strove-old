@@ -1,11 +1,12 @@
 import { SSRProvider } from "@react-aria/ssr";
 import Inspect from "inspx";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { LinksFunction, Outlet } from "remix";
 
 import { Document } from "~/components/Document";
 import styles from "~/styles.css";
 import { useNProgress } from "~/utils/hooks/useNProgress";
-import { useRevalidateOnFocus } from "~/utils/hooks/useRevalidateOnFocus";
 import { useSplitbee } from "~/utils/hooks/useSplitbee";
 
 export const links: LinksFunction = () => {
@@ -14,15 +15,17 @@ export const links: LinksFunction = () => {
 
 export default function App() {
 	useNProgress();
-	// useRevalidateOnFocus();
+
 	useSplitbee();
 
 	return (
 		<Document>
 			<SSRProvider>
-				<Inspect>
-					<Outlet />
-				</Inspect>
+				<DndProvider backend={HTML5Backend}>
+					<Inspect>
+						<Outlet />
+					</Inspect>
+				</DndProvider>
 			</SSRProvider>
 		</Document>
 	);

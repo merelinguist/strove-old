@@ -1,17 +1,27 @@
+import { nanoid } from "nanoid";
+import { useRef, useState } from "react";
 import {
-	Dispatch,
-	RefObject,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
-import { ActionFunction, redirect } from "remix";
+	ActionFunction,
+	Link,
+	LoaderFunction,
+	redirect,
+	useCatch,
+} from "remix";
 import { z } from "zod";
 
-import { Input } from "~/components/Input";
+import { CardEditor } from "~/components/CardEditor";
 import { db } from "~/utils/db.server";
-import { requireUserId } from "~/utils/session.server";
+import { getUserId, requireUserId } from "~/utils/session.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+	const userId = await getUserId(request);
+
+	if (!userId) {
+		throw new Response("", { status: 401 });
+	}
+
+	return {};
+};
 
 const Cards = z.array(z.object({ front: z.string(), back: z.string() }));
 
@@ -52,83 +62,12 @@ export const action: ActionFunction = async ({ request }) => {
 	return redirect(`/decks/${deck.id}`);
 };
 
-function CardEditor({
-	cardsRef,
-	cards,
-	setCards,
-	card,
-	index,
-}: {
-	cardsRef: RefObject<HTMLDivElement>;
-	cards: { front: string; back: string }[];
-	setCards: Dispatch<SetStateAction<{ front: string; back: string }[]>>;
-	card: { front: string; back: string };
-	index: number;
-}) {
-	const fieldsetRef = useRef<HTMLFieldSetElement>(null);
-	const backRef = useRef<HTMLInputElement>(null);
-
-	useEffect(() => {
-		const handleKeyPress = (event: KeyboardEvent) => {
-			const parent = cardsRef.current;
-			const child = fieldsetRef.current;
-			const back = backRef.current;
-
-			if (
-				event.key === "Tab" &&
-				document.activeElement instanceof HTMLInputElement &&
-				parent &&
-				child &&
-				back &&
-				document.activeElement === back &&
-				child.contains(document.activeElement) &&
-				[...parent.children].indexOf(child) === parent.children.length - 1
-			) {
-				setCards([...cards, { front: "", back: "" }]);
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyPress);
-
-		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, [cards]);
-
-	return (
-		<fieldset
-			ref={fieldsetRef}
-			className="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200"
-			id={index.toString()}
-		>
-			<div className="px-4 py-5 sm:px-6">
-				<span>
-					<legend>{index + 1}</legend>
-				</span>
-			</div>
-			<div className="px-4 py-5 sm:p-6 grid grid-cols-2 gap-x-4">
-				<Input>
-					<Input.Label>Front</Input.Label>
-					<Input.Field defaultValue={card.front} name="front" type="text" />
-				</Input>
-				<Input>
-					<Input.Label>Back</Input.Label>
-					<Input.Field
-						ref={backRef}
-						defaultValue={card.back}
-						name="back"
-						type="text"
-					/>
-				</Input>
-			</div>
-		</fieldset>
-	);
-}
-
 export default function NewDeckRoute() {
 	const cardsRef = useRef<HTMLDivElement>(null);
 
 	const [cards, setCards] = useState([
-		{ front: "puer", back: "puer" },
-		{ front: "puella", back: "girl" },
+		{ id: nanoid(), front: "puer", back: "puer" },
+		{ id: nanoid(), front: "puella", back: "girl" },
 	]);
 
 	return (
@@ -136,7 +75,7 @@ export default function NewDeckRoute() {
 			<div ref={cardsRef} className="space-y-10">
 				{cards.map((card, index) => (
 					<CardEditor
-						key={index}
+						key={card.id}
 						card={card}
 						cards={cards}
 						cardsRef={cardsRef}
@@ -148,4 +87,19 @@ export default function NewDeckRoute() {
 			<button type="submit">Submit</button>
 		</form>
 	);
+}
+
+export function CatchBoundary() {
+	const caught = useCatch();
+
+	if (caught.status === 401) {
+		return (
+			<div className="error-container">
+				<p>You must be logged in to create a deck.</p>
+				<Link to="/login?redirectTo=/jokes/new">Login</Link>
+			</div>
+		);
+	}
+
+	throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }

@@ -1,17 +1,6 @@
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { useId } from "@react-aria/utils";
-import {
-	ComponentProps,
-	ComponentPropsWithoutRef,
-	ComponentPropsWithRef,
-	ElementType,
-	forwardRef,
-	HTMLProps,
-	InputHTMLAttributes,
-	ReactNode,
-	useEffect,
-	useState,
-} from "react";
+import { forwardRef, HTMLProps, ReactNode, useEffect, useState } from "react";
 
 import { createContainer } from "~/utils/createContainer";
 
@@ -137,9 +126,15 @@ function FieldError({ children: errors }: { children?: string[] }) {
 		registerError,
 	} = useInput();
 
-	useEffect(() => registerError(), []);
+	const hasErrors = errors && errors.length > 0;
 
-	if (errors && errors.length > 0) {
+	useEffect(() => {
+		if (hasErrors) {
+			registerError();
+		}
+	}, [errors]);
+
+	if (hasErrors) {
 		return (
 			<p className="mt-2 text-sm text-red-600" id={errorId}>
 				{errors.join(". ")}.

@@ -1,10 +1,16 @@
-import { ActionFunction, Form, Link } from "remix";
+import { ActionFunction, Form, json, Link, useActionData } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
 import { db } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
 import { createUserSession } from "~/utils/session.server";
+
+type ActionData = {
+	errors: {
+		email?: string[];
+	};
+};
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData();
@@ -24,13 +30,15 @@ export const action: ActionFunction = async ({ request }) => {
 	const isCorrectPassword = password === user.hashedPassword;
 
 	if (!isCorrectPassword) {
-		throw new Error("Incorrect password");
+		return json<ActionData>({ errors: { email: ["Incorrect password"] } });
 	}
 
 	return createUserSession(user.id, "/");
 };
 
 export default function RegisterRoute() {
+	const actionData = useActionData<ActionData>();
+
 	return (
 		<Form className="max-w-lg mx-auto p-8 space-y-6" method="post" replace>
 			<h1 className="text-xl font-medium">Login</h1>
@@ -41,6 +49,7 @@ export default function RegisterRoute() {
 			<Input>
 				<Input.Label>Password</Input.Label>
 				<Input.Field name="password" type="password" />
+				<Input.Error>{actionData?.errors.email}</Input.Error>
 			</Input>
 			<button type="submit">Login</button>
 
