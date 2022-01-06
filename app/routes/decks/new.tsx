@@ -10,6 +10,7 @@ import {
 import { z } from "zod";
 
 import { CardEditor } from "~/components/CardEditor";
+import { analytics } from "~/utils/analytics";
 import { db } from "~/utils/db.server";
 import { getUserId, requireUserId } from "~/utils/session.server";
 
@@ -56,6 +57,14 @@ export const action: ActionFunction = async ({ request }) => {
 			name: "Basics",
 			userId,
 			cards: { createMany: { data: cards } },
+		},
+	});
+
+	analytics.track({
+		userId,
+		event: "Create deck",
+		data: {
+			deckId: deck.id,
 		},
 	});
 

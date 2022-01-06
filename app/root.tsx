@@ -1,7 +1,5 @@
 import { SSRProvider } from "@react-aria/ssr";
 import Inspect from "inspx";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { LinksFunction, Outlet } from "remix";
 
 import { Document } from "~/components/Document";
@@ -21,11 +19,9 @@ export default function App() {
 	return (
 		<Document>
 			<SSRProvider>
-				<DndProvider backend={HTML5Backend}>
-					<Inspect>
-						<Outlet />
-					</Inspect>
-				</DndProvider>
+				<Inspect>
+					<Outlet />
+				</Inspect>
 			</SSRProvider>
 		</Document>
 	);
