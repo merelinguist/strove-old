@@ -65,6 +65,8 @@ export default function IndexRoute() {
 				Lorem ullamco. Commodo irure veniam voluptate ea magna. Nisi consectetur
 				Lorem aliqua nulla elit mollit sunt deserunt fugiat esse.
 			</p>
+			<Link to="/wait">New Deck</Link>
+
 			<h2>Decks</h2>
 			<Link to={routes.decks.new}>New Deck</Link>
 			<ul>
