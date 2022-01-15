@@ -2,6 +2,8 @@ import { createCookieSessionStorage, redirect } from "remix";
 
 import { routes } from "~/utils/routes";
 
+import { db } from "./db.server";
+
 const sessionStorage = createCookieSessionStorage({
 	cookie: {
 		httpOnly: true,
@@ -42,26 +44,38 @@ export const requireUserId = async (request: Request) => {
 	return userId;
 };
 
-// export async function getUser(request: Request) {
-// 	const userId = await getUserId(request);
-// 	if (typeof userId !== "string") {
-// 		return null;
-// 	}
+export const logout = async (request: Request) => {
+	const session = await sessionStorage.getSession(
+		request.headers.get("Cookie"),
+	);
 
-// 	try {
-// 		const user = await db.user.findUnique({ where: { id: userId } });
-// 		return user;
-// 	} catch {
-// 		throw logout(request);
-// 	}
-// }
+	return redirect("/login", {
+		headers: {
+			"Set-Cookie": await sessionStorage.destroySession(session),
+		},
+	});
+};
 
-export const createUserSession = async (userId: string, redirectTo: string) => {
+export const getUser = async (request: Request) => {
+	const userId = await getUserId(request);
+
+	if (typeof userId !== "string") {
+		return null;
+	}
+
+	try {
+		return await db.user.findUnique({ where: { id: userId } });
+	} catch {
+		throw logout(request);
+	}
+};
+
+export const createUserSession = async (request: Request, userId: string) => {
 	const session = await getSession();
 
 	session.set("userId", userId);
 
-	return redirect(redirectTo, {
+	return redirect(request.headers.get("Referer") ?? "/", {
 		headers: {
 			"Set-Cookie": await commitSession(session),
 		},

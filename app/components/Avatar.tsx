@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
+import { createContainer } from "unstated-next";
 
 import { classNames } from "~/utils/classNames";
-import { createContainer } from "~/utils/createContainer";
 import { createMaps } from "~/utils/createMaps";
 
 export const avatarSizeMaps = createMaps({

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
 
-export function Document({
+export function App({
 	children,
 	title,
 }: {

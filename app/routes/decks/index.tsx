@@ -1,97 +1,54 @@
-import { matchSorter } from "match-sorter";
-import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
+import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { Answer, Card, db, Deck } from "~/utils/db.server";
-import { getDailyLesson } from "~/utils/getDailyLesson";
+import { db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
 
-type LoaderData = {
-	status: "resultsFound" | "noResults" | "emptySearch";
-	searchTerm: string;
-	decks: (Deck & {
-		cards: (Card & {
-			answers: Answer[];
-		})[];
-	})[];
+type LoaderData = { decks: Deck[] };
+
+export const loader: LoaderFunction = async () => {
+	const decks = await db.deck.findMany();
+
+	return json<LoaderData>({ decks });
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
-	const decks = await db.deck.findMany({
-		include: { cards: { include: { answers: true } } },
-	});
-
-	const url = new URL(request.url);
-	const searchTerm = url.searchParams.get("search");
-
-	if (!searchTerm) {
-		return json<LoaderData>({
-			status: "emptySearch",
-			searchTerm: searchTerm || "",
-			decks,
-		});
-	}
-
-	const results = matchSorter(decks, searchTerm, { keys: ["name"] });
-
-	if (results.length === 0) {
-		return json<LoaderData>({
-			status: "noResults",
-			searchTerm,
-			decks: results,
-		});
-	}
-
-	return json<LoaderData>({
-		status: "resultsFound",
-		searchTerm,
-		decks: results,
-	});
-};
-
-export default function DecksRoute() {
+export default function Example() {
 	const data = useLoaderData<LoaderData>();
 
 	return (
-		<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-			<h3 className="text-xl font-medium">Decks</h3>
-			<div className="mt-6 border divide-y rounded-lg overflow-hidden">
-				<Form method="get">
-					<input
-						className="w-full border-0 focus:ring-0 px-4 py-5 sm:px-6"
-						name="search"
-						placeholder="Search..."
-						type="search"
-					/>
-				</Form>
-
-				{data.status === "noResults" && (
-					<p className="px-4 py-5 sm:p-6">
-						Ooops, no results{" "}
-						<span aria-label="crying emoji" role="img">
-							😢
-						</span>
-					</p>
-				)}
-
-				{data.decks.map((deck) => (
-					<Link
-						className="block px-4 py-5 sm:p-6"
-						to={routes.decks.id.lesson(deck.id)}
-					>
-						<h3 className="text-lg font-medium">{deck.name}</h3>
-						<p className="mt-1 text-sm text-gray-500">
-							<span className="text-gray-900 font-medium">
-								{deck.cards.length}
-							</span>{" "}
-							cards.{" "}
-							<span className="text-gray-900 font-medium">
-								{getDailyLesson(deck.cards).all.length}
-							</span>{" "}
-							to learn.
-						</p>
-					</Link>
-				))}
+		<>
+			<h1 className="text-2xl font-bold">My decks</h1>
+			<div className="mt-2 prose text-gray-600 max-w-3xl">
+				<p>
+					Lorem est ullamco reprehenderit et duis dolore fugiat nostrud
+					consectetur. Fugiat ea officia nostrud elit excepteur aliquip ex
+					nostrud Lorem non et non adipisicing.
+				</p>
 			</div>
-		</div>
+
+			<ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-6">
+				{data.decks.map((deck) => (
+					<li key={deck.id} className="border p-4 rounded-md">
+						<Link className="group" to={routes.decks.show(deck.id)}>
+							<p className="font-semibold group-hover:text-gray-600">
+								{deck.name}
+							</p>
+							<div className="mt-1 prose prose-sm text-gray-600">
+								<p>
+									Sunt non proident dolor labore et aliqua tempor et laboris.
+								</p>
+							</div>
+						</Link>
+					</li>
+				))}
+				<li className="border p-4 rounded-md">
+					<Link className="group" to={routes.decks.new}>
+						<p className="font-semibold group-hover:text-gray-600">New deck</p>
+						<div className="mt-1 prose prose-sm text-gray-600">
+							<p>Sunt non proident dolor labore et aliqua tempor et laboris.</p>
+						</div>
+					</Link>
+				</li>
+			</ul>
+		</>
 	);
 }

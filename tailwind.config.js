@@ -55,7 +55,7 @@ module.exports = {
 					top: "0px",
 					left: "0px",
 					width: "100%",
-					height: "3px",
+					height: "2px",
 				},
 			});
 		}),

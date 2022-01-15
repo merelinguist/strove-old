@@ -1,84 +1,73 @@
-import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
+import { Tab } from "@headlessui/react";
+import {
+	CalendarIcon,
+	ChartBarIcon,
+	FolderIcon,
+	HomeIcon,
+	InboxIcon,
+	UsersIcon,
+} from "@heroicons/react/outline";
+import { Fragment } from "react";
+import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { Answer, Card, db, Deck } from "~/utils/db.server";
-import { getDailyLesson } from "~/utils/getDailyLesson";
+import { classNames } from "~/utils/classNames";
+import { db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
-import { getUserId } from "~/utils/session.server";
 
-type LoaderData = {
-	userId: string | null;
-	decks: (Deck & {
-		cards: (Card & {
-			answers: Answer[];
-		})[];
-	})[];
-};
+type LoaderData = { decks: Deck[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const userId = await getUserId(request);
+	const decks = await db.deck.findMany();
 
-	const decks = await db.deck.findMany({
-		include: { cards: { include: { answers: true } } },
-	});
-
-	return json<LoaderData>({ userId, decks });
+	return json<LoaderData>({ decks });
 };
 
-export default function IndexRoute() {
+const navigation = [
+	{ name: "Dashboard", href: "#", icon: HomeIcon, current: true },
+	{ name: "Team", href: "#", icon: UsersIcon, current: false },
+	{ name: "Projects", href: "#", icon: FolderIcon, current: false },
+	{ name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+	{ name: "Documents", href: "#", icon: InboxIcon, current: false },
+	{ name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+];
+
+export default function Example() {
 	const data = useLoaderData<LoaderData>();
 
 	return (
-		<div className="prose mx-auto p-8">
-			<ul>
-				<li>
-					<Link to={routes.index}>Home</Link>
-				</li>
-				{data.userId ? (
-					<>
-						<li>
-							<Link to={routes.me}>Profile</Link>
-						</li>
-						<li>
-							<Form action={routes.logout} method="post">
-								<button className="" type="submit">
-									Logout
-								</button>
-							</Form>
-						</li>
-					</>
-				) : (
-					<>
-						<li>
-							<Link to={routes.login}>Login</Link>
-						</li>
-						<li>
-							<Link to={routes.register}>Register</Link>
-						</li>
-					</>
-				)}
-			</ul>
-			<h1>Index</h1>
-			<p>
-				Labore ipsum non velit fugiat voluptate ad id. Exercitation ut et sit
-				ipsum ut magna duis aute culpa Lorem eu culpa qui. Laboris tempor qui
-				qui mollit do esse duis voluptate reprehenderit velit. Non cillum ea
-				Lorem ullamco. Commodo irure veniam voluptate ea magna. Nisi consectetur
-				Lorem aliqua nulla elit mollit sunt deserunt fugiat esse.
-			</p>
-			<Link to="/wait">New Deck</Link>
-
-			<h2>Decks</h2>
-			<Link to={routes.decks.new}>New Deck</Link>
-			<ul>
-				{data.decks.map((deck) => (
-					<li key={deck.id}>
-						<Link to={`/decks/${deck.id}/lesson`}>
-							{deck.name} - {getDailyLesson(deck.cards).new.length},{" "}
-							{getDailyLesson(deck.cards).review.length}
-						</Link>
-					</li>
-				))}
-			</ul>
-		</div>
+		<>
+			<div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+				<div className="flex-1 flex flex-col min-h-0 bg-gray-50" />
+			</div>
+			<div className="md:pl-64 flex flex-col flex-1">
+				<main className="flex-1">
+					<div className="max-w-7xl py-8 mx-auto px-4 sm:px-6 md:px-8">
+						<h1 className="text-2xl font-bold">My decks</h1>
+						<div className="mt-2 prose text-gray-600 max-w-3xl">
+							<p>
+								Lorem est ullamco reprehenderit et duis dolore fugiat nostrud
+								consectetur. Fugiat ea officia nostrud elit excepteur aliquip ex
+								nostrud Lorem non et non adipisicing.
+							</p>
+						</div>
+						<ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-6">
+							{data.decks.map((deck) => (
+								<li key={deck.id} className="border p-4 rounded-md">
+									<Link to={routes.decks.show(deck.id)}>
+										<p className="font-semibold">{deck.name}</p>
+										<div className="mt-1 prose prose-sm text-gray-600">
+											<p>
+												Sunt non proident dolor labore et aliqua tempor et
+												laboris.
+											</p>
+										</div>
+									</Link>
+								</li>
+							))}
+						</ul>
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }

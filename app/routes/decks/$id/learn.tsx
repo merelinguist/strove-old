@@ -4,12 +4,13 @@ import {
 	json,
 	Link,
 	LoaderFunction,
+	useActionData,
 	useLoaderData,
 } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { Card, db, Deck } from "~/utils/db.server";
+import { Answer, Card, db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
 import { compareTwoStrings } from "~/utils/string/compareTwoStrings";
 
@@ -30,6 +31,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 	return json<LoaderData>({ deck, card });
 };
 
+type ActionData = { correctness?: number; answer?: Answer };
+
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData();
 
@@ -47,13 +50,17 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const correctness = compareTwoStrings(answer, card.back);
 
-	return db.answer.create({
-		data: { correctness, cardId },
+	return json<ActionData>({
+		correctness,
+		answer: await db.answer.create({
+			data: { correctness, cardId },
+		}),
 	});
 };
 
 export default function LearnDeckRoute() {
 	const data = useLoaderData<LoaderData>();
+	const actionData = useActionData<ActionData>();
 
 	if (!data.card) {
 		return (
@@ -91,6 +98,9 @@ export default function LearnDeckRoute() {
 				eiusmod. Culpa occaecat anim quis non id sint labore laboris dolore
 				laboris et ad amet amet.
 			</p>
+			{actionData?.correctness && (
+				<p>{actionData.correctness > 0.5 ? "Correct" : "Incorrect"}</p>
+			)}
 			<Form method="post" replace>
 				<input name="cardId" type="hidden" value={data.card.id} />
 				<Input>
