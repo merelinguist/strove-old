@@ -66,7 +66,7 @@ export default function NewDeckRoute() {
 	]);
 
 	return (
-		<form className="bg-gray-50 max-w-3xl space-y-10 mx-auto p-8" method="post">
+		<form className="max-w-3xl space-y-10 mx-auto p-8" method="post">
 			<div ref={cardsRef} className="space-y-10">
 				{cards.map((card, index) => (
 					<CardEditor

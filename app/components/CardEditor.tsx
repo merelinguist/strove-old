@@ -48,7 +48,7 @@ export function CardEditor({
 	return (
 		<fieldset
 			ref={fieldsetRef}
-			className="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200"
+			className="border overflow-hidden rounded-lg divide-y divide-gray-200"
 		>
 			<div className="px-4 py-5 sm:px-6">
 				<span>
