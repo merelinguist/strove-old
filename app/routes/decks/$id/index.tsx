@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { json, LoaderFunction, useLoaderData } from "remix";
 
 import { classNames } from "~/utils/classNames";
-import { Card, db, Deck } from "~/utils/db.server";
+import { Card, db, Deck } from "~/utils/server/db.server";
 
 type LoaderData = {
 	deck: Deck & {

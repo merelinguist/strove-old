@@ -10,19 +10,11 @@ import {
 import { z } from "zod";
 
 import { CardEditor } from "~/components/CardEditor";
-import { analytics } from "~/utils/analytics";
-import { db } from "~/utils/db.server";
-import { getUserId, requireUserId } from "~/utils/session.server";
+import { auth } from "~/utils/server/auth.server";
+import { db } from "~/utils/server/db.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
-	const userId = await getUserId(request);
-
-	if (!userId) {
-		throw new Response("", { status: 401 });
-	}
-
-	return {};
-};
+export const loader: LoaderFunction = async ({ request }) =>
+	auth.isAuthenticated(request, { failureRedirect: "/login" });
 
 const Cards = z.array(z.object({ front: z.string(), back: z.string() }));
 
@@ -46,7 +38,9 @@ export const action: ActionFunction = async ({ request }) => {
 		);
 	}
 
-	const userId = await requireUserId(request);
+	const user = await auth.isAuthenticated(request, {
+		failureRedirect: "/login",
+	});
 
 	const cards = result.data.filter(
 		(card) => card.front.length > 0 && card.back.length > 0,
@@ -55,16 +49,8 @@ export const action: ActionFunction = async ({ request }) => {
 	const deck = await db.deck.create({
 		data: {
 			name: "Basics",
-			userId,
+			userId: user.id,
 			cards: { createMany: { data: cards } },
-		},
-	});
-
-	analytics.track({
-		userId,
-		event: "Create deck",
-		data: {
-			deckId: deck.id,
 		},
 	});
 

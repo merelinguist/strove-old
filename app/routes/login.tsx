@@ -1,4 +1,3 @@
-import { XCircleIcon } from "@heroicons/react/solid";
 import {
 	ActionFunction,
 	Form,
@@ -9,11 +8,11 @@ import {
 
 import { Input } from "~/components/Input";
 import { useLoginModal } from "~/components/LoginModal";
-import { auth, sessionStorage } from "~/utils/auth.server";
+import { auth, sessionStorage } from "~/utils/server/auth.server";
 
 export const action: ActionFunction = async ({ request }) => {
-	return auth.authenticate("form", request, {
-		successRedirect: "/dashboard",
+	await auth.authenticate("form", request, {
+		successRedirect: "/decks",
 		failureRedirect: "/login",
 	});
 };
@@ -38,6 +37,7 @@ export default function LoginRoute() {
 
 	return (
 		<Form className="max-w-lg mx-auto p-8 space-y-6" method="post">
+			<p>{JSON.stringify(error)}</p>
 			<Input>
 				<Input.Field name="email" type="email" />
 			</Input>

@@ -10,8 +10,8 @@ import {
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { Answer, Card, db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
+import { Answer, Card, db, Deck } from "~/utils/server/db.server";
 import { compareTwoStrings } from "~/utils/string/compareTwoStrings";
 
 type LoaderData = { deck: Deck; card: Card | null };

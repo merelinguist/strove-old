@@ -1,5 +1,5 @@
-import type { Answer, Card } from "~/utils/db.server";
-import { score } from "~/utils/score";
+import { score } from "~/utils/deck/score";
+import type { Answer, Card } from "~/utils/server/db.server";
 
 export const getDailyLesson = (cards: (Card & { answers: Answer[] })[]) => {
 	const sortedCards = [...cards].sort(

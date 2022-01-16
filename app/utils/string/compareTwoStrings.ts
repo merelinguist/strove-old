@@ -1,4 +1,22 @@
-import { getMap } from "~/utils/getMap";
+const getMap = <Key, Value>(
+	map: Map<Key, NonNullable<Value>>,
+	key: Key,
+	defaultValue?: NonNullable<Value>,
+) => {
+	const existing = map.get(key);
+
+	if (existing === undefined) {
+		if (defaultValue === undefined) {
+			throw new Error("Key didn't exist and no defaultValue passed");
+		}
+
+		map.set(key, defaultValue);
+
+		return defaultValue;
+	}
+
+	return existing;
+};
 
 export const compareTwoStrings = (aString: string, bString: string) => {
 	// eslint-disable-next-line id-length

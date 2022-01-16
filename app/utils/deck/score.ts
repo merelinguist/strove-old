@@ -1,4 +1,4 @@
-import type { Answer } from "~/utils/db.server";
+import type { Answer } from "~/utils/server/db.server";
 
 const TAO = 1000 * 60 * 60 * 24;
 

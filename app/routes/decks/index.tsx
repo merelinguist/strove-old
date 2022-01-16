@@ -1,7 +1,7 @@
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { db, Deck } from "~/utils/db.server";
 import { routes } from "~/utils/routes";
+import { db, Deck } from "~/utils/server/db.server";
 
 type LoaderData = { decks: Deck[] };
 

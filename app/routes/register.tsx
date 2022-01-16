@@ -1,9 +1,10 @@
+import bcrypt from "bcryptjs";
 import { ActionFunction, Form } from "remix";
 import invariant from "tiny-invariant";
 
 import { Input } from "~/components/Input";
-import { db } from "~/utils/db.server";
-import { createUserSession } from "~/utils/session.server";
+import { auth } from "~/utils/server/auth.server";
+import { db } from "~/utils/server/db.server";
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData();
@@ -14,11 +15,24 @@ export const action: ActionFunction = async ({ request }) => {
 	invariant(typeof email === "string");
 	invariant(typeof password === "string");
 
-	const hashedPassword = password;
+	const hashedPassword = await bcrypt.hash(password, 10);
 
-	const user = await db.user.create({ data: { email, hashedPassword } });
+	await db.user.create({ data: { email, hashedPassword } });
 
-	return createUserSession(user.id, "/");
+	await auth.authenticate(
+		"form",
+		new Request("", {
+			method: "POST",
+			body: new URLSearchParams({
+				email,
+				password,
+			}),
+		}),
+		{
+			successRedirect: "/decks",
+			failureRedirect: "/login",
+		},
+	);
 };
 
 export default function RegisterRoute() {

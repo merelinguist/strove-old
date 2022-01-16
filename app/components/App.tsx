@@ -1,5 +1,11 @@
+import { SSRProvider } from "@react-aria/ssr";
+import Inspect from "inspx";
 import type { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
+
+import { LoginModalProvider } from "~/components/LoginModal";
+import { useNProgress } from "~/utils/hooks/useNProgress";
+import { useSplitbee } from "~/utils/hooks/useSplitbee";
 
 export function App({
 	children,
@@ -8,6 +14,9 @@ export function App({
 	children: ReactNode;
 	title?: string;
 }) {
+	useNProgress();
+	useSplitbee();
+
 	return (
 		<html className="h-full antialiased text-gray-900" lang="en">
 			<head>
@@ -18,7 +27,11 @@ export function App({
 				<Links />
 			</head>
 			<body className="h-full">
-				{children}
+				<Inspect>
+					<SSRProvider>
+						<LoginModalProvider>{children}</LoginModalProvider>
+					</SSRProvider>
+				</Inspect>
 				<ScrollRestoration />
 				<Scripts />
 				{process.env.NODE_ENV === "development" && <LiveReload />}

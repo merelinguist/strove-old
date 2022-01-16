@@ -27,7 +27,8 @@ const seed = async () => {
 		data: {
 			name: "Me Here",
 			email: "me@here.com",
-			hashedPassword: "pass",
+			hashedPassword:
+				"$2a$10$bZ6jmws4iINdyl6m7rDZ3OxdO6fTje8/y9fF5NRaOsvonHLkkrWem",
 		},
 	});
 
