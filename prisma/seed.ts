@@ -21,6 +21,7 @@ const seed = async () => {
   await prisma.answer.deleteMany();
   await prisma.card.deleteMany();
   await prisma.deck.deleteMany();
+  await prisma.token.deleteMany();
   await prisma.user.deleteMany();
 
   const me = await prisma.user.create({
