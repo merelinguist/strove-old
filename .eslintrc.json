@@ -1,88 +1,81 @@
 {
-	"root": true,
-	"extends": [
-		"airbnb",
-		"airbnb-typescript",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:eslint-comments/recommended",
-		"plugin:react/jsx-runtime",
-		"plugin:react-etc/recommended",
-		// "plugin:tailwindcss/recommended",
-		"prettier",
-		"prettier/prettier"
-	],
-	"parserOptions": {
-		"project": "./tsconfig.json"
-	},
-	"plugins": ["simple-import-sort"],
+  "root": true,
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-etc/recommended",
+    "plugin:tailwindcss/recommended",
+    "prettier",
+    "prettier/prettier"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["simple-import-sort"],
 
-	"rules": {
-		"simple-import-sort/imports": "error",
-		"simple-import-sort/exports": "error",
-		"sort-imports": "off",
-		"import/order": "off",
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "sort-imports": "off",
+    "import/order": "off",
 
-		"@typescript-eslint/array-type": "error",
-		"@typescript-eslint/consistent-indexed-object-style": [
-			"error",
-			"index-signature"
-		],
-		"@typescript-eslint/consistent-type-assertions": "error",
-		"@typescript-eslint/consistent-type-definitions": ["error", "type"],
-		"@typescript-eslint/method-signature-style": "error",
-		"@typescript-eslint/no-dynamic-delete": "error",
-		"@typescript-eslint/no-invalid-void-type": "error",
-		"@typescript-eslint/prefer-optional-chain": "error",
-		"@typescript-eslint/prefer-ts-expect-error": "error",
-		"import/no-anonymous-default-export": "error",
-		"import/no-default-export": "error",
-		"import/prefer-default-export": "off",
-		"react/require-default-props": "off",
+    "@typescript-eslint/array-type": "error",
+    "@typescript-eslint/consistent-indexed-object-style": [
+      "error",
+      "index-signature"
+    ],
+    "@typescript-eslint/consistent-type-assertions": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/method-signature-style": "error",
+    "@typescript-eslint/no-dynamic-delete": "error",
+    "@typescript-eslint/no-invalid-void-type": "error",
+    "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/prefer-ts-expect-error": "error",
+    "import/no-default-export": "error",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "react/require-default-props": "off",
 
-		"eslint-comments/disable-enable-pair": "off",
-		"id-length": [
-			2,
-			{ "properties": "never", "exceptions": ["_", "__", "___"] }
-		],
-		"import/extensions": "off",
-		"jsx-a11y/label-has-associated-control": "off",
-		"react/jsx-sort-props": "error",
-		"@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "id-length": [
+      2,
+      { "properties": "never", "exceptions": ["_", "__", "___"] }
+    ],
+    "import/extensions": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/jsx-sort-props": "error",
+    // https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/102
+    "tailwindcss/no-custom-classname": "off"
+  },
 
-		"react/function-component-definition": [
-			"error",
-			{
-				"namedComponents": "function-declaration",
-				"unnamedComponents": "function-expression"
-			}
-		]
-	},
-
-	"overrides": [
-		{
-			"files": ["*.js"],
-			"rules": {
-				"@typescript-eslint/no-var-requires": "off"
-			}
-		},
-		{
-			"files": ["*.tsx"],
-			"rules": {
-				"react/jsx-props-no-spreading": "off"
-			}
-		},
-		{
-			"files": ["*.d.ts"],
-			"rules": {
-				"@typescript-eslint/consistent-type-definitions": "off"
-			}
-		},
-		{
-			"files": ["./app/routes/**", "./app/entry.server.tsx", "./app/root.tsx"],
-			"rules": {
-				"import/no-default-export": "off",
-				"import/prefer-default-export": "error"
-			}
-		}
-	]
+  "overrides": [
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "@typescript-eslint/consistent-type-definitions": "off"
+      }
+    },
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "react/jsx-props-no-spreading": "off"
+      }
+    },
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": ["./app/routes/**", "./app/entry.server.tsx", "./app/root.tsx"],
+      "rules": {
+        "import/no-default-export": "off",
+        "import/prefer-default-export": "error"
+      }
+    }
+  ]
 }

@@ -1,16 +1,16 @@
 {
-	"extends": "@tsconfig/remix/tsconfig.json",
-	"compilerOptions": {
-		"baseUrl": "./app/",
-		"paths": { "~/*": ["*"], "*": [""] },
-		"importsNotUsedAsValues": "error"
-	},
-	"include": [
-		"*.config.js",
-		"api/index.js",
-		"remix-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx"
-	],
-	"exclude": ["node_modules"]
+  "extends": "@tsconfig/remix/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./app/",
+    "paths": { "~/*": ["*"], "*": [""] },
+    "importsNotUsedAsValues": "error"
+  },
+  "include": [
+    "*.config.js",
+    "api/index.js",
+    "remix-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
 }

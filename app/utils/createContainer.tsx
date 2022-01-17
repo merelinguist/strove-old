@@ -2,41 +2,44 @@ import React, { createContext, useContext } from "react";
 
 const EMPTY: unique symbol = Symbol("EMPTY");
 
-/* eslint-disable @typescript-eslint/no-invalid-void-type */
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 type ContainerProviderProps<State = void> = {
-	initialState?: State;
-	children: React.ReactNode;
+  initialState?: State;
+  children: React.ReactNode;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 type Container<Value, State = void> = {
-	Provider: React.ComponentType<ContainerProviderProps<State>>;
-	useContainer: () => Value;
+  Provider: React.ComponentType<ContainerProviderProps<State>>;
+  useContainer: () => Value;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export const createContainer = <Value, State = void>(
-	useHook: (initialState?: State) => Value,
+  useHook: (initialState?: State) => Value,
 ): Container<Value, State> => {
-	const Context = createContext<Value | typeof EMPTY>(EMPTY);
+  const Context = createContext<Value | typeof EMPTY>(EMPTY);
 
-	function Provider({ initialState, children }: ContainerProviderProps<State>) {
-		const value = useHook(initialState);
+  function Provider({ initialState, children }: ContainerProviderProps<State>) {
+    const value = useHook(initialState);
 
-		return <Context.Provider value={value}>{children}</Context.Provider>;
-	}
+    return <Context.Provider value={value}>{children}</Context.Provider>;
+  }
 
-	function createUseContainer(): Value {
-		const value = useContext(Context);
+  function createUseContainer(): Value {
+    const value = useContext(Context);
 
-		if (value === EMPTY) {
-			throw new Error("Component must be wrapped with <Container.Provider>");
-		}
+    if (value === EMPTY) {
+      throw new Error("Component must be wrapped with <Container.Provider>");
+    }
 
-		return value;
-	}
+    return value;
+  }
 
-	return { Provider, useContainer: createUseContainer };
+  return { Provider, useContainer: createUseContainer };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export const useContainer = <Value, State = void>(
-	container: Container<Value, State>,
+  container: Container<Value, State>,
 ): Value => container.useContainer();
