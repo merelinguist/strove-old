@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User as PrismaUser } from "@prisma/client";
 import chalk from "chalk";
 
 const logThreshold = 50;
@@ -71,5 +71,9 @@ const getPrismaClient = () => {
 };
 
 export * from "@prisma/client";
+
+export type User = Pick<PrismaUser, "id" | "name" | "email" | "role">;
+
+export type UnsafeUser = PrismaUser;
 
 export const db = getPrismaClient();

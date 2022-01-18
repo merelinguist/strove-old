@@ -63,6 +63,13 @@ export default function MeRoute() {
           </Input>
         </div>
 
+        <div className="sm:col-span-1">
+          <Input>
+            <Input.Label>Name</Input.Label>
+            <Input.Field name="name" type="date" />
+          </Input>
+        </div>
+
         <div className="sm:col-span-6">
           <label className="block text-sm font-medium" htmlFor="photo">
             Photo
@@ -122,14 +129,6 @@ export default function MeRoute() {
             />
           </Input>
         </div>
-
-        <p className="text-sm text-gray-500 sm:col-span-6">
-          This account was created on{" "}
-          <time dateTime={new Date(data.user.createdAt).toISOString()}>
-            {new Date(data.user.createdAt).toDateString()}
-          </time>
-          .
-        </p>
       </div>
 
       <div className="flex justify-end pt-8">

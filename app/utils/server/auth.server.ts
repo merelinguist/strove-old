@@ -31,7 +31,9 @@ auth.use(
       throw new AuthorizationError("Password is required");
     }
 
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({
+      where: { email },
+    });
 
     if (!user) {
       throw new AuthorizationError("Wrong email");
@@ -46,7 +48,7 @@ auth.use(
       throw new AuthorizationError("Wrong password");
     }
 
-    return user;
+    return { id: user.id, name: user.id, email: user.email, role: user.role };
   }),
   "form",
 );

@@ -11,10 +11,9 @@ import {
 import { App } from "~/components/App";
 import { Sidebar } from "~/components/Sidebar";
 import styles from "~/styles.css";
+import { seo } from "~/utils/seo";
 import { auth } from "~/utils/server/auth.server";
 import type { User } from "~/utils/server/db.server";
-
-import { seo } from "./utils/seo";
 
 export const headers: HeadersFunction = () => {
   return {
