@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({ error });
 };
 
-export default function LoginRoute() {
+const LoginRoute = () => {
   const { error } = useLoaderData<LoaderData>();
   const { toggle } = useLoginModal();
 
@@ -51,4 +51,6 @@ export default function LoginRoute() {
       </button>
     </Form>
   );
-}
+};
+
+export default LoginRoute;

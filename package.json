@@ -31,6 +31,7 @@
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@prisma/client": "^3.7.0",
+    "@react-aria/button": "^3.3.4",
     "@react-aria/ssr": "^3.1.0",
     "@react-aria/utils": "^3.11.0",
     "@remix-run/react": "^1.1.1",

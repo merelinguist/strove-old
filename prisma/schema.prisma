@@ -21,56 +21,48 @@ model User {
   hashedPassword String
   role           Role     @default(USER)
 
-	tokens Token[]
-  decks Deck[]
+  notes Note[]
+  votes Vote[]
 }
 
-enum TokenType {
-  RESET_PASSWORD
-}
-
-model Token {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  hashedToken String  @unique
-  type        TokenType
-  expiresAt   DateTime
-  sentTo      String
-
-  user   User @relation(fields: [userId], references: [id])
-  userId String
-}
-
-model Deck {
+model Text {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
+  body      String
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  cards  Card[]
+  notes Note[]
 }
 
-model Card {
+model Note {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  front     String
-  back      String
+  start Int
+  end       Int
+  body      String
 
-  deck      Deck       @relation(fields: [deckId], references: [id])
-  deckId    String
-	answers Answer[]
+ user   User   @relation(fields: [userId], references: [id])
+  userId String
+  text   Text   @relation(fields: [textId], references: [id])
+  textId String
+  votes Vote[]
 }
 
-model Answer {
-	id String @id @default(cuid())
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	correctness Float
+enum Direction {
+  UP
+  DOWN
+}
 
-	card Card @relation(fields: [cardId], references: [id])
-	cardId String
+model Vote {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  direction Direction
+
+  note   Note   @relation(fields: [noteId], references: [id])
+  noteId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

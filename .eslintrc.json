@@ -46,6 +46,13 @@
     ],
     "import/extensions": "off",
     "jsx-a11y/label-has-associated-control": "off",
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
     "react/jsx-sort-props": "error",
     // https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/102
     "tailwindcss/no-custom-classname": "off"

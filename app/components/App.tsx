@@ -18,7 +18,7 @@ export function App({
   useSplitbee();
 
   return (
-    <html className="h-full antialiased text-gray-900" lang="en">
+    <html className="h-full font-mono antialiased text-gray-900" lang="en">
       <head>
         {title && <title>{title}</title>}
         <meta charSet="utf-8" />

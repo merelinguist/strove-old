@@ -12,6 +12,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        mono: ["IBM Plex Mono", ...defaultTheme.fontFamily.mono],
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
     },

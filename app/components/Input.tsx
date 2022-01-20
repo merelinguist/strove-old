@@ -1,8 +1,7 @@
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { useId } from "@react-aria/utils";
 import { forwardRef, HTMLProps, ReactNode, useEffect, useState } from "react";
-
-import { createContainer } from "~/utils/createContainer";
+import { createContainer } from "unstated-next";
 
 const { Provider: InputProvider, useContainer: useInput } = createContainer(
   (
@@ -24,7 +23,7 @@ const { Provider: InputProvider, useContainer: useInput } = createContainer(
   },
 );
 
-function Input({ children }: { children: ReactNode }) {
+const Input = ({ children }: { children: ReactNode }) => {
   const id = useId();
 
   return (
@@ -38,20 +37,17 @@ function Input({ children }: { children: ReactNode }) {
       <div>{children}</div>
     </InputProvider>
   );
-}
+};
 
-function Label({ children }: { children: ReactNode }) {
+const Label = ({ children }: { children: ReactNode }) => {
   const { state } = useInput();
 
   return (
-    <label
-      className="block text-sm font-medium text-gray-700"
-      htmlFor={state.id}
-    >
+    <label className="block text-sm font-medium" htmlFor={state.id}>
       {children}
     </label>
   );
-}
+};
 
 type FieldProps = { type: string } & Omit<
   HTMLProps<HTMLInputElement>,
@@ -101,7 +97,7 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(
   },
 );
 
-function Description({ children }: { children: ReactNode }) {
+const Description = ({ children }: { children: ReactNode }) => {
   const {
     state: { descriptionId, errorId },
     registerDescription,
@@ -118,9 +114,9 @@ function Description({ children }: { children: ReactNode }) {
   }
 
   return null;
-}
+};
 
-function FieldError({ children: errors }: { children?: string[] }) {
+const FieldError = ({ children: errors }: { children?: string[] }) => {
   const {
     state: { errorId },
     registerError,
@@ -143,7 +139,7 @@ function FieldError({ children: errors }: { children?: string[] }) {
   }
 
   return null;
-}
+};
 
 FieldError.displayName = "Error";
 

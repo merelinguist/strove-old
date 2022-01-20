@@ -2,26 +2,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const getCards = () => {
-  return [
-    { front: "familia", back: "household" },
-    { front: "est", back: "is" },
-    { front: "pater", back: "father" },
-    { front: "mater", back: "mother" },
-    { front: "filius", back: "son" },
-    { front: "filia", back: "daughter" },
-    { front: "servus", back: "slate" },
-    { front: "coquus", back: "cook" },
-    { front: "canis", back: "dog" },
-    { front: "in tablino", back: "in the study" },
-  ];
-};
-
 const seed = async () => {
-  await prisma.answer.deleteMany();
-  await prisma.card.deleteMany();
-  await prisma.deck.deleteMany();
-  await prisma.token.deleteMany();
+  await prisma.note.deleteMany();
+  await prisma.text.deleteMany();
   await prisma.user.deleteMany();
 
   const me = await prisma.user.create({
@@ -33,30 +16,37 @@ const seed = async () => {
     },
   });
 
-  await prisma.deck.create({
+  const text = await prisma.text.create({
     data: {
-      name: "Basics",
-      userId: me.id,
-      cards: { createMany: { data: getCards() } },
-    },
-    include: { cards: true },
-  });
+      name: "Medea",
+      body: `Jack and Jill went up the hill.
 
-  await prisma.deck.create({
-    data: {
-      name: "Phrases",
-      userId: me.id,
-      cards: { createMany: { data: getCards() } },
-    },
-  });
+To fetch a pail of water.
 
-  await prisma.deck.create({
-    data: {
-      name: "French",
-      userId: me.id,
-      cards: { createMany: { data: getCards() } },
+Some other sentence???·`,
+      notes: {
+        createMany: {
+          data: [
+            { start: 0, end: 5, body: "inchresting", userId: me.id },
+            { start: 3, end: 10, body: "inchresting", userId: me.id },
+            { start: 20, end: 30, body: "inchresting", userId: me.id },
+            { start: 100, end: 200, body: "inchresting", userId: me.id },
+          ],
+        },
+      },
     },
   });
 };
 
 seed();
+
+type Merge<T, U> = Omit<T, keyof U> & U;
+
+type PropsWithAs<P, T extends React.ElementType> = P & { as?: T };
+
+export type Props<P, T extends React.ElementType> = Merge<
+  T extends keyof JSX.IntrinsicElements
+    ? React.PropsWithoutRef<JSX.IntrinsicElements[T]>
+    : React.ComponentPropsWithoutRef<T>,
+  PropsWithAs<P, T>
+>;
