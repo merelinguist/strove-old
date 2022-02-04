@@ -5,4 +5,5 @@ export const env = envsafe({
     choices: ["development", "production", "test"],
   }),
   SESSION_SECRET: str(),
+  STRIPE_SECRET_API_KEY: str(),
 });

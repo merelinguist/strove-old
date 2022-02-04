@@ -1,4 +1,3 @@
-import { SSRProvider } from "@react-aria/ssr";
 import Inspect from "inspx";
 import type { ReactNode } from "react";
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from "remix";
@@ -7,18 +6,18 @@ import { LoginModalProvider } from "~/components/LoginModal";
 import { useNProgress } from "~/utils/hooks/useNProgress";
 import { useSplitbee } from "~/utils/hooks/useSplitbee";
 
-export function App({
+export const App = ({
   children,
   title,
 }: {
   children: ReactNode;
   title?: string;
-}) {
+}) => {
   useNProgress();
   useSplitbee();
 
   return (
-    <html className="h-full font-mono antialiased text-gray-900" lang="en">
+    <html className="h-full antialiased text-gray-900" lang="en">
       <head>
         {title && <title>{title}</title>}
         <meta charSet="utf-8" />
@@ -28,9 +27,7 @@ export function App({
       </head>
       <body className="h-full">
         <Inspect>
-          <SSRProvider>
-            <LoginModalProvider>{children}</LoginModalProvider>
-          </SSRProvider>
+          <LoginModalProvider>{children}</LoginModalProvider>
         </Inspect>
         <ScrollRestoration />
         <Scripts />
@@ -38,4 +35,4 @@ export function App({
       </body>
     </html>
   );
-}
+};

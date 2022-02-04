@@ -1,79 +1,26 @@
 import { PrismaClient, User as PrismaUser } from "@prisma/client";
-import chalk from "chalk";
 
-const logThreshold = 50;
+export const db = new PrismaClient();
 
-type Color = "red" | "green" | "blue" | "yellow" | "redBright";
+const bold = (string: string) => `\x1B[1m${string}\x1B[0m`;
 
-const generatePrismaClient = () => {
-  const client = new PrismaClient({
-    log: [
-      { level: "query", emit: "event" },
-      { level: "error", emit: "stdout" },
-      { level: "info", emit: "stdout" },
-      { level: "warn", emit: "stdout" },
-    ],
-  });
+db.$use(async (params, next) => {
+  const before = Date.now();
 
-  client.$on("query", (event) => {
-    if (event.duration < logThreshold) {
-      return;
-    }
+  const result = await next(params);
 
-    let color: Color = "red";
+  const after = Date.now();
 
-    if (event.duration < 100) {
-      color = "redBright";
-    }
+  const name = `${params.model}.${params.action}`;
 
-    if (event.duration < 80) {
-      color = "yellow";
-    }
+  // eslint-disable-next-line no-console
+  console.log(`Query ${bold(name)} took ${after - before}ms`);
 
-    if (event.duration < 50) {
-      color = "blue";
-    }
-
-    if (event.duration < 30) {
-      color = "green";
-    }
-
-    const duration = chalk[color](`${event.duration}ms`);
-
-    // eslint-disable-next-line no-console
-    console.log(`prisma:query - ${duration} - ${event.query}`);
-  });
-
-  // eslint-disable-next-line no-void
-  void client.$connect();
-
-  return client;
-};
-
-const prismaClientPropertyName = `__prevent-name-collision__prisma`;
-
-type GlobalThisWithPrismaClient = typeof globalThis & {
-  [prismaClientPropertyName]: PrismaClient;
-};
-
-const getPrismaClient = () => {
-  if (process.env.NODE_ENV === "production") {
-    return generatePrismaClient();
-  }
-
-  const newGlobalThis = globalThis as GlobalThisWithPrismaClient;
-
-  if (!newGlobalThis[prismaClientPropertyName]) {
-    newGlobalThis[prismaClientPropertyName] = generatePrismaClient();
-  }
-
-  return newGlobalThis[prismaClientPropertyName];
-};
+  return result;
+});
 
 export * from "@prisma/client";
 
 export type User = Pick<PrismaUser, "id" | "name" | "email" | "role">;
 
 export type UnsafeUser = PrismaUser;
-
-export const db = getPrismaClient();

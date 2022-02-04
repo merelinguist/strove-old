@@ -39,14 +39,3 @@ Some other sentence???·`,
 };
 
 seed();
-
-type Merge<T, U> = Omit<T, keyof U> & U;
-
-type PropsWithAs<P, T extends React.ElementType> = P & { as?: T };
-
-export type Props<P, T extends React.ElementType> = Merge<
-  T extends keyof JSX.IntrinsicElements
-    ? React.PropsWithoutRef<JSX.IntrinsicElements[T]>
-    : React.ComponentPropsWithoutRef<T>,
-  PropsWithAs<P, T>
->;

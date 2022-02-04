@@ -7,7 +7,6 @@
     "plugin:eslint-comments/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-etc/recommended",
-    "plugin:tailwindcss/recommended",
     "prettier",
     "prettier/prettier"
   ],
@@ -40,22 +39,11 @@
     "react/require-default-props": "off",
 
     "@typescript-eslint/no-throw-literal": "off",
-    "id-length": [
-      2,
-      { "properties": "never", "exceptions": ["_", "__", "___"] }
-    ],
+    "eslint-comments/disable-enable-pair": "off",
     "import/extensions": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "react/function-component-definition": [
-      "error",
-      {
-        "namedComponents": "arrow-function",
-        "unnamedComponents": "arrow-function"
-      }
-    ],
     "react/jsx-sort-props": "error",
-    // https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/102
-    "tailwindcss/no-custom-classname": "off"
+    "react/no-danger": "off"
   },
 
   "overrides": [

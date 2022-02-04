@@ -5,13 +5,6 @@
     "paths": { "~/*": ["*"], "*": [""] },
     "importsNotUsedAsValues": "error"
   },
-  "include": [
-    "*.config.js",
-    "api/index.js",
-    "remix-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "app/routes/.theme.tsx"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  "exclude": ["node_modules/"]
 }

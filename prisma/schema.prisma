@@ -22,7 +22,6 @@ model User {
   role           Role     @default(USER)
 
   notes Note[]
-  votes Vote[]
 }
 
 model Text {
@@ -39,30 +38,12 @@ model Note {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  start Int
+  start     Int
   end       Int
   body      String
 
- user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   userId String
   text   Text   @relation(fields: [textId], references: [id])
   textId String
-  votes Vote[]
-}
-
-enum Direction {
-  UP
-  DOWN
-}
-
-model Vote {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  direction Direction
-
-  note   Note   @relation(fields: [noteId], references: [id])
-  noteId String
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
 }

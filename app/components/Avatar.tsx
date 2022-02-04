@@ -40,7 +40,7 @@ const { Provider: AvatarProvider, useContainer: useAvatar } = createContainer(
   },
 );
 
-export function Avatar({
+export const Avatar = ({
   size = "default",
   src,
   children,
@@ -48,7 +48,7 @@ export function Avatar({
   size?: keyof typeof avatarSizeMaps;
   src?: string;
   children?: ReactNode;
-}) {
+}) => {
   const getAvatar = () => {
     if (src) {
       return (
@@ -85,9 +85,9 @@ export function Avatar({
   };
 
   return <AvatarProvider initialState={{ size }}>{getAvatar()}</AvatarProvider>;
-}
+};
 
-function Status({ status }: { status: keyof typeof statusStatusMaps }) {
+const Status = ({ status }: { status: keyof typeof statusStatusMaps }) => {
   const { state } = useAvatar();
 
   return (
@@ -99,6 +99,6 @@ function Status({ status }: { status: keyof typeof statusStatusMaps }) {
       )}
     />
   );
-}
+};
 
 Avatar.Status = Status;
