@@ -1,63 +1,41 @@
-import { useEffect } from "react";
-import { LinksFunction, MetaFunction, Outlet } from "remix";
-import { getCLS, getFCP, getFID, getLCP, getTTFB, Metric } from "web-vitals";
+import type { LinksFunction, MetaFunction } from "remix";
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from "remix";
 
-import { App } from "~/components/App";
 import styles from "~/styles.css";
-import { seo } from "~/utils/seo";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
+  ];
 };
 
 export const meta: MetaFunction = () => {
-  return {
-    ...seo({}),
-  };
+  return { title: "New Remix App" };
 };
 
-type Options = {
-  debug?: boolean;
-};
-
-const sendToAnalytics = (
-  metric: Metric,
-  options: Options = { debug: false },
-) => {
-  const body = {
-    id: metric.id,
-    href: location.href, // eslint-disable-line no-restricted-globals
-    event_name: metric.name,
-    value: metric.value.toString(),
-    speed:
-      "connection" in navigator &&
-      navigator.connection &&
-      "effectiveType" in navigator.connection
-        ? navigator.connection.effectiveType
-        : "",
-  };
-
-  console.log(body);
-};
-
-const options: Options = {};
-
-const Root = () => {
-  useEffect(() => {
-    try {
-      getFID((metric) => sendToAnalytics(metric, options));
-      getTTFB((metric) => sendToAnalytics(metric, options));
-      getLCP((metric) => sendToAnalytics(metric, options));
-      getCLS((metric) => sendToAnalytics(metric, options));
-      getFCP((metric) => sendToAnalytics(metric, options));
-    } catch (error) {}
-  }, []);
-
+export default function App() {
   return (
-    <App>
-      <Outlet />
-    </App>
+    <html className="antialiased text-gray-900" lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
   );
-};
-
-export default Root;
+}

@@ -2,8 +2,8 @@
   "recommendations": [
     "bradlc.vscode-tailwindcss",
     "csstools.postcss",
-    "dbaeumer.vscode-eslint",
     "EditorConfig.EditorConfig",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "prisma.prisma"
   ]
 }

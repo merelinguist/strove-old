@@ -3,39 +3,24 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const seed = async () => {
-  await prisma.note.deleteMany();
-  await prisma.text.deleteMany();
-  await prisma.user.deleteMany();
+  await prisma.answer.deleteMany();
+  await prisma.card.deleteMany();
+  await prisma.deck.deleteMany();
+  // await prisma.user.deleteMany()
 
-  const me = await prisma.user.create({
-    data: {
-      name: "Me Here",
-      email: "me@here.com",
-      hashedPassword:
-        "$2a$10$bZ6jmws4iINdyl6m7rDZ3OxdO6fTje8/y9fF5NRaOsvonHLkkrWem",
-    },
-  });
+  // const deck = await prisma.deck.create({ data: { name: "Basics" } });
 
-  const text = await prisma.text.create({
-    data: {
-      name: "Medea",
-      body: `Jack and Jill went up the hill.
+  // for (let index = 0; index < 100; index++) {
+  //   const first = Math.floor(Math.random() * 10 + 1);
+  //   const second = Math.floor(Math.random() * 10 + 1);
 
-To fetch a pail of water.
+  //   const front = `${first} + ${second}`;
+  //   const back = `${first + second}`;
 
-Some other sentence???·`,
-      notes: {
-        createMany: {
-          data: [
-            { start: 0, end: 5, body: "inchresting", userId: me.id },
-            { start: 3, end: 10, body: "inchresting", userId: me.id },
-            { start: 20, end: 30, body: "inchresting", userId: me.id },
-            { start: 100, end: 200, body: "inchresting", userId: me.id },
-          ],
-        },
-      },
-    },
-  });
+  //   await prisma.card.create({
+  //     data: { front, back, deck: { connect: { id: deck.id } } },
+  //   });
+  // }
 };
 
 seed();
