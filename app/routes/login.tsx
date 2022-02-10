@@ -1,7 +1,7 @@
 import type { ActionFunction, MetaFunction } from "remix";
-import { Form, Link } from "remix";
+import { Form, Link, redirect } from "remix";
 
-import { createUser, login } from "~/models/user.server";
+import { login, verifyLogin } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
 const action: ActionFunction = async ({ request }) => {
@@ -10,21 +10,25 @@ const action: ActionFunction = async ({ request }) => {
     "password",
   ] as const);
 
-  const user = await createUser(email, password);
+  const user = await verifyLogin(email, password);
+
+  if (!user) {
+    throw redirect("/login");
+  }
 
   return login(request, user.id);
 };
 
 const meta: MetaFunction = () => ({
-  title: "Join",
+  title: "Login",
 });
 
-function JoinPage() {
+function LoginPage() {
   return (
     <div className="prose mx-auto p-8">
-      <h1>Join</h1>
+      <h1>Sign in to your account</h1>
 
-      <Form method="post" className="space-y-6">
+      <Form replace method="post" className="space-y-6">
         <label className="block">
           <span>Email address</span>
           <input
@@ -49,7 +53,7 @@ function JoinPage() {
       </Form>
 
       <p>
-        <Link to="/login">Already have an account?</Link>
+        <Link to="/join">Don’t have an account?</Link>
       </p>
     </div>
   );
@@ -57,4 +61,4 @@ function JoinPage() {
 
 export { action, meta };
 
-export default JoinPage;
+export default LoginPage;
