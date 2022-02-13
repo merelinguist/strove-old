@@ -9,22 +9,17 @@ type FormData<Fields extends TFields> = {
 export const getFormData = async <Fields extends TFields>(
   request: Request,
   fields: Fields,
-): Promise<FormData<Fields>> => {
+) => {
   const formData = await request.formData();
 
-  const result: FormData<Fields> = fields.reduce(
-    (previousField, currentField) => {
-      const value = formData.get(currentField);
+  return fields.reduce((entries, field) => {
+    const value = formData.get(field);
 
-      invariant(typeof value === "string", `${currentField} must be a string`);
+    invariant(typeof value === "string", `${field} must be a string`);
 
-      return {
-        ...previousField,
-        [currentField]: value,
-      };
-    },
-    {} as FormData<Fields>,
-  );
-
-  return result;
+    return {
+      ...entries,
+      [field]: value,
+    };
+  }, {} as FormData<Fields>);
 };

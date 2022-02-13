@@ -1,4 +1,4 @@
-import type { ActionFunction, MetaFunction } from "remix";
+import type { ActionFunction, HeadersFunction, MetaFunction } from "remix";
 import { Form, Link } from "remix";
 
 import { createUser, login } from "~/models/user.server";
@@ -13,6 +13,14 @@ const action: ActionFunction = async ({ request }) => {
   const user = await createUser(email, password);
 
   return login(request, user.id);
+};
+
+export let headers: HeadersFunction = () => {
+  return {
+    "Cache-Control": `public, max-age=${60 * 10}, s-maxage=${
+      60 * 60 * 24 * 30
+    }`,
+  };
 };
 
 const meta: MetaFunction = () => ({

@@ -10,20 +10,20 @@ import {
 
 import styles from "~/styles.css";
 
-export const links: LinksFunction = () => {
+const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
   ];
 };
 
-export const meta: MetaFunction = () => {
+const meta: MetaFunction = () => {
   return { title: "New Remix App" };
 };
 
-export default function App() {
+function App() {
   return (
-    <html className="antialiased text-gray-900" lang="en">
+    <html className="text-gray-900 antialiased" lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -39,3 +39,7 @@ export default function App() {
     </html>
   );
 }
+
+export { links, meta };
+
+export default App;

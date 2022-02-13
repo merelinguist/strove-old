@@ -62,7 +62,7 @@
       }
     },
     {
-      "files": ["./app/routes/**"],
+      "files": ["./app/routes/**", "entry.server.tsx", "./app/root.tsx"],
       "rules": {
         "import/no-default-export": "off",
         "import/prefer-default-export": "error"

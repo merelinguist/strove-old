@@ -1,7 +1,6 @@
 import type { Deck, User } from "@prisma/client";
-import type { ActionFunction, LoaderFunction } from "remix";
+import type { ActionFunction, HeadersFunction, LoaderFunction } from "remix";
 import { Form, json, redirect, useLoaderData, useLocation } from "remix";
-import invariant from "tiny-invariant";
 
 import { prisma } from "~/db.server";
 import { createDeck } from "~/models/deck.server";
@@ -17,6 +16,7 @@ const action: ActionFunction = async ({ request }) => {
 
   return redirect("/");
 };
+
 
 type LoaderData = {
   user: User;
@@ -35,11 +35,15 @@ function IndexPage() {
   const location = useLocation();
   const data = useLoaderData<LoaderData>();
 
+  console.log(data.decks[0]);
+
   return (
     <div className="prose mx-auto p-8">
       <h1>Welcome to Remix</h1>
 
-      <p>You are {data.user.email}.</p>
+      <p>
+        You are <strong>{data.user.email}</strong>.
+      </p>
 
       <Form method="post" reloadDocument action="/actions/logout">
         <button type="submit">Logout</button>
@@ -92,6 +96,6 @@ function IndexPage() {
   );
 }
 
-export default IndexPage;
-
 export { action, loader };
+
+export default IndexPage;
