@@ -2,49 +2,117 @@ import type { Answer, Card, Deck } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-const now = new Date();
+export type DeckWithAnswers = Deck & {
+  cards: (Card & {
+    answers: Answer[];
+  })[];
+};
 
-function getDailyQuiz(deck: Deck & { cards: (Card & { answers: Answer })[] }) {
-  const answersToday = deck.cards
-    .map((card) => card.answers)
-    .flat()
-    .filter(
-      (answer) =>
-        new Date(answer.createdAt).toDateString() === now.toDateString(),
-    )
-    .sort(
-      (answerA, answerB) =>
-        new Date(answerA.createdAt).getTime() -
-        new Date(answerB.createdAt).getTime(),
-    );
+export type Quiz = (Card & { answers: Answer[] })[];
 
-  // // 1. A user has lots of cards and has done their daily session (and possibly some extra work)
-  // // 2. A user has fewer than 20 cards but has done their daily session (and possibly some extra work)
-  // if (
-  //   cardsToday.length >= 20 ||
-  //   (deck.cards.length <= 20 && deck.cards.length === cardsToday.length)
-  // ) {
-  //   return null;
-  // }
+export async function createDeck(name: string, userId: string) {
+  const create: { front: string; back: string }[] = [];
 
-  // return cardsToday;
+  for (let index = 0; index < 40; index += 1) {
+    const first = Math.floor(Math.random() * 5 + 1);
+    const second = Math.floor(Math.random() * 5 + 1);
 
-  console.log(answersToday);
-}
+    const front = `${first} + ${second}`;
+    const back = `${first + second}`;
 
-function createDeck(name: string, userId: string) {
+    create.push({ front, back });
+  }
+
   return prisma.deck.create({
     data: {
       name,
       userId,
+      cards: { create },
     },
   });
 }
 
-function deleteDeck(id: string) {
+export function deleteDeck(id: string) {
   return prisma.deck.delete({
     where: { id },
   });
 }
 
-export { createDeck, deleteDeck, getDailyQuiz };
+const now = new Date();
+
+function score(answers: Answer[]) {
+  if (answers.length === 0) {
+    return -1;
+  }
+
+  const weight = 1000 * 60 * 60 * 24; // 24 hours
+
+  const weightedSum = answers
+    .map(
+      (answer) =>
+        answer.correctness *
+        Math.exp(
+          (new Date(answer.createdAt).getTime() - now.getTime()) / weight,
+        ),
+    )
+    .reduce((sum, x) => sum + x);
+
+  return weightedSum / answers.length;
+}
+
+export function getDailyQuiz(deck: DeckWithAnswers) {
+  const yesterdaysDeck: DeckWithAnswers = {
+    ...deck,
+    cards: deck.cards.map((card) => ({
+      ...card,
+      answers: card.answers.filter(
+        (answer) =>
+          new Date(answer.createdAt).toDateString() !== now.toDateString(),
+      ),
+    })),
+  };
+
+  const quiz = yesterdaysDeck.cards
+    .sort((cardA, cardB) => score(cardA.answers) - score(cardB.answers))
+    .slice(0, 20);
+
+  const cardIdsToday = deck.cards
+    .filter(
+      (card) =>
+        card.answers.filter(
+          (answer) =>
+            new Date(answer.createdAt).toDateString() === now.toDateString(),
+        ).length > 0,
+    )
+    .map((card) => card.id);
+
+  return quiz.filter((card) => !cardIdsToday.includes(card.id));
+}
+
+export function getDeck(id: string) {
+  return prisma.deck.findUnique({
+    where: { id },
+  });
+}
+
+export function getDeckWithAnswers(id: string) {
+  return prisma.deck.findUnique({
+    where: { id },
+    include: {
+      cards: {
+        include: { answers: true },
+      },
+    },
+  });
+}
+
+export function getDecksWithAnswers(userId: string) {
+  return prisma.deck.findMany({
+    where: { userId },
+    include: {
+      cards: {
+        include: { answers: true },
+      },
+    },
+  });
+}

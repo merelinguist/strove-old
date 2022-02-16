@@ -4,7 +4,7 @@ import { redirect } from "remix";
 import { prisma } from "~/db.server";
 import { getSession, setSession } from "~/session.server";
 
-async function createUser(email: string, password: string) {
+export async function createUser(email: string, password: string) {
   const hashedPassword = await bcrypt.hash(password);
 
   try {
@@ -19,7 +19,7 @@ async function createUser(email: string, password: string) {
   }
 }
 
-async function getUser(request: Request) {
+export async function getUser(request: Request) {
   const { userId } = await getSession(request);
 
   if (!userId) {
@@ -35,11 +35,11 @@ async function getUser(request: Request) {
   return user;
 }
 
-async function login(request: Request, userId: string) {
+export async function login(request: Request, userId: string) {
   return setSession(request, "/", { userId });
 }
 
-async function verifyLogin(email: string, password: string) {
+export async function verifyLogin(email: string, password: string) {
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -56,5 +56,3 @@ async function verifyLogin(email: string, password: string) {
 
   return user;
 }
-
-export { createUser, getUser, login, verifyLogin };

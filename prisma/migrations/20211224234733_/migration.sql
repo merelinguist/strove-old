@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Card" ALTER COLUMN "dueDate" DROP DEFAULT;

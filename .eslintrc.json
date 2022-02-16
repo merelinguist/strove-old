@@ -5,6 +5,9 @@
     "airbnb",
     "airbnb-typescript",
     "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-etc/recommended",
     "prettier",
     "prettier/prettier"
   ],
@@ -38,8 +41,7 @@
 
     // Custom
     "@typescript-eslint/no-throw-literal": "off",
-    "jsx-a11y/label-has-associated-control": "off",
-    "react/react-in-jsx-scope": "off"
+    "jsx-a11y/label-has-associated-control": "off"
   },
 
   "overrides": [

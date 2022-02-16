@@ -15,7 +15,7 @@ const action: ActionFunction = async ({ request }) => {
   return login(request, user.id);
 };
 
-export let headers: HeadersFunction = () => {
+export const headers: HeadersFunction = () => {
   return {
     "Cache-Control": `public, max-age=${60 * 10}, s-maxage=${
       60 * 60 * 24 * 30

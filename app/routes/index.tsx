@@ -1,13 +1,27 @@
-import type { Deck, User } from "@prisma/client";
-import type { ActionFunction, HeadersFunction, LoaderFunction } from "remix";
-import { Form, json, redirect, useLoaderData, useLocation } from "remix";
+import type { User } from "@prisma/client";
+import {
+  ActionFunction,
+  Form,
+  json,
+  Link,
+  LoaderFunction,
+  redirect,
+  useLoaderData,
+  useLocation,
+} from "remix";
 
-import { prisma } from "~/db.server";
-import { createDeck } from "~/models/deck.server";
+import {
+  createDeck,
+  DeckWithAnswers,
+  getDailyQuiz,
+  // getDailyQuiz,
+  getDecksWithAnswers,
+  Quiz,
+} from "~/models/deck.server";
 import { getUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
-const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request }) => {
   const { name } = await getFormData(request, ["name"] as const);
 
   const user = await getUser(request);
@@ -17,25 +31,25 @@ const action: ActionFunction = async ({ request }) => {
   return redirect("/");
 };
 
-
 type LoaderData = {
   user: User;
-  decks: Deck[];
+  decks: DeckWithAnswers[];
+  quizzes: Quiz[];
 };
 
-const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
-  const decks = await prisma.deck.findMany({ where: { userId: user.id } });
+  const decks = await getDecksWithAnswers(user.id);
 
-  return json<LoaderData>({ user, decks });
+  const quizzes = decks.map((deck) => getDailyQuiz(deck));
+
+  return json<LoaderData>({ user, decks, quizzes });
 };
 
-function IndexPage() {
+export default function IndexPage() {
   const location = useLocation();
   const data = useLoaderData<LoaderData>();
-
-  console.log(data.decks[0]);
 
   return (
     <div className="prose mx-auto p-8">
@@ -73,21 +87,20 @@ function IndexPage() {
         <p>No decks yet </p>
       ) : (
         <ul>
-          {data.decks.map((note) => (
-            <li key={note.id}>
-              <h3>{note.name}</h3>
+          {data.decks.map((deck, index) => (
+            <li key={deck.id}>
+              <Link to={`/decks/${deck.id}`}>
+                <h3>{deck.name}</h3>
+              </Link>
               <p>
                 Created{" "}
-                {new Date(note.createdAt).toLocaleDateString("en", {
+                {new Date(deck.createdAt).toLocaleDateString("en", {
                   weekday: "long",
                   month: "long",
                   day: "numeric",
                 })}
               </p>
-              <p>
-                Pariatur aliqua do tempor eiusmod. Nulla exercitation minim do
-                proident mollit. Dolore exercitation minim ut reprehenderit ad.
-              </p>
+              <p>{data.quizzes[index].length} to learn</p>
             </li>
           ))}
         </ul>
@@ -95,7 +108,3 @@ function IndexPage() {
     </div>
   );
 }
-
-export { action, loader };
-
-export default IndexPage;

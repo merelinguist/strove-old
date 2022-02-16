@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Deck" ALTER COLUMN "name" DROP NOT NULL;

@@ -4,7 +4,7 @@ import { Form, Link, redirect } from "remix";
 import { login, verifyLogin } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
-const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request }) => {
   const { email, password } = await getFormData(request, [
     "email",
     "password",
@@ -19,7 +19,7 @@ const action: ActionFunction = async ({ request }) => {
   return login(request, user.id);
 };
 
-export let headers: HeadersFunction = () => {
+export const headers: HeadersFunction = () => {
   return {
     "Cache-Control": `public, max-age=${60 * 10}, s-maxage=${
       60 * 60 * 24 * 30
@@ -27,12 +27,11 @@ export let headers: HeadersFunction = () => {
   };
 };
 
-
-const meta: MetaFunction = () => ({
+export const meta: MetaFunction = () => ({
   title: "Login",
 });
 
-function LoginPage() {
+export default function LoginPage() {
   return (
     <div className="prose mx-auto p-8">
       <h1>Sign in to your account</h1>
@@ -42,8 +41,7 @@ function LoginPage() {
           <span>Email address</span>
           <input
             className="block w-full"
-                        name="email"
-
+            name="email"
             type="email"
             autoComplete="email"
           />
@@ -68,7 +66,3 @@ function LoginPage() {
     </div>
   );
 }
-
-export { action, meta };
-
-export default LoginPage;

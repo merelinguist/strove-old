@@ -1,20 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
+type GlobalThisWithPrismaClient = typeof globalThis & {
+  ["prisma"]: PrismaClient;
+};
 
-declare global {
-  var __db__: PrismaClient;
-}
-
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.__db__) {
-    global.__db__ = new PrismaClient();
+const getPrismaClient = () => {
+  if (process.env.NODE_ENV === `production`) {
+    return new PrismaClient();
   }
 
-  prisma = global.__db__;
-  prisma.$connect();
-}
+  const newGlobalThis = globalThis as GlobalThisWithPrismaClient;
 
-export { prisma };
+  if (!newGlobalThis.prisma) {
+    newGlobalThis.prisma = new PrismaClient();
+  }
+
+  return newGlobalThis.prisma;
+};
+
+export const prisma = getPrismaClient();

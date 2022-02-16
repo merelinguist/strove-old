@@ -10,18 +10,18 @@ import {
 
 import styles from "~/styles.css";
 
-const links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
   ];
 };
 
-const meta: MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return { title: "New Remix App" };
 };
 
-function App() {
+export default function App() {
   return (
     <html className="text-gray-900 antialiased" lang="en">
       <head>
@@ -40,6 +40,4 @@ function App() {
   );
 }
 
-export { links, meta };
-
-export default App;
+export { ErrorBoundary } from "remix-crash";

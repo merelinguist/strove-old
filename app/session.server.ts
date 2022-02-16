@@ -17,7 +17,7 @@ const sessionStorage = createCookieSessionStorage({
 
 const USER_SESSION_KEY = "userId";
 
-async function destroySession(request: Request, redirectTo: string) {
+export async function destroySession(request: Request, redirectTo: string) {
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie"),
   );
@@ -29,7 +29,7 @@ async function destroySession(request: Request, redirectTo: string) {
   });
 }
 
-async function getSession(request: Request) {
+export async function getSession(request: Request) {
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie"),
   );
@@ -40,7 +40,7 @@ async function getSession(request: Request) {
   return { userId };
 }
 
-async function setSession(
+export async function setSession(
   request: Request,
   redirectTo: string,
   { userId }: { userId?: string },
@@ -59,5 +59,3 @@ async function setSession(
     },
   });
 }
-
-export { destroySession, getSession, setSession };
