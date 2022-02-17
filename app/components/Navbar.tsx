@@ -59,7 +59,7 @@ function Links() {
 function Search() {
   return (
     <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
-      <div className="w-full max-w-lg lg:max-w-xs">
+      <Form method="get" className="w-full max-w-lg lg:max-w-xs">
         <label htmlFor="search" className="sr-only">
           Search
         </label>
@@ -75,7 +75,7 @@ function Search() {
             type="search"
           />
         </div>
-      </div>
+      </Form>
     </div>
   );
 }
@@ -99,7 +99,7 @@ function NotificationButton() {
   return (
     <button
       type="button"
-      className="flex flex-shrink-0 rounded-full bg-white p-1 text-red-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="flex flex-shrink-0 rounded-full bg-white p-1 text-orange-400 hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       <span className="sr-only">View notifications</span>
       <span>8</span>

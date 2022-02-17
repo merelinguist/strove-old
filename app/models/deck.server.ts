@@ -108,7 +108,9 @@ export function getDeckWithAnswers(id: string) {
 
 export function getDecksWithAnswers(userId: string) {
   return prisma.deck.findMany({
-    where: { userId },
+    where: {
+      userId,
+    },
     include: {
       cards: {
         include: { answers: true },

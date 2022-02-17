@@ -10,6 +10,7 @@ import {
   useLocation,
   useTransition,
 } from "remix";
+import { matchSorter } from "match-sorter";
 
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
@@ -36,6 +37,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 type LoaderData = {
   user: User;
+  status: "decksFound" | "noDecks" | "emptySearch";
+  searchTerm: string;
   decks: DeckWithAnswers[];
   quizzes: Quiz[];
 };
@@ -43,11 +46,40 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("search");
+
   const decks = await getDecksWithAnswers(user.id);
 
-  const quizzes = decks.map((deck) => getDailyQuiz(deck));
+  if (!searchTerm) {
+    return json<LoaderData>({
+      user,
+      status: "emptySearch",
+      searchTerm: searchTerm || "",
+      decks,
+      quizzes: decks.map((deck) => getDailyQuiz(deck)),
+    });
+  }
 
-  return json<LoaderData>({ user, decks, quizzes });
+  const results = matchSorter(decks, searchTerm, { keys: ["name"] });
+
+  if (!results.length) {
+    return json<LoaderData>({
+      user,
+      status: "noDecks",
+      searchTerm,
+      decks: [],
+      quizzes: [],
+    });
+  }
+
+  return json<LoaderData>({
+    user,
+    status: "decksFound",
+    searchTerm,
+    decks: results,
+    quizzes: results.map((deck) => getDailyQuiz(deck)),
+  });
 };
 
 export default function IndexPage() {
@@ -68,9 +100,7 @@ export default function IndexPage() {
           <ul className="mt-10 grid gap-y-10 gap-x-6 sm:grid-cols-2 xl:grid-cols-3">
             {data.decks.map((deck, index) => (
               <li key={deck.id}>
-                <h3 className="font-semibold">
-                  Completely unstyled, fully accessible UI components
-                </h3>
+                <h3 className="font-semibold">{deck.name}</h3>
                 <div className="prose prose-sm mt-1 text-gray-600">
                   <p>
                     Completely unstyled, fully accessible UI components,

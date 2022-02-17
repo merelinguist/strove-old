@@ -10,7 +10,7 @@
         ""
       ]
     },
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
   },
   "include": [
     "**/*.ts",

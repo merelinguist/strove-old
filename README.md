@@ -3,7 +3,6 @@
 This is a [Remix](https://remix.run/) project built upon:
 
 - [Tailwind CSS](https://tailwindcss.com/)
-  - [clsx](https://github.com/lukeed/clsx) for style composition
 - [TypeScript](https://www.typescriptlang.org/) for refactoring with confidence
 - [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript), enforced through [ESLint](https://eslint.org/)
 - [Prettier](https://prettier.io/) for consistency and clean diffs
