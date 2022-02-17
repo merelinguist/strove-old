@@ -39,6 +39,7 @@ function JoinPage() {
             className="block w-full"
             name="email"
             type="email"
+            required
             autoComplete="email"
           />
         </label>
@@ -48,6 +49,7 @@ function JoinPage() {
           <input
             className="block w-full"
             name="password"
+            required
             type="password"
             autoComplete="current-password"
           />

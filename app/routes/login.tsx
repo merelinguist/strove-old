@@ -45,6 +45,7 @@ export default function LoginPage() {
               className="block w-full"
               name="email"
               type="email"
+              required
               autoComplete="email"
             />
           </label>
@@ -52,6 +53,7 @@ export default function LoginPage() {
           <label className="block">
             <span>Password</span>
             <input
+              required
               className="block w-full"
               name="password"
               type="password"

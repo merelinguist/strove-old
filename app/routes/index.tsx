@@ -97,38 +97,19 @@ export default function IndexPage() {
         {data.decks.length === 0 ? (
           <p>No decks yet </p>
         ) : (
-          <ul className="mt-10 grid gap-y-10 gap-x-6 sm:grid-cols-2 xl:grid-cols-3">
+          <ul className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {data.decks.map((deck, index) => (
-              <li key={deck.id}>
-                <h3 className="font-semibold">{deck.name}</h3>
+              <li key={deck.id} className="relative rounded-md border p-4">
+                <Link to={`/decks/${deck.id}`}>
+                  <span className="absolute inset-0" aria-hidden />
+                  <h3 className="font-semibold">{deck.name}</h3>
+                </Link>
                 <div className="prose prose-sm mt-1 text-gray-600">
                   <p>
                     Completely unstyled, fully accessible UI components,
                     designed to integrate beautifully with Tailwind CSS.
                   </p>
                 </div>
-                <Link
-                  className="group mt-6 inline-flex h-9 items-center whitespace-nowrap rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                  to={`/decks/${deck.id}`}
-                >
-                  Learn more
-                  <span className="sr-only">
-                    , Completely unstyled, fully accessible UI components
-                  </span>
-                  <svg
-                    className="ml-3 overflow-visible text-slate-300 group-hover:text-slate-400"
-                    width={3}
-                    height={6}
-                    viewBox="0 0 3 6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M0 0L3 3L0 6" />
-                  </svg>
-                </Link>
               </li>
             ))}
           </ul>
