@@ -212,7 +212,7 @@ function MobilePanel() {
           Calendar
         </Disclosure.Button>
       </div>
-      <div className="border-t border-gray-200 pt-4 pb-3">
+      <div className="border-t pt-4 pb-3">
         <div className="flex items-center px-4">
           <div className="flex-shrink-0">
             <img

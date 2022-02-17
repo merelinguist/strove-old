@@ -40,7 +40,7 @@ export function deleteDeck(id: string) {
 
 const now = new Date();
 
-function score(answers: Answer[]) {
+export function score(answers: Answer[]) {
   if (answers.length === 0) {
     return -1;
   }

@@ -12,6 +12,8 @@ import {
   useParams,
 } from "remix";
 import invariant from "tiny-invariant";
+import { Header } from "~/components/Header";
+import { Main } from "~/components/Main";
 
 import { prisma } from "~/db.server";
 import {
@@ -20,6 +22,7 @@ import {
   getDeck,
   getDeckWithAnswers,
   Quiz,
+  score,
 } from "~/models/deck.server";
 import { getUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
@@ -61,6 +64,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 
 type LoaderData = {
   deck: DeckWithAnswers;
+  scores: number[];
   isOwner: boolean;
   quiz: Quiz;
 };
@@ -78,9 +82,12 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     });
   }
 
+  const scores = deck.cards.map((card) => score(card.answers));
+
   return json<LoaderData>(
     {
       deck,
+      scores,
       isOwner: user.id === deck.userId,
       quiz: getDailyQuiz(deck),
     },
@@ -115,38 +122,78 @@ export default function ShowDeckPage() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <div className="prose mx-auto p-8">
-      <h1>{data.deck.name}</h1>
+    <>
+      <Header title={data.deck.name} />
 
-      <h2>Actions</h2>
-      <ul>
-        <li>
-          {data.isOwner ? (
-            <Form method="post">
-              <input type="hidden" name="_method" value="delete" />
-              <button type="submit" className="button">
-                Delete
-              </button>
-            </Form>
-          ) : null}
-        </li>
-        <li>
-          <Link to="quiz">Quiz</Link>
-        </li>
-      </ul>
-
-      <h2>Daily Quiz</h2>
-      <p>Learn today: {data.quiz.length}</p>
-
-      <h2>Cards</h2>
-      <ul className="columns-4">
-        {data.deck.cards.map((card) => (
-          <li>
-            {card.front} = {card.back}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <Main>
+        <h2 className="mb-2 text-2xl font-bold leading-7 tracking-tight">
+          Cards
+        </h2>
+        <div className="mt-10 flex flex-col">
+          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <div className="overflow-hidden rounded-lg border border-b">
+                <table className="min-w-full divide-y">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                      >
+                        Front
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                      >
+                        Back
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                      >
+                        Knowledge
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <span className="sr-only">Edit</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.deck.cards.map((card, index) => (
+                      <tr
+                        key={card.id}
+                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                      >
+                        <td className="whitespace-nowrap px-6 py-4 font-medium">
+                          {card.front}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {card.back}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {Math.round(data.scores[index] * 100) === -100
+                            ? 0
+                            : Math.round(data.scores[index] * 100)}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                          <a
+                            href="#"
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            Edit
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Main>
+    </>
   );
 }
 
