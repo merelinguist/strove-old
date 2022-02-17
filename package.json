@@ -37,7 +37,6 @@
     "react-confetti": "^6.0.1",
     "react-dom": "^17.0.2",
     "remix": "^1.2.1",
-    "remix-crash": "^0.1.2",
     "tailwindcss": "^3.0.23",
     "tiny-invariant": "^1.2.0",
     "web-api-hooks": "^3.0.2"

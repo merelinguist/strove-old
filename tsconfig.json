@@ -19,7 +19,6 @@
     "**/*.jsx"
   ],
   "exclude": [
-    "api",
     "node_modules/"
   ]
 }
