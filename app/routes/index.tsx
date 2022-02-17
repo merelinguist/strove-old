@@ -8,6 +8,7 @@ import {
   redirect,
   useLoaderData,
   useLocation,
+  useTransition,
 } from "remix";
 
 import {
@@ -50,6 +51,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function IndexPage() {
   const location = useLocation();
   const data = useLoaderData<LoaderData>();
+  const transition = useTransition();
 
   return (
     <div className="prose mx-auto p-8">
@@ -77,6 +79,7 @@ export default function IndexPage() {
             name="name"
           />
         </label>
+        {transition.state === "submitting" && <p>Submitting...</p>}
       </Form>
 
       <hr />

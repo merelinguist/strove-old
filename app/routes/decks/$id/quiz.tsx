@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   ActionFunction,
   Form,
@@ -5,6 +6,7 @@ import {
   LoaderFunction,
   useLoaderData,
   useLocation,
+  useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
 
@@ -53,10 +55,32 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function QuizPage() {
-  const location = useLocation();
+  const transition = useTransition();
   const data = useLoaderData<LoaderData>();
 
+  const state: "idle" | "success" | "error" | "submitting" =
+    transition.submission ? "submitting" : "idle";
+
   const card = data.quiz[0];
+  const inputRef = useRef<HTMLInputElement>(null);
+  const successRef = useRef<HTMLHeadingElement>(null);
+  const mounted = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (state === "error") {
+      inputRef.current?.focus();
+    }
+
+    if (state === "idle" && mounted.current) {
+      inputRef.current?.select();
+    }
+
+    if (state === "success") {
+      successRef.current?.focus();
+    }
+
+    mounted.current = true;
+  }, [state]);
 
   if (!card) {
     return (
@@ -67,20 +91,43 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="prose mx-auto p-8">
-      <h1>hewwo</h1>
-      <Form replace method="post" key={location.key} className="space-y-6">
+    <Form
+      replace
+      method="post"
+      className="mx-auto max-w-3xl space-y-16 px-4 pt-10 sm:px-6 lg:px-8"
+    >
+      <div aria-hidden className="overflow-hidden rounded-full bg-gray-200">
+        <div
+          className="h-2 rounded-full bg-blue-600"
+          style={{ width: `${((20 - data.quiz.length) / 20) * 100}%` }}
+        />
+      </div>
+
+      <div className="space-y-6">
         <input type="hidden" value={card.id} name="cardId" />
-        <label className="block">
-          <span>{card.front}</span>
-          <input
-            required
-            className="mt-1 block w-full"
-            type="text"
-            name="answer"
-          />
+        <label
+          htmlFor="name"
+          className="text-3xl font-extrabold tracking-tight sm:text-4xl"
+        >
+          {card.front}
         </label>
-      </Form>
-    </div>
+        <input
+          ref={inputRef}
+          placeholder="Your answer..."
+          id="name"
+          required
+          className="block w-full border-0 p-0 text-lg focus:outline-none focus:ring-0"
+          type="text"
+          name="answer"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        Check{state === "submitting" && "ing..."}
+      </button>
+    </Form>
   );
 }
