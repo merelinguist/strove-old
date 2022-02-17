@@ -2,9 +2,24 @@
   "extends": "@tsconfig/remix/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./app/",
-    "paths": { "~/*": ["*"], "*": [""] },
+    "paths": {
+      "~/*": [
+        "*"
+      ],
+      "*": [
+        ""
+      ]
+    },
     "importsNotUsedAsValues": "error"
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-  "exclude": ["node_modules/"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "api",
+    "node_modules/"
+  ]
 }

@@ -1,6 +1,11 @@
-.cache
 node_modules
-api/_build
-app/styles.css
-public/build
+
+.cache
+.vercel
+.output
+
+/build/
+/public/build
+/api/index.js
+
 .env

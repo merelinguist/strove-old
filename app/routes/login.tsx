@@ -1,6 +1,8 @@
 import type { ActionFunction, HeadersFunction, MetaFunction } from "remix";
 import { Form, Link, redirect } from "remix";
 
+import { Header } from "~/components/Header";
+import { Main } from "~/components/Main";
 import { login, verifyLogin } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
@@ -33,36 +35,37 @@ export const meta: MetaFunction = () => ({
 
 export default function LoginPage() {
   return (
-    <div className="prose mx-auto p-8">
-      <h1>Sign in to your account</h1>
+    <>
+      <Header title="Sign in to your account" />
+      <Main>
+        <Form replace method="post" className="space-y-6">
+          <label className="block">
+            <span>Email address</span>
+            <input
+              className="block w-full"
+              name="email"
+              type="email"
+              autoComplete="email"
+            />
+          </label>
 
-      <Form replace method="post" className="space-y-6">
-        <label className="block">
-          <span>Email address</span>
-          <input
-            className="block w-full"
-            name="email"
-            type="email"
-            autoComplete="email"
-          />
-        </label>
+          <label className="block">
+            <span>Password</span>
+            <input
+              className="block w-full"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+            />
+          </label>
 
-        <label className="block">
-          <span>Password</span>
-          <input
-            className="block w-full"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-          />
-        </label>
+          <button type="submit">Sign in</button>
+        </Form>
 
-        <button type="submit">Sign in</button>
-      </Form>
-
-      <p>
-        <Link to="/join">Don’t have an account?</Link>
-      </p>
-    </div>
+        <p>
+          <Link to="/join">Don’t have an account?</Link>
+        </p>
+      </Main>
+    </>
   );
 }

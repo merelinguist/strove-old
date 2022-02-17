@@ -1,3 +1,4 @@
+import Inspect from "inspx";
 import type { LinksFunction, MetaFunction } from "remix";
 import {
   Links,
@@ -8,6 +9,7 @@ import {
   ScrollRestoration,
 } from "remix";
 
+import { Navbar } from "~/components/Navbar";
 import styles from "~/styles.css";
 
 export const links: LinksFunction = () => {
@@ -30,8 +32,15 @@ export default function App() {
         <Meta />
         <Links />
       </head>
+
       <body>
-        <Outlet />
+        <Inspect disabled={process.env.NODE_ENV === "production"}>
+          <div className="space-y-10">
+            <Navbar />
+            <Outlet />
+          </div>
+        </Inspect>
+
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
