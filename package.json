@@ -4,7 +4,7 @@
   "scripts": {
     "build": "npm run build:prisma && npm run build:css && remix build",
     "build:css": "tailwindcss -o ./app/styles.css",
-    "build:prisma": "npm run prisma migrate deploy && npm run prisma db seed",
+    "build:prisma": "npm run prisma migrate deploy",
     "clean": "git clean --interactive -dx --exclude .env.local --exclude .env.*.local --exclude node_modules/ --exclude .husky/",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:remix\"",
     "dev:css": "tailwindcss -o ./app/styles.css --watch",
@@ -34,11 +34,13 @@
     "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/typography": "^0.5.2",
     "react": "^17.0.2",
+    "react-confetti": "^6.0.1",
     "react-dom": "^17.0.2",
     "remix": "^1.2.0",
     "remix-crash": "^0.1.2",
     "tailwindcss": "^3.0.23",
-    "tiny-invariant": "^1.2.0"
+    "tiny-invariant": "^1.2.0",
+    "web-api-hooks": "^3.0.2"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.2.0",

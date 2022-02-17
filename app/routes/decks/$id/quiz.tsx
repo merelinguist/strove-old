@@ -1,4 +1,6 @@
+import { Transition } from "@headlessui/react";
 import { useEffect, useRef } from "react";
+import Confetti from "react-confetti";
 import {
   ActionFunction,
   Form,
@@ -9,6 +11,7 @@ import {
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";
+import { useWindowSize } from "web-api-hooks";
 
 import { createAnswer } from "~/models/answer.server";
 import { getCard } from "~/models/card.server";
@@ -65,27 +68,42 @@ export default function QuizPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
   const mounted = useRef<boolean>(false);
+  const [width, height] = useWindowSize();
 
   useEffect(() => {
-    if (state === "error") {
-      inputRef.current?.focus();
-    }
+    // if (state === "error") {
+    //   inputRef.current?.focus();
+    // }
 
     if (state === "idle" && mounted.current) {
       inputRef.current?.select();
     }
 
-    if (state === "success") {
-      successRef.current?.focus();
-    }
+    // if (state === "success") {
+    //   successRef.current?.focus();
+    // }
 
     mounted.current = true;
   }, [state]);
 
   if (!card) {
     return (
-      <div className="prose mx-auto p-8">
-        <h1>Victory!</h1>
+      <div className="mx-auto max-w-xl px-4 pt-10 sm:px-6 lg:px-8">
+        <Confetti width={width} height={height} />
+        <h1 className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+          Thank you!
+        </h1>
+        <p className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
+          It’s on the way!
+        </p>
+        <p className="mt-2 text-base text-gray-500">
+          Your order #14034056 has shipped and will be with you soon.
+        </p>
+
+        <dl className="mt-12 text-sm font-medium">
+          <dt className="text-gray-900">Tracking number</dt>
+          <dd className="mt-2 text-blue-600">51547878755545848512</dd>
+        </dl>
       </div>
     );
   }
@@ -98,7 +116,7 @@ export default function QuizPage() {
     >
       <div aria-hidden className="overflow-hidden rounded-full bg-gray-200">
         <div
-          className="h-2 rounded-full bg-blue-600"
+          className="h-2 rounded-full bg-blue-600 transition-all"
           style={{ width: `${((20 - data.quiz.length) / 20) * 100}%` }}
         />
       </div>

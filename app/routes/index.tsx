@@ -54,14 +54,72 @@ export default function IndexPage() {
   const transition = useTransition();
 
   return (
-    <div className="prose mx-auto p-8">
-      <h1>Welcome to Remix</h1>
-
-      <p>
-        You are <strong>{data.user.email}</strong>.
+    <div className="container mx-auto px-4 pt-12 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+        My decks
+      </h1>
+      <p className="mt-2 text-lg text-gray-700">
+        Film your courses and publish them with our easy courses uploded to.
       </p>
 
-      <Form method="post" reloadDocument action="/actions/logout">
+      {data.decks.length === 0 ? (
+        <p>No decks yet </p>
+      ) : (
+        <ul className="mt-10 grid gap-y-10 gap-x-6 sm:grid-cols-2 xl:grid-cols-3">
+          {data.decks.map((deck, index) => (
+            <li key={deck.id}>
+              <h3 className="font-semibold">
+                Completely unstyled, fully accessible UI components
+              </h3>
+              <div className="prose prose-sm mt-1 text-gray-600">
+                <p>
+                  Completely unstyled, fully accessible UI components, designed
+                  to integrate beautifully with Tailwind CSS.
+                </p>
+              </div>
+              <Link
+                className="group mt-6 inline-flex h-9 items-center whitespace-nowrap rounded-full bg-slate-100 px-3 text-sm font-semibold text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                to={`/decks/${deck.id}`}
+              >
+                Learn more
+                <span className="sr-only">
+                  , Completely unstyled, fully accessible UI components
+                </span>
+                <svg
+                  className="ml-3 overflow-visible text-slate-300 group-hover:text-slate-400"
+                  width={3}
+                  height={6}
+                  viewBox="0 0 3 6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M0 0L3 3L0 6" />
+                </svg>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* <li >
+              <Link to={`/decks/${deck.id}`}>
+                <h3>{deck.name}</h3>
+              </Link>
+              <p>
+                Created{" "}
+                {new Date(deck.createdAt).toLocaleDateString("en", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+              <p>{data.quizzes[index].length} to learn</p>
+            </li> */}
+
+      {/* <Form method="post" reloadDocument action="/actions/logout">
         <button type="submit">Logout</button>
       </Form>
 
@@ -82,32 +140,7 @@ export default function IndexPage() {
         {transition.state === "submitting" && <p>Submitting...</p>}
       </Form>
 
-      <hr />
-
-      <h2>Decks</h2>
-
-      {data.decks.length === 0 ? (
-        <p>No decks yet </p>
-      ) : (
-        <ul>
-          {data.decks.map((deck, index) => (
-            <li key={deck.id}>
-              <Link to={`/decks/${deck.id}`}>
-                <h3>{deck.name}</h3>
-              </Link>
-              <p>
-                Created{" "}
-                {new Date(deck.createdAt).toLocaleDateString("en", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              <p>{data.quizzes[index].length} to learn</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <hr /> */}
     </div>
   );
 }
