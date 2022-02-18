@@ -1,9 +1,9 @@
-import { createCookieSessionStorage, redirect } from "remix";
+import { createCookieSessionStorage, redirect, Session } from "remix";
 import invariant from "tiny-invariant";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
-const sessionStorage = createCookieSessionStorage({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     httpOnly: true,
@@ -16,6 +16,7 @@ const sessionStorage = createCookieSessionStorage({
 });
 
 const USER_SESSION_KEY = "userId";
+const FLASH_SESSION_KEY = "flash";
 
 export async function destroySession(request: Request, redirectTo: string) {
   const session = await sessionStorage.getSession(
@@ -29,6 +30,29 @@ export async function destroySession(request: Request, redirectTo: string) {
   });
 }
 
+export type Flash = {
+  type: "error";
+  message: string;
+};
+
+export async function flash(
+  request: Request,
+  redirectTo: string,
+  { type, message }: Flash,
+) {
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie"),
+  );
+
+  session.flash(FLASH_SESSION_KEY, { type, message });
+
+  return redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session),
+    },
+  });
+}
+
 export async function getSession(request: Request) {
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie"),
@@ -37,7 +61,20 @@ export async function getSession(request: Request) {
   const unsafeUserId = session.get(USER_SESSION_KEY);
   const userId = typeof unsafeUserId === "string" ? unsafeUserId : null;
 
-  return { userId };
+  const unsafeFlash = session.get(FLASH_SESSION_KEY);
+
+  function isFlash(flash: any): flash is Flash {
+    return (
+      typeof flash === "object" &&
+      "type" in flash &&
+      "message" in flash &&
+      flash["type"] === "error"
+    );
+  }
+
+  const flash = isFlash(unsafeFlash) ? unsafeFlash : null;
+
+  return { session, userId, flash };
 }
 
 export async function setSession(
