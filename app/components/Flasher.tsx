@@ -1,4 +1,5 @@
 import { XCircleIcon } from "@heroicons/react/solid";
+
 import type { Flash } from "~/session.server";
 
 export function Flasher({ flash }: { flash: Flash | null }) {
@@ -17,7 +18,7 @@ export function Flasher({ flash }: { flash: Flash | null }) {
             There were 2 errors with your submission
           </h3>
           <div className="mt-2 text-sm text-red-700">
-            <ul role="list" className="list-disc space-y-1 pl-5">
+            <ul className="list-disc space-y-1 pl-5">
               <li>{flash.message}</li>
             </ul>
           </div>

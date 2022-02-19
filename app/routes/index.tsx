@@ -1,5 +1,6 @@
 import { LoaderFunction, redirect } from "remix";
 import { route } from "routes-gen";
+
 import { getUser } from "~/models/user.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -12,4 +13,5 @@ export const loader: LoaderFunction = async ({ request }) => {
   return {};
 };
 
+// eslint-disable-next-line no-restricted-exports
 export { default } from "~/routes/home";

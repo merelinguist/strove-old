@@ -25,14 +25,14 @@ export const meta: MetaFunction = () => {
 
 export default function App() {
   return (
-    <html className="text-gray-900 antialiased" lang="en">
+    <html className="h-full text-gray-900 antialiased" lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="h-full">
         <Inspect disabled={process.env.NODE_ENV === "production"}>
           <Outlet />
         </Inspect>

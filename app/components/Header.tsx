@@ -23,6 +23,7 @@ export function Header({
         {actions && (
           <div className="mt-5 flex space-x-3 lg:mt-0 lg:ml-4">
             {actions.map((action, index) => (
+              // eslint-disable-next-line react/no-array-index-key
               <Fragment key={index}>{action}</Fragment>
             ))}
           </div>

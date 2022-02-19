@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { useEffect, useRef } from "react";
 import Confetti from "react-confetti";
 import {
@@ -7,7 +6,6 @@ import {
   json,
   LoaderFunction,
   useLoaderData,
-  useLocation,
   useTransition,
 } from "remix";
 import invariant from "tiny-invariant";

@@ -1,18 +1,15 @@
-import { XCircleIcon } from "@heroicons/react/outline";
 import {
   ActionFunction,
   HeadersFunction,
   json,
+  Link,
   LoaderFunction,
   MetaFunction,
   useLoaderData,
 } from "remix";
-import { Form, Link, redirect } from "remix";
 import { route } from "routes-gen";
-import { Flasher } from "~/components/Flasher";
 
-import { Header } from "~/components/Header";
-import { Main } from "~/components/Main";
+import { Button } from "~/components/Button";
 import { login, verifyLogin } from "~/models/user.server";
 import { Flash, flash, getSession, sessionStorage } from "~/session.server";
 import { getFormData } from "~/utils/getFormData";
@@ -68,40 +65,85 @@ export default function LoginPage() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <div className="space-y-10 py-10">
-      <Header title="Sign in to your account" />
-      <Main>
-        <Form replace method="post" className="space-y-6">
-          <Flasher flash={data.flash} />
-
-          <label className="block">
-            <span>Email address</span>
-            <input
-              className="block w-full"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
+    <div className="flex min-h-full">
+      <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          <div>
+            <img
+              className="h-12 w-auto"
+              src="/img/logos/logo.svg"
+              alt="Strove"
             />
-          </label>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+              Sign in to your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Or{" "}
+              <Link
+                to={route("/join")}
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                create a free account now
+              </Link>
+            </p>
+          </div>
 
-          <label className="block">
-            <span>Password</span>
-            <input
-              required
-              className="block w-full"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-            />
-          </label>
+          <div className="mt-8">
+            <form method="post" className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  />
+                </div>
+              </div>
 
-          <button type="submit">Sign in</button>
-        </Form>
-        <p>
-          <Link to={route("/join")}>Don’t have an account?</Link>
-        </p>
-      </Main>
+              <div className="space-y-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Button shape="stretch" type="submit">
+                  Sign in
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className="relative hidden w-0 flex-1 lg:block">
+        <img
+          className="absolute inset-0 h-full w-full object-cover"
+          src="https://images.unsplash.com/photo-1600195077077-7c815f540a3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2189&q=80"
+          alt=""
+        />
+      </div>
     </div>
   );
 }

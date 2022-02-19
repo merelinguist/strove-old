@@ -2,8 +2,8 @@ import bcrypt from "@node-rs/bcrypt";
 import { redirect } from "remix";
 
 import { prisma } from "~/db.server";
-import type { User } from "@prisma/client";
 import { getSession, setSession } from "~/session.server";
+
 import { getDailyQuiz } from "./deck.server";
 
 export async function createUser(email: string, password: string) {

@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import { LoaderFunction, Outlet, useLoaderData } from "remix";
 import { route } from "routes-gen";
+
 import { Navbar } from "~/components/Navbar";
 import { requireUser } from "~/models/user.server";
 

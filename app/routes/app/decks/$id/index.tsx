@@ -13,9 +13,10 @@ import {
 } from "remix";
 import { route } from "routes-gen";
 import invariant from "tiny-invariant";
+
+import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
-
 import { prisma } from "~/db.server";
 import {
   DeckWithAnswers,
@@ -25,7 +26,7 @@ import {
   Quiz,
   score,
 } from "~/models/deck.server";
-import { getUser, requireUser } from "~/models/user.server";
+import { requireUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -127,18 +128,19 @@ export default function ShowDeckPage() {
       <Header
         title={data.deck.name}
         actions={[
-          <Link
+          <Button
+            variant="white"
+            as={Link}
             to={route("/app/decks/:id/quiz", { id: data.deck.id })}
-            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Edit
-          </Link>,
-          <Link
+          </Button>,
+          <Button
+            as={Link}
             to={route("/app/decks/:id/quiz", { id: data.deck.id })}
-            className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Learn
-          </Link>,
+          </Button>,
         ]}
       />
 
