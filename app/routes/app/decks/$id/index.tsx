@@ -124,7 +124,23 @@ export default function ShowDeckPage() {
 
   return (
     <>
-      <Header title={data.deck.name} />
+      <Header
+        title={data.deck.name}
+        actions={[
+          <Link
+            to={route("/app/decks/:id/quiz", { id: data.deck.id })}
+            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Edit
+          </Link>,
+          <Link
+            to={route("/app/decks/:id/quiz", { id: data.deck.id })}
+            className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Learn
+          </Link>,
+        ]}
+      />
 
       <Main>
         <h2 className="mb-2 text-2xl font-bold leading-7 tracking-tight">
