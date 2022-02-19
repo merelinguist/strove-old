@@ -11,6 +11,7 @@ import {
   useLoaderData,
   useParams,
 } from "remix";
+import { route } from "routes-gen";
 import invariant from "tiny-invariant";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
@@ -24,14 +25,14 @@ import {
   Quiz,
   score,
 } from "~/models/deck.server";
-import { getUser } from "~/models/user.server";
+import { getUser, requireUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const { _method: method } = await getFormData(request, ["_method"]);
 
   if (method === "delete") {
-    const user = await getUser(request, "/login");
+    const user = await requireUser(request, route("/login"));
 
     invariant(params.id, "params.id must be a string");
 
@@ -70,7 +71,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-  const user = await getUser(request, "/login");
+  const user = await requireUser(request, route("/login"));
 
   invariant(params.id, "params.id must be a string");
 

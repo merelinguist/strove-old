@@ -25,7 +25,10 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await verifyLogin(email, password);
 
   if (!user) {
-    return flash(request, route('/login'), { type: "error", message: "problem :(" });
+    return flash(request, route("/login"), {
+      type: "error",
+      message: "problem :(",
+    });
   }
 
   return login(request, user.id);
@@ -119,7 +122,7 @@ export default function LoginPage() {
           <button type="submit">Sign in</button>
         </Form>
         <p>
-          <Link to="/join">Don’t have an account?</Link>
+          <Link to={route("/join")}>Don’t have an account?</Link>
         </p>
       </Main>
     </>

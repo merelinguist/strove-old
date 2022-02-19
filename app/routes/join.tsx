@@ -1,5 +1,6 @@
 import type { ActionFunction, HeadersFunction, MetaFunction } from "remix";
 import { Form, Link } from "remix";
+import { route } from "routes-gen";
 
 import { createUser, login } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
@@ -59,7 +60,7 @@ function JoinPage() {
       </Form>
 
       <p>
-        <Link to="/login">Already have an account?</Link>
+        <Link to={route("/login")}>Already have an account?</Link>
       </p>
     </div>
   );

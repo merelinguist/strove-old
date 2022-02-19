@@ -3,6 +3,7 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { FireIcon, SearchIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
 import { Form, NavLink } from "remix";
+import { route } from "routes-gen";
 
 import { classNames } from "~/utils/classNames";
 
@@ -27,7 +28,7 @@ function Links() {
   return (
     <div className="hidden sm:-my-px lg:ml-6 lg:flex lg:space-x-8">
       <NavLink
-        to="/"
+        to={route("/app")}
         className={({ isActive }) =>
           classNames(
             "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
@@ -40,7 +41,7 @@ function Links() {
         Home
       </NavLink>
       <NavLink
-        to="/login"
+        to={route("/login")}
         className={({ isActive }) =>
           classNames(
             "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",

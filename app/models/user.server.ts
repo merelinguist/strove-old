@@ -34,7 +34,23 @@ export async function getStreak(userId: string) {
   const d = user.decks.filter((deck) => getDailyQuiz(deck).length === 0);
 }
 
-export async function getUser(request: Request, redirectTo: string) {
+export async function getUser(request: Request) {
+  const { userId } = await getSession(request);
+
+  if (!userId) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  return user;
+}
+
+export async function login(request: Request, userId: string) {
+  return setSession(request, "/", { userId });
+}
+
+export async function requireUser(request: Request, redirectTo: string) {
   const { userId } = await getSession(request);
 
   if (!userId) {
@@ -48,10 +64,6 @@ export async function getUser(request: Request, redirectTo: string) {
   }
 
   return user;
-}
-
-export async function login(request: Request, userId: string) {
-  return setSession(request, "/", { userId });
 }
 
 export async function verifyLogin(email: string, password: string) {

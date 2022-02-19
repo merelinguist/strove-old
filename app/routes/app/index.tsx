@@ -22,18 +22,18 @@ import {
   getDecksWithAnswers,
   Quiz,
 } from "~/models/deck.server";
-import { getUser } from "~/models/user.server";
+import { getUser, requireUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 import { route } from "routes-gen";
 
 export const action: ActionFunction = async ({ request }) => {
   const { name } = await getFormData(request, ["name"] as const);
 
-  const user = await getUser(request, "/login");
+  const user = await requireUser(request, route("/login"));
 
   await createDeck(name, user.id);
 
-  return redirect("/");
+  return redirect(route("/"));
 };
 
 type LoaderData = {
@@ -45,7 +45,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request, "/home");
+  const user = await requireUser(request, route("/login"));
 
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("search");
@@ -105,7 +105,7 @@ export default function IndexPage() {
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {data.decks.map((deck, index) => (
               <li key={deck.id} className="relative rounded-md border p-4">
-                <Link to={route('/app/decks/:id', {id: deck.id})}>
+                <Link to={route("/app/decks/:id", { id: deck.id })}>
                   <span className="absolute inset-0" aria-hidden />
                   <h3 className="font-semibold">{deck.name}</h3>
                 </Link>
