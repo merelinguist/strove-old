@@ -18,9 +18,9 @@ export default function AppRoute() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <>
+    <div className="space-y-10">
       <Navbar user={data.user} />
       <Outlet />
-    </>
+    </div>
   );
 }

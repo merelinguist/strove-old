@@ -9,6 +9,7 @@ import {
 } from "remix";
 import { Form, Link, redirect } from "remix";
 import { route } from "routes-gen";
+import { Flasher } from "~/components/Flasher";
 
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
@@ -67,36 +68,12 @@ export default function LoginPage() {
   const data = useLoaderData<LoaderData>();
 
   return (
-    <>
+    <div className="space-y-10 py-10">
       <Header title="Sign in to your account" />
-
-      <p>{JSON.stringify(flash, null, 2)}</p>
       <Main>
-        {data.flash?.type === "error" && (
-          <div className="rounded-md bg-red-50 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">
-                  There were 2 errors with your submission
-                </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  <ul role="list" className="list-disc space-y-1 pl-5">
-                    <li>Your password must be at least 8 characters</li>
-                    <li>
-                      Your password must include at least one pro wrestling
-                      finishing move
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         <Form replace method="post" className="space-y-6">
+          <Flasher flash={data.flash} />
+
           <label className="block">
             <span>Email address</span>
             <input
@@ -125,6 +102,6 @@ export default function LoginPage() {
           <Link to={route("/join")}>Don’t have an account?</Link>
         </p>
       </Main>
-    </>
+    </div>
   );
 }

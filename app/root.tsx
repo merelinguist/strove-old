@@ -32,15 +32,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-
       <body>
         <Inspect disabled={process.env.NODE_ENV === "production"}>
-          <div className="space-y-10">
-            {/* <Navbar /> */}
-            <Outlet />
-          </div>
+          <Outlet />
         </Inspect>
-
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
