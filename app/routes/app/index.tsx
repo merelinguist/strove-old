@@ -18,11 +18,10 @@ import {
   createDeck,
   DeckWithAnswers,
   getDailyQuiz,
-  // getDailyQuiz,
   getDecksWithAnswers,
   Quiz,
 } from "~/models/deck.server";
-import { getUser, requireUser } from "~/models/user.server";
+import { requireUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 import { route } from "routes-gen";
 
@@ -92,13 +91,9 @@ export default function IndexPage() {
     <>
       <Header
         title="My decks"
-        description=" Film your courses and publish them with our easy courses uploded to."
+        description="Create your decks and learn them with our great quizzes."
       />
       <Main>
-        <Form method="post" reloadDocument action="/actions/logout">
-          <button type="submit">Logout</button>
-        </Form>
-
         {data.decks.length === 0 ? (
           <p>No decks yet </p>
         ) : (
@@ -119,44 +114,6 @@ export default function IndexPage() {
             ))}
           </ul>
         )}
-
-        {/* <li >
-              <Link to={`/decks/${deck.id}`}>
-                <h3>{deck.name}</h3>
-              </Link>
-              <p>
-                Created{" "}
-                {new Date(deck.createdAt).toLocaleDateString("en", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              <p>{data.quizzes[index].length} to learn</p>
-            </li> */}
-
-        {/* <Form method="post" reloadDocument action="/actions/logout">
-        <button type="submit">Logout</button>
-      </Form>
-
-      <hr />
-
-      <h2>Create Deck</h2>
-
-      <Form replace method="post" key={location.key} className="space-y-6">
-        <label className="block">
-          <span>Name</span>
-          <input
-            required
-            className="mt-1 block w-full"
-            type="text"
-            name="name"
-          />
-        </label>
-        {transition.state === "submitting" && <p>Submitting...</p>}
-      </Form>
-
-      <hr /> */}
       </Main>
     </>
   );

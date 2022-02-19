@@ -1,3 +1,5 @@
+import type { redirect as remixRedirect } from "remix";
+
 declare module "routes-gen" {
   export type RouteParams = {
     "/actions/logout": {};
@@ -19,6 +21,6 @@ declare module "routes-gen" {
       | ["/join"]
       | ["/app"]
       | ["/app/decks/:id", RouteParams["/app/decks/:id"]]
-      | ["/app/decks/:id/quiz", RouteParams["/app/decks/:id/quiz"]]
+      | ["/app/decks/:id/quiz", RouteParams["/app/decks/:id/quiz"]],
   >(...args: T): typeof args[0];
 }
