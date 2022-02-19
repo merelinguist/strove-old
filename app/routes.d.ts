@@ -3,6 +3,7 @@ declare module "routes-gen" {
     "/actions/logout": {};
     "/": {};
     "/login": {};
+    "/home": {};
     "/join": {};
     "/app": {};
     "/app/decks/:id": { id: string };
@@ -14,6 +15,7 @@ declare module "routes-gen" {
       | ["/actions/logout"]
       | ["/"]
       | ["/login"]
+      | ["/home"]
       | ["/join"]
       | ["/app"]
       | ["/app/decks/:id", RouteParams["/app/decks/:id"]]

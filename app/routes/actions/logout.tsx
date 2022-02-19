@@ -4,4 +4,4 @@ import { route } from "routes-gen";
 import { destroySession } from "~/session.server";
 
 export const action: ActionFunction = async ({ request }) =>
-  destroySession(request, route('/');
+  destroySession(request, route("/"));
