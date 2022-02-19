@@ -28,7 +28,7 @@ import { getFormData } from "~/utils/getFormData";
 export const action: ActionFunction = async ({ request }) => {
   const { name } = await getFormData(request, ["name"] as const);
 
-  const user = await getUser(request);
+  const user = await getUser(request, "/login");
 
   await createDeck(name, user.id);
 
@@ -44,7 +44,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
+  const user = await getUser(request, "/home");
 
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("search");
@@ -94,6 +94,10 @@ export default function IndexPage() {
         description=" Film your courses and publish them with our easy courses uploded to."
       />
       <Main>
+        <Form method="post" reloadDocument action="/actions/logout">
+          <button type="submit">Logout</button>
+        </Form>
+
         {data.decks.length === 0 ? (
           <p>No decks yet </p>
         ) : (

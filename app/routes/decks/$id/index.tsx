@@ -31,7 +31,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const { _method: method } = await getFormData(request, ["_method"]);
 
   if (method === "delete") {
-    const user = await getUser(request);
+    const user = await getUser(request, "/login");
 
     invariant(params.id, "params.id must be a string");
 
@@ -70,7 +70,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-  const user = await getUser(request);
+  const user = await getUser(request, "/login");
 
   invariant(params.id, "params.id must be a string");
 

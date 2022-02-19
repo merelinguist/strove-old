@@ -34,17 +34,17 @@ export async function getStreak(userId: string) {
   const d = user.decks.filter((deck) => getDailyQuiz(deck).length === 0);
 }
 
-export async function getUser(request: Request) {
+export async function getUser(request: Request, redirectTo: string) {
   const { userId } = await getSession(request);
 
   if (!userId) {
-    throw redirect("/login");
+    throw redirect(redirectTo);
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
-    throw redirect("/login");
+    throw redirect(redirectTo);
   }
 
   return user;

@@ -3,22 +3,11 @@
   "compilerOptions": {
     "baseUrl": "./app/",
     "paths": {
-      "~/*": [
-        "*"
-      ],
-      "*": [
-        ""
-      ]
+      "~/*": ["*"],
+      "*": [""]
     },
-    "importsNotUsedAsValues": "error",
+    "importsNotUsedAsValues": "error"
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx"
-  ],
-  "exclude": [
-    "node_modules/"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  "exclude": ["node_modules/"]
 }

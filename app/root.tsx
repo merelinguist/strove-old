@@ -36,7 +36,7 @@ export default function App() {
       <body>
         <Inspect disabled={process.env.NODE_ENV === "production"}>
           <div className="space-y-10">
-            <Navbar />
+            {/* <Navbar /> */}
             <Outlet />
           </div>
         </Inspect>
@@ -48,5 +48,3 @@ export default function App() {
     </html>
   );
 }
-
-
