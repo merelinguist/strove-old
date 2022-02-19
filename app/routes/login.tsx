@@ -8,6 +8,7 @@ import {
   useLoaderData,
 } from "remix";
 import { Form, Link, redirect } from "remix";
+import { route } from "routes-gen";
 
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
@@ -24,7 +25,7 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await verifyLogin(email, password);
 
   if (!user) {
-    return flash(request, "/login", { type: "error", message: "problem :(" });
+    return flash(request, route('/login'), { type: "error", message: "problem :(" });
   }
 
   return login(request, user.id);
@@ -49,7 +50,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     { flash },
     {
       headers: {
-        // only necessary with cookieSessionStorage
         "Set-Cookie": await sessionStorage.commitSession(session),
       },
     },

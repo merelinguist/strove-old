@@ -1,162 +1,55 @@
-import type { User } from "@prisma/client";
-import {
-  ActionFunction,
-  Form,
-  json,
-  Link,
-  LoaderFunction,
-  redirect,
-  useLoaderData,
-  useLocation,
-  useTransition,
-} from "remix";
-import { matchSorter } from "match-sorter";
+import type { LinksFunction } from "remix";
 
-import { Header } from "~/components/Header";
-import { Main } from "~/components/Main";
-import {
-  createDeck,
-  DeckWithAnswers,
-  getDailyQuiz,
-  // getDailyQuiz,
-  getDecksWithAnswers,
-  Quiz,
-} from "~/models/deck.server";
-import { getUser } from "~/models/user.server";
-import { getFormData } from "~/utils/getFormData";
-
-export const action: ActionFunction = async ({ request }) => {
-  const { name } = await getFormData(request, ["name"] as const);
-
-  const user = await getUser(request, "/login");
-
-  await createDeck(name, user.id);
-
-  return redirect("/");
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Raleway:wght@900",
+    },
+  ];
 };
 
-type LoaderData = {
-  user: User;
-  status: "decksFound" | "noDecks" | "emptySearch";
-  searchTerm: string;
-  decks: DeckWithAnswers[];
-  quizzes: Quiz[];
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request, "/home");
-
-  const url = new URL(request.url);
-  const searchTerm = url.searchParams.get("search");
-
-  const decks = await getDecksWithAnswers(user.id);
-
-  if (!searchTerm) {
-    return json<LoaderData>({
-      user,
-      status: "emptySearch",
-      searchTerm: searchTerm || "",
-      decks,
-      quizzes: decks.map((deck) => getDailyQuiz(deck)),
-    });
-  }
-
-  const results = matchSorter(decks, searchTerm, { keys: ["name"] });
-
-  if (!results.length) {
-    return json<LoaderData>({
-      user,
-      status: "noDecks",
-      searchTerm,
-      decks: [],
-      quizzes: [],
-    });
-  }
-
-  return json<LoaderData>({
-    user,
-    status: "decksFound",
-    searchTerm,
-    decks: results,
-    quizzes: results.map((deck) => getDailyQuiz(deck)),
-  });
-};
-
-export default function IndexPage() {
-  const location = useLocation();
-  const data = useLoaderData<LoaderData>();
-  const transition = useTransition();
-
+export default function HomeRoute() {
   return (
-    <>
-      <Header
-        title="My decks"
-        description=" Film your courses and publish them with our easy courses uploded to."
-      />
-      <Main>
-        <Form method="post" reloadDocument action="/actions/logout">
-          <button type="submit">Logout</button>
-        </Form>
-
-        {data.decks.length === 0 ? (
-          <p>No decks yet </p>
-        ) : (
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {data.decks.map((deck, index) => (
-              <li key={deck.id} className="relative rounded-md border p-4">
-                <Link to={`/decks/${deck.id}`}>
-                  <span className="absolute inset-0" aria-hidden />
-                  <h3 className="font-semibold">{deck.name}</h3>
-                </Link>
-                <div className="prose prose-sm mt-1 text-gray-600">
-                  <p>
-                    Completely unstyled, fully accessible UI components,
-                    designed to integrate beautifully with Tailwind CSS.
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* <li >
-              <Link to={`/decks/${deck.id}`}>
-                <h3>{deck.name}</h3>
-              </Link>
-              <p>
-                Created{" "}
-                {new Date(deck.createdAt).toLocaleDateString("en", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              <p>{data.quizzes[index].length} to learn</p>
-            </li> */}
-
-        {/* <Form method="post" reloadDocument action="/actions/logout">
-        <button type="submit">Logout</button>
-      </Form>
-
-      <hr />
-
-      <h2>Create Deck</h2>
-
-      <Form replace method="post" key={location.key} className="space-y-6">
-        <label className="block">
-          <span>Name</span>
-          <input
-            required
-            className="mt-1 block w-full"
-            type="text"
-            name="name"
-          />
-        </label>
-        {transition.state === "submitting" && <p>Submitting...</p>}
-      </Form>
-
-      <hr /> */}
-      </Main>
-    </>
+    <div className="min-h-screen bg-blue-50">
+      <div className="prose prose-lg mx-auto py-10 px-4 sm:px-6 lg:prose-2xl lg:px-8">
+        <h1 className="font-['Raleway']">Strove…</h1>
+        <p className="lead">
+          is an ultra-minimal but ultra-smart learning app.
+        </p>
+        <form
+          action="https://formspree.io/f/mbjwozyq"
+          method="POST"
+          className="sm:flex sm:w-full sm:max-w-lg"
+        >
+          <div className="min-w-0 flex-1">
+            <label htmlFor="email" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              className="block w-full rounded-md border border-gray-300 px-5 py-3 placeholder-gray-500 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div className="mt-4 sm:mt-0 sm:ml-3">
+            <button
+              type="submit"
+              className="block w-full rounded-md border border-transparent bg-blue-600 px-5 py-3 text-base font-medium text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-10"
+            >
+              Notify me
+            </button>
+          </div>
+        </form>
+        <p>More precisely, Strove has:</p>
+        <ul>
+          <li> Easy flashcard creation and imports from other apps</li>
+          <li>Daily quizzes and streaks</li>
+          <li> AI and research-based spaced repetition</li>
+        </ul>
+      </div>
+    </div>
   );
 }

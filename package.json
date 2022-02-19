@@ -18,7 +18,8 @@
     "lint:typescript": "tsc",
     "postinstall": "remix setup node",
     "prepare": "husky install",
-    "prisma": "prisma"
+    "prisma": "prisma",
+    "routes-gen": "routes-gen -d @routes-gen/remix"
   },
   "prisma": {
     "seed": "node --require esbuild-register prisma/seed.ts"
@@ -37,6 +38,7 @@
     "react-confetti": "^6.0.1",
     "react-dom": "^17.0.2",
     "remix": "^1.2.1",
+    "routes-gen": "^0.3.0",
     "tailwindcss": "^3.0.23",
     "tiny-invariant": "^1.2.0",
     "web-api-hooks": "^3.0.2"
@@ -46,6 +48,7 @@
     "@remix-run/dev": "^1.2.1",
     "@remix-run/eslint-config": "^1.2.0",
     "@remix-run/serve": "^1.2.1",
+    "@routes-gen/remix": "^0.2.10",
     "@tsconfig/remix": "^1.0.0",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
