@@ -22,6 +22,7 @@ import {
   Quiz,
 } from "~/models/deck.server";
 import { requireUser } from "~/models/user.server";
+import { classNames } from "~/utils/classNames";
 import { getFormData } from "~/utils/getFormData";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -101,13 +102,25 @@ export default function IndexPage() {
               <li key={deck.id} className="relative rounded-md border p-4">
                 <Link to={route("/app/decks/:id", { id: deck.id })}>
                   <span className="absolute inset-0" aria-hidden />
-                  <h3 className="font-semibold">{deck.name}</h3>
+                  <div className="flex items-baseline">
+                    <h3 className="font-semibold">{deck.name}</h3>
+
+                    <span
+                      className={classNames(
+                        "ml-4 inline-flex items-center rounded-full  px-2.5 py-0.5 text-xs font-medium ",
+                        data.quizzes[index].length === 0
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800",
+                      )}
+                    >
+                      {data.quizzes[index].length === 0
+                        ? "All done!"
+                        : `${data.quizzes[index].length} left to learn`}
+                    </span>
+                  </div>
                 </Link>
                 <div className="prose prose-sm mt-1 text-gray-600">
-                  <p>
-                    Completely unstyled, fully accessible UI components,
-                    designed to integrate beautifully with Tailwind CSS.
-                  </p>
+                  <p>{deck.cards.length} cards</p>
                 </div>
               </li>
             ))}

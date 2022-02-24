@@ -14,4 +14,4 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 // eslint-disable-next-line no-restricted-exports
-export { default } from "~/routes/home";
+export { default, links } from "~/routes/home";
