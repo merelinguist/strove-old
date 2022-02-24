@@ -16,7 +16,7 @@
     "lint:eslint": "eslint --ext .ts,.tsx,.js,.jsx --ignore-path .gitignore .",
     "lint:prettier": "prettier --check --ignore-path .gitignore .",
     "lint:typescript": "tsc",
-    "postinstall": "remix setup node",
+    "postinstall": "remix setup node && metronome setup",
     "prepare": "husky install",
     "prisma": "prisma",
     "routes-gen": "routes-gen -d @routes-gen/remix"
@@ -39,6 +39,7 @@
     "@tailwindcss/typography": "^0.5.2",
     "inspx": "^0.0.1-alpha.6",
     "match-sorter": "^6.3.1",
+    "metronome-sh": "^1.0.2",
     "nprogress": "^0.2.0",
     "react": "^17.0.2",
     "react-confetti": "^6.0.1",
