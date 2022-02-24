@@ -1,10 +1,31 @@
-import { Link } from "remix";
+import { ActionFunction, Form, Link, LoaderFunction, redirect } from "remix";
 import { route } from "routes-gen";
 
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
+import { prisma } from "~/db.server";
+import { requireUser } from "~/models/user.server";
+import { getFormData } from "~/utils/getFormData";
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request, route("/login"));
+
+  const { name } = await getFormData(request, ["name"] as const);
+
+  const deck = await prisma.deck.create({
+    data: { name, userId: user.id },
+  });
+
+  return redirect(route("/app/decks/:id", { id: deck.id }));
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  await requireUser(request, route("/login"));
+
+  return {};
+};
 
 export default function NewDeckRoute() {
   return (
@@ -14,7 +35,7 @@ export default function NewDeckRoute() {
         description="Let’s get started by filling in the information below to create your new project."
       />
       <Main>
-        <form className="space-y-6">
+        <Form replace method="post" className="space-y-6">
           <Input>
             <Input.Label>Deck Name</Input.Label>
             <Input.Field type="text" name="name" required />
@@ -26,7 +47,7 @@ export default function NewDeckRoute() {
             </Button>
             <Button type="submit">Create this project</Button>
           </div>
-        </form>
+        </Form>
       </Main>
     </div>
   );
