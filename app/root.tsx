@@ -1,15 +1,15 @@
 import Inspect from "inspx";
-import type { LinksFunction, MetaFunction } from "remix";
 import {
   Links,
+  LinksFunction,
   LiveReload,
   Meta,
+  MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from "remix";
 
-import { Navbar } from "~/components/Navbar";
 import styles from "~/styles.css";
 
 export const links: LinksFunction = () => {

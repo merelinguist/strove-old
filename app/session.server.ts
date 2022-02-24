@@ -1,5 +1,4 @@
-import { createCookieSessionStorage, redirect, Session } from "remix";
-import type { route } from "routes-gen";
+import { createCookieSessionStorage, redirect } from "remix";
 import invariant from "tiny-invariant";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
@@ -36,7 +35,7 @@ export type Flash = {
   message: string;
 };
 
-export async function flash(
+export async function setFlash(
   request: Request,
   redirectTo: string,
   { type, message }: Flash,
@@ -64,12 +63,13 @@ export async function getSession(request: Request) {
 
   const unsafeFlash = session.get(FLASH_SESSION_KEY);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function isFlash(flash: any): flash is Flash {
     return (
       typeof flash === "object" &&
       "type" in flash &&
       "message" in flash &&
-      flash["type"] === "error"
+      flash.type === "error"
     );
   }
 
