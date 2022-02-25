@@ -1,6 +1,7 @@
 import type { ActionFunction, HeadersFunction, MetaFunction } from "remix";
 import { Form, Link } from "remix";
 import { route } from "routes-gen";
+import { analytics } from "~/analytics.server";
 
 import { createUser, login } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
@@ -12,6 +13,8 @@ const action: ActionFunction = async ({ request }) => {
   ] as const);
 
   const user = await createUser(email, password);
+
+  analytics?.user.set({ userId: user.id, userData: { email: user.email } });
 
   return login(request, user.id);
 };
