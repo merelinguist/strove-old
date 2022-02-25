@@ -18,6 +18,8 @@ export default function HomeRoute() {
           is an ultra-minimal but ultra-smart learning app.
         </p>
         <form
+                data-splitbee-event="Subscribe to Early Access"
+
           action="https://formspree.io/f/mbjwozyq"
           method="POST"
           className="sm:flex sm:w-full sm:max-w-lg"
