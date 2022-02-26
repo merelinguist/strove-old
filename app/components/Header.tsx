@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import { Fragment } from "react";
 
 export function Header({
   title,
@@ -7,7 +7,7 @@ export function Header({
 }: {
   title: string;
   description?: string;
-  actions?: ReactNode[];
+  actions?: JSX.Element[];
 }) {
   return (
     <header className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

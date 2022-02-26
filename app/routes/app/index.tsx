@@ -7,11 +7,10 @@ import {
   LoaderFunction,
   redirect,
   useLoaderData,
-  useLocation,
-  useTransition,
 } from "remix";
 import { route } from "routes-gen";
 
+import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
 import {
@@ -83,15 +82,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function IndexPage() {
-  const location = useLocation();
   const data = useLoaderData<LoaderData>();
-  const transition = useTransition();
 
   return (
     <>
       <Header
         title="My decks"
         description="Create your decks and learn them with our great quizzes."
+        actions={[
+          <Button as={Link} to={route("/app/decks/new")}>
+            Create Deck
+          </Button>,
+        ]}
       />
       <Main>
         {data.decks.length === 0 ? (

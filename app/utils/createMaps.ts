@@ -1,4 +1,4 @@
-export function createMaps<ObjectMapType extends Record<string, string>>(
+export function createMaps<ObjectMapType extends { [key: string]: string }>(
   obj: ObjectMapType,
 ) {
   return obj;

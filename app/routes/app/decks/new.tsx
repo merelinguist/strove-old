@@ -1,31 +1,12 @@
-import { ActionFunction, Form, Link, LoaderFunction, redirect } from "remix";
+import { Form, Link } from "remix";
 import { route } from "routes-gen";
 
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
-import { prisma } from "~/db.server";
-import { requireUser } from "~/models/user.server";
-import { getFormData } from "~/utils/getFormData";
 
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request, route("/login"));
-
-  const { name } = await getFormData(request, ["name"] as const);
-
-  const deck = await prisma.deck.create({
-    data: { name, userId: user.id },
-  });
-
-  return redirect(route("/app/decks/:id", { id: deck.id }));
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
-  await requireUser(request, route("/login"));
-
-  return {};
-};
+export { action } from "~/containers/NewDeck/NewDeck.server";
 
 export default function NewDeckRoute() {
   return (

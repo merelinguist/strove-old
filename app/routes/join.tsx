@@ -1,8 +1,8 @@
 import type { ActionFunction, HeadersFunction, MetaFunction } from "remix";
 import { Form, Link } from "remix";
 import { route } from "routes-gen";
-import { analytics } from "~/analytics.server";
 
+import { analytics } from "~/analytics.server";
 import { createUser, login } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
@@ -36,10 +36,7 @@ function JoinPage() {
     <div className="prose mx-auto p-8">
       <h1>Join</h1>
 
-      <Form
-        method="post"
-        className="space-y-6"
-      >
+      <Form method="post" className="space-y-6">
         <label className="block">
           <span>Email address</span>
           <input

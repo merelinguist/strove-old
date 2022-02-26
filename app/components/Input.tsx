@@ -1,12 +1,17 @@
-import { ComponentProps, createContext, ReactNode, useContext } from "react";
+import {
+  ComponentProps,
+  createContext,
+  ReactNode,
+  useContext,
+  useMemo,
+} from "react";
 
 const InputStateContext = createContext<{ id: string } | undefined>(undefined);
 
 function InputProvider({ children }: { children: ReactNode }) {
   const id = "";
 
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
-  const value = { id };
+  const value = useMemo(() => ({ id }), []);
 
   return (
     <InputStateContext.Provider value={value}>

@@ -11,7 +11,6 @@ import {
   ScrollRestoration,
 } from "remix";
 
-import { Navbar } from "~/components/Navbar";
 import styles from "~/styles.css";
 
 export const links: LinksFunction = () => {
@@ -27,16 +26,14 @@ export const meta: MetaFunction = () => {
 
 export default function App() {
   useEffect(() => {
-    if(process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       splitbee.init({
         scriptUrl: "/bee.js",
         apiUrl: "/_hive",
-      })
+      });
     }
-   
-  }, [])
+  }, []);
 
-  
   return (
     <html className="h-full text-gray-900 antialiased" lang="en">
       <head>
