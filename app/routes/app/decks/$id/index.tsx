@@ -1,3 +1,5 @@
+import type { Card } from "@prisma/client";
+import { useState } from "react";
 import {
   ActionFunction,
   HeadersFunction,
@@ -119,6 +121,41 @@ export const meta: MetaFunction = ({
   };
 };
 
+function CardItem({
+  card,
+  index,
+  scores,
+}: {
+  card: Card;
+  index: number;
+  scores: number[];
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  return (
+    <tr key={card.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+      <td className="whitespace-nowrap px-6 py-4 font-medium">
+        {isEditing ? <input /> : card.front}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4">{card.back}</td>
+      <td className="whitespace-nowrap px-6 py-4">
+        {Math.round(scores[index] * 100) === -100
+          ? 0
+          : Math.round(scores[index] * 100)}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+        <button
+          type="button"
+          onClick={() => setIsEditing(!isEditing)}
+          className="text-blue-600 hover:text-blue-900"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+  );
+}
+
 export default function ShowDeckPage() {
   const data = useLoaderData<LoaderData>();
 
@@ -180,30 +217,11 @@ export default function ShowDeckPage() {
                   </thead>
                   <tbody>
                     {data.deck.cards.map((card, index) => (
-                      <tr
-                        key={card.id}
-                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                      >
-                        <td className="whitespace-nowrap px-6 py-4 font-medium">
-                          {card.front}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          {card.back}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          {Math.round(data.scores[index] * 100) === -100
-                            ? 0
-                            : Math.round(data.scores[index] * 100)}
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                          <a
-                            href="#"
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            Edit
-                          </a>
-                        </td>
-                      </tr>
+                      <CardItem
+                        card={card}
+                        index={index}
+                        scores={data.scores}
+                      />
                     ))}
                   </tbody>
                 </table>
