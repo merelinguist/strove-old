@@ -1,31 +1,24 @@
 import invariant from "tiny-invariant";
 
-type TFields = readonly string[];
+type GetFormData<Keys extends readonly string[]> = Record<
+  Keys[number],
+  string
+> & { formData: FormData };
 
-type TFormData<Fields extends TFields> = {
-  [Key in Fields extends readonly (infer U)[] ? U : never]: string;
-};
-
-export const getFormData = async <Fields extends TFields>(
+export const getFormData = async <Keys extends readonly string[]>(
   request: Request,
-  fields: Fields,
+  keys: Keys,
 ) => {
   const formData = await request.formData();
 
   return Object.assign(
-    fields.reduce(
-      (entries, field) => {
-        const value = formData.get(field);
+    { formData },
+    ...keys.map((key) => {
+      const value = formData.get(key);
 
-        invariant(typeof value === "string", `${field} must be a string`);
+      invariant(typeof value === "string", `${key} must be a string`);
 
-        return {
-          ...entries,
-          [field]: value,
-        };
-      },
-      { formData },
-    ),
-    {} as TFormData<Fields> & { formData: FormData },
-  );
+      return { key, value };
+    }),
+  ) as GetFormData<Keys>;
 };

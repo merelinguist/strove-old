@@ -31,7 +31,7 @@ import { requireUser } from "~/models/user.server";
 import { getFormData } from "~/utils/getFormData";
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const { _method: method } = await getFormData(request, ["_method"]);
+  const { _method: method } = await getFormData(request, ["_method"] as const);
 
   if (method === "delete") {
     const user = await requireUser(request, route("/login"));
