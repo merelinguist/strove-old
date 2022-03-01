@@ -22,7 +22,10 @@ import {
 import { getFormData } from "~/utils/getFormData";
 
 export const action: ActionFunction = async ({ request }) => {
-  const { answer, cardId } = await getFormData(request, ["answer", "cardId"]);
+  const { answer, cardId } = await getFormData(request, [
+    "answer",
+    "cardId",
+  ] as const);
 
   const card = await getCard(cardId);
 
@@ -67,6 +70,13 @@ export default function QuizPage() {
   const successRef = useRef<HTMLHeadingElement>(null);
   const mounted = useRef<boolean>(false);
   const [width, height] = useWindowSize();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state === "idle") {
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   useEffect(() => {
     // if (state === "error") {
@@ -108,6 +118,7 @@ export default function QuizPage() {
 
   return (
     <Form
+      ref={formRef}
       replace
       method="post"
       className="mx-auto max-w-3xl space-y-16 px-4 pt-10 sm:px-6 lg:px-8"
