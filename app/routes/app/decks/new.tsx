@@ -1,3 +1,4 @@
+import { uuidv7 } from "@kripod/uuidv7";
 import { useEffect, useState } from "react";
 import { Form, Link } from "remix";
 import { route } from "routes-gen";
@@ -9,22 +10,11 @@ import { Main } from "~/components/Main";
 
 export { action } from "~/containers/NewDeck/NewDeck.server";
 
-function getId() {
-  function getPart() {
-    // eslint-disable-next-line no-bitwise
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-
-  return `${
-    getPart() + getPart()
-  }-${getPart()}-${getPart()}-${getPart()}-${getPart()}${getPart()}${getPart()}`;
-}
-
 export default function NewDeckRoute() {
   const [cards, setCards] = useState([
-    "eda47015-1044-73ba-f102-5494da8e531e",
-    "a19f517e-a4b8-fe41-a85d-bf12f63b0ff9",
-    "771de1b7-0e3a-cdf1-a60f-bf4b9cd5fd08",
+    "0621fce7-6351-7000-81a0-942005cd6bca",
+    "0621fce7-6351-7001-8900-8367587950f5",
+    "0621fce7-6351-7002-bd7a-bdaa0d57b6ff",
   ]);
 
   useEffect(() => {
@@ -53,7 +43,7 @@ export default function NewDeckRoute() {
       }
 
       if (isLastCardFocused()) {
-        setCards([...cards, getId()]);
+        setCards([...cards, uuidv7()]);
       }
     }
 
