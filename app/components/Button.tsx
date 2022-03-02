@@ -1,5 +1,9 @@
-import type { ElementType } from "react";
-import type { PolymorphicPropsWithoutRef } from "react-polymorphic-types";
+import { forwardRef, ElementType, ForwardedRef } from "react";
+import type {
+  PolymorphicForwardRefExoticComponent,
+  PolymorphicPropsWithRef,
+  PolymorphicPropsWithoutRef,
+} from "react-polymorphic-types";
 
 import { classNames } from "~/utils/classNames";
 import { createMaps } from "~/utils/createMaps";
@@ -26,35 +30,45 @@ const variantMaps = createMaps({
     "border-transparent bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
 });
 
-export const ButtonDefaultElement = "button";
+const ButtonDefaultElement = "button";
 
-export type ButtonOwnProps = {
+type ButtonOwnProps = {
   shape?: keyof typeof shapeMaps;
   size?: keyof typeof sizeMaps;
   variant?: keyof typeof variantMaps;
 };
 
-export type ButtonProps<T extends ElementType = typeof ButtonDefaultElement> =
-  PolymorphicPropsWithoutRef<ButtonOwnProps, T>;
+export type ButtonProps<
+  T extends React.ElementType = typeof ButtonDefaultElement,
+> = PolymorphicPropsWithRef<ButtonOwnProps, T>;
 
-export function Button<T extends ElementType = typeof ButtonDefaultElement>({
-  as,
-  shape = "default",
-  size = "default",
-  variant = "primary",
-  ...restProps
-}: Omit<ButtonProps<T>, "className">) {
+export const Button: PolymorphicForwardRefExoticComponent<
+  ButtonOwnProps,
+  typeof ButtonDefaultElement
+> = forwardRef(function Button<
+  T extends ElementType = typeof ButtonDefaultElement,
+>(
+  {
+    as,
+    shape = "default",
+    size = "default",
+    variant = "primary",
+    ...props
+  }: PolymorphicPropsWithoutRef<ButtonOwnProps, T>,
+  ref: ForwardedRef<Element>,
+) {
   const Element: ElementType = as || ButtonDefaultElement;
 
   return (
     <Element
+      ref={ref}
       className={classNames(
         "inline-flex items-center border font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2",
         shapeMaps[shape],
         sizeMaps[size],
         variantMaps[variant],
       )}
-      {...restProps}
+      {...props}
     />
   );
-}
+});

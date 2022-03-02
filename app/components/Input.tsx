@@ -1,6 +1,7 @@
 import {
   ComponentProps,
   createContext,
+  forwardRef,
   ReactNode,
   useContext,
   useMemo,
@@ -52,18 +53,22 @@ function Label(props: Omit<ComponentProps<"label">, "className" | "htmlFor">) {
 
 Input.Label = Label;
 
-function Field(props: Omit<ComponentProps<"input">, "className" | "id">) {
+const Field = forwardRef<
+  HTMLInputElement,
+  Omit<ComponentProps<"input">, "className" | "id">
+>((props, ref) => {
   const { id } = useInput();
 
   return (
     <div className="mt-1">
       <input
+        ref={ref}
         {...props}
         id={id}
         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
       />
     </div>
   );
-}
+});
 
 Input.Field = Field;

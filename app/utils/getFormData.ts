@@ -1,9 +1,9 @@
 import invariant from "tiny-invariant";
 
-type GetFormData<Keys extends readonly string[]> = Record<
-  Keys[number],
-  string
-> & { formData: FormData };
+// Critical code, please don't change without checking or every action will break!
+type GetFormData<Keys extends readonly string[]> = {
+  [Key in Keys[number]]: string;
+} & { formData: FormData };
 
 export const getFormData = async <Keys extends readonly string[]>(
   request: Request,
@@ -18,7 +18,7 @@ export const getFormData = async <Keys extends readonly string[]>(
 
       invariant(typeof value === "string", `${key} must be a string`);
 
-      return { key, value };
+      return { [key]: value };
     }),
   ) as GetFormData<Keys>;
 };

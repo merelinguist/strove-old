@@ -60,8 +60,27 @@ export function score(answers: Answer[]) {
   return weightedSum / answers.length;
 }
 
+export function getQuizLength(deck: DeckWithAnswers) {
+  const yesterdaysDeck = {
+    ...deck,
+    cards: deck.cards.map((card) => ({
+      ...card,
+      answers: card.answers.filter(
+        (answer) =>
+          new Date(answer.createdAt).toDateString() !== now.toDateString(),
+      ),
+    })),
+  };
+
+  const quiz = yesterdaysDeck.cards
+    .sort((cardA, cardB) => score(cardA.answers) - score(cardB.answers))
+    .slice(0, 20);
+
+  return quiz.length;
+}
+
 export function getDailyQuiz(deck: DeckWithAnswers) {
-  const yesterdaysDeck: DeckWithAnswers = {
+  const yesterdaysDeck = {
     ...deck,
     cards: deck.cards.map((card) => ({
       ...card,
