@@ -3,7 +3,7 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { FireIcon, SearchIcon } from "@heroicons/react/solid";
 import type { User } from "@prisma/client";
 import { Fragment } from "react";
-import { Form, NavLink } from "remix";
+import { Form, Link, NavLink } from "remix";
 import { route } from "routes-gen";
 
 import { classNames } from "~/utils/classNames";
@@ -188,53 +188,43 @@ function ProfileDropdown({ user }: { user: User }) {
   );
 }
 
-function MobilePanel() {
+function MobilePanel({ user }: { user: User }) {
   return (
     <Disclosure.Panel className="lg:hidden">
       <div className="space-y-1 pt-2 pb-3">
         {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800" */}
         <Disclosure.Button
-          as="a"
-          href="#"
-          className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700"
+          as={Link}
+          to={route("/app")}
+          className="block border-l-4 border-blue-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-blue-700"
         >
           Dashboard
         </Disclosure.Button>
         <Disclosure.Button
-          as="a"
-          href="#"
+          as={Link}
+          to={route("/app")}
           className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
         >
           Team
-        </Disclosure.Button>
-        <Disclosure.Button
-          as="a"
-          href="#"
-          className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
-        >
-          Projects
-        </Disclosure.Button>
-        <Disclosure.Button
-          as="a"
-          href="#"
-          className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
-        >
-          Calendar
         </Disclosure.Button>
       </div>
       <div className="border-t pt-4 pb-3">
         <div className="flex items-center px-4">
           <div className="flex-shrink-0">
-            <img
-              className="h-10 w-10 rounded-full"
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt=""
-            />
+            <span className="inline-block h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+              <svg
+                className="h-full w-full text-gray-300"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
           </div>
           <div className="ml-3">
-            <div className="text-base font-medium text-gray-800">Tom Cook</div>
+            <div className="text-base font-medium text-gray-800">User</div>
             <div className="text-sm font-medium text-gray-500">
-              tom@example.com
+              {user.email}
             </div>
           </div>
           <button
@@ -242,7 +232,7 @@ function MobilePanel() {
             className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <span className="sr-only">View notifications</span>
-            <BellIcon className="h-6 w-6" aria-hidden="true" />
+            <BellIcon className="h-6 w-6" aria-hidden />
           </button>
         </div>
         <div className="mt-3 space-y-1">
@@ -260,13 +250,14 @@ function MobilePanel() {
           >
             Settings
           </Disclosure.Button>
-          <Disclosure.Button
-            as="a"
-            href="#"
-            className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-          >
-            Sign out
-          </Disclosure.Button>
+          <Form reloadDocument method="post" action={route("/actions/logout")}>
+            <button
+              type="submit"
+              className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            >
+              Sign out
+            </button>
+          </Form>
         </div>
       </div>
     </Disclosure.Panel>
@@ -292,7 +283,7 @@ export function Navbar({ user }: { user: User }) {
               </div>
             </div>
           </div>
-          <MobilePanel />
+          <MobilePanel user={user} />
         </>
       )}
     </Disclosure>

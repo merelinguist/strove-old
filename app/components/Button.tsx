@@ -1,8 +1,8 @@
-import { forwardRef, ElementType, ForwardedRef } from "react";
+import { ElementType, ForwardedRef, forwardRef } from "react";
 import type {
   PolymorphicForwardRefExoticComponent,
-  PolymorphicPropsWithRef,
   PolymorphicPropsWithoutRef,
+  PolymorphicPropsWithRef,
 } from "react-polymorphic-types";
 
 import { classNames } from "~/utils/classNames";

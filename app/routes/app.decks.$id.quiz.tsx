@@ -1,7 +1,6 @@
 import { XIcon } from "@heroicons/react/outline";
 import type { Deck } from "@prisma/client";
 import { useEffect, useRef } from "react";
-import Confetti from "react-confetti";
 import {
   ActionFunction,
   Form,
@@ -13,15 +12,14 @@ import {
   useTransition,
 } from "remix";
 import { route } from "routes-gen";
+import { compareTwoStrings } from "string-similarity";
 import invariant from "tiny-invariant";
-import { useWindowSize } from "web-api-hooks";
+
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
-
 import { createAnswer } from "~/models/answer.server";
 import { getCard } from "~/models/card.server";
 import {
-  DeckWithAnswers,
   getDailyQuiz,
   getDeckWithAnswers,
   getQuizLength,
@@ -49,7 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   invariant(card, "card is not defined");
 
-  const correctness = 0.5;
+  const correctness = compareTwoStrings(answer, card.back);
 
   switch (status) {
     case "ask": {
@@ -102,12 +100,17 @@ export default function QuizPage() {
 
   const status = actionData ? actionData.status : "ask";
 
-  const buttonText =
-    status === "ask"
-      ? transition.state === "submitting"
-        ? "Checking"
-        : "Check"
-      : "Continue";
+  let buttonText: string;
+
+  if (status === "ask") {
+    if (transition.state === "submitting") {
+      buttonText = "Checking";
+    } else {
+      buttonText = "Check";
+    }
+  } else {
+    buttonText = "Continue";
+  }
 
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -137,7 +140,7 @@ export default function QuizPage() {
       ref={formRef}
       replace
       method="post"
-      className="prose mx-auto space-y-6 px-4 py-10 sm:px-6 lg:px-8"
+      className="prose mx-auto space-y-10 px-4 py-10 sm:px-6 lg:px-8"
     >
       <div className="flex items-center space-x-4">
         <Link
