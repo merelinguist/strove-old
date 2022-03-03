@@ -1,5 +1,4 @@
 import { XIcon } from "@heroicons/react/outline";
-import type { Deck } from "@prisma/client";
 import { useEffect, useRef } from "react";
 import {
   ActionFunction,
@@ -19,13 +18,7 @@ import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { createAnswer } from "~/models/answer.server";
 import { getCard } from "~/models/card.server";
-import {
-  getCompleteDeck,
-  getDailyQuiz,
-  getDeckWithAnswers,
-  getQuizLength,
-  Quiz,
-} from "~/models/deck.server";
+import { CompleteDeck, getCompleteDeck } from "~/models/deck.server";
 import { getFormData } from "~/utils/getFormData";
 
 type ActionData =
@@ -66,15 +59,13 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 type LoaderData = {
-  deck: Deck;
-  card: Quiz[number] | null;
-  progress: number;
+  deck: CompleteDeck;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.id, "params.id must be a string");
 
-  const deck = await getCompleteDeck(params.id)
+  const deck = await getCompleteDeck(params.id);
 
   if (!deck) {
     throw new Response("What a deck! Not found.", {
@@ -82,15 +73,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
   }
 
-  const quiz = getDailyQuiz(deck);
-
-  const progress =
-    ((getQuizLength(deck) - quiz.length) / getQuizLength(deck)) * 100;
-
   return json<LoaderData>({
     deck,
-    card: quiz[0],
-    progress,
   });
 };
 
@@ -128,7 +112,9 @@ export default function QuizPage() {
     }
   }, [status]);
 
-  if (!data.card) {
+  const card = data.deck.quiz[0];
+
+  if (!card) {
     return (
       <div className="prose mx-auto px-4 py-10 sm:px-6 lg:px-8">
         <h1>All done!</h1>
@@ -154,24 +140,24 @@ export default function QuizPage() {
         <div className="flex-1 overflow-hidden rounded-full bg-gray-200">
           <div
             className="h-2 rounded-full bg-blue-600 transition-all"
-            style={{ width: `${data.progress}%` }}
+            style={{ width: `${data.deck.quizProgress}%` }}
           />
         </div>
       </div>
 
-      <h1>{data.card.front}</h1>
+      <h1>{card.front}</h1>
       <input
         type="hidden"
         name="answer"
         value="blah"
         disabled={status === "ask"}
       />
-      <input type="hidden" name="cardId" value={data.card.id} />
+      <input type="hidden" name="cardId" value={card.id} />
       <input name="status" type="hidden" value={status} />
       <Input>
         <Input.Label>Translate into English</Input.Label>
         <Input.Field
-        style={{padding: '0.75rem 1.5rem', fontSize: '1rem'}}
+          style={{ padding: "0.75rem 1.5rem", fontSize: "1rem" }}
           required
           ref={inputRef}
           disabled={status === "validate"}

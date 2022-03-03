@@ -1,13 +1,10 @@
-import type { Answer, Card } from "@prisma/client";
 import { useState } from "react";
 import {
-
   HeadersFunction,
   json,
   Link,
   LoaderFunction,
   MetaFunction,
-
   useCatch,
   useLoaderData,
   useParams,
@@ -18,18 +15,8 @@ import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
-
-import {
-  getCompleteDeck,
-  CompleteDeck,
-
-
-
-
-} from "~/models/deck.server";
+import { CompleteDeck, getCompleteDeck } from "~/models/deck.server";
 import { requireUser } from "~/models/user.server";
-
-
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return {

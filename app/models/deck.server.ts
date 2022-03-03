@@ -1,46 +1,22 @@
-import type { Answer, Card, Deck } from "@prisma/client";
+import type { Answer, Card, Deck as PrismaDeck } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type DeckWithAnswers = Deck & {
+type StubDeck = PrismaDeck & {
   cards: (Card & {
     answers: Answer[];
   })[];
 };
 
-export type Quiz = (Card & { answers: Answer[] })[];
-
-export async function createDeck(name: string, userId: string) {
-  const create: { front: string; back: string }[] = [];
-
-  for (let index = 0; index < 40; index += 1) {
-    const first = Math.floor(Math.random() * 5 + 1);
-    const second = Math.floor(Math.random() * 5 + 1);
-
-    const front = `${first} + ${second}`;
-    const back = `${first + second}`;
-
-    create.push({ front, back });
-  }
-
-  return prisma.deck.create({
-    data: {
-      name,
-      userId,
-      cards: { create },
-    },
-  });
-}
-
-export function deleteDeck(id: string) {
-  return prisma.deck.delete({
-    where: { id },
-  });
-}
+export type Deck = PrismaDeck & {
+  cards: (Card & {
+    answers: Answer[];
+  } & { score: number })[];
+} & { quiz: (Card & { answers: Answer[] })[]; quizProgress: number };
 
 const now = new Date();
 
-export function score(answers: Answer[]) {
+function score(answers: Answer[]) {
   if (answers.length === 0) {
     return -1;
   }
@@ -60,7 +36,7 @@ export function score(answers: Answer[]) {
   return weightedSum / answers.length;
 }
 
-export function getQuizLength(deck: DeckWithAnswers) {
+function getQuizLength(deck: StubDeck) {
   const yesterdaysDeck = {
     ...deck,
     cards: deck.cards.map((card) => ({
@@ -79,7 +55,7 @@ export function getQuizLength(deck: DeckWithAnswers) {
   return quiz.length;
 }
 
-export function getDailyQuiz(deck: DeckWithAnswers) {
+function getQuiz(deck: StubDeck) {
   const yesterdaysDeck = {
     ...deck,
     cards: deck.cards.map((card) => ({
@@ -108,53 +84,7 @@ export function getDailyQuiz(deck: DeckWithAnswers) {
   return quiz.filter((card) => !cardIdsToday.includes(card.id));
 }
 
-export function getDeck(id: string) {
-  return prisma.deck.findUnique({
-    where: { id },
-  });
-}
-
-export function getDeckWithAnswers(id: string) {
-  return prisma.deck.findUnique({
-    where: { id },
-    include: {
-      cards: {
-        include: { answers: true },
-      },
-    },
-  });
-}
-
-export function getDecksWithAnswers(userId: string) {
-  return prisma.deck.findMany({
-    where: {
-      userId,
-    },
-    include: {
-      cards: {
-        include: { answers: true },
-      },
-    },
-  });
-}
-
-// TODO: quiz progress
-// TODO: measure performance / cache this w redis
-/*
-  CompleteDeck
-  - Deck with quiz
-    - Cards with score
-      - Answers
-*/
-export type CompleteDeck = Deck & {
-  cards: (Card & {
-    answers: Answer[];
-  } & { score: number })[];
-} & { quiz: (Card & { answers: Answer[] })[] };
-
-export async function getCompleteDeck(
-  id: string,
-): Promise<CompleteDeck | null> {
+export async function getDeck(id: string): Promise<Deck | null> {
   const deck = await prisma.deck.findUnique({
     where: { id },
     include: {
@@ -177,6 +107,9 @@ export async function getCompleteDeck(
           ? 0
           : Math.round(score(card.answers) * 100),
     })),
-    quiz: getDailyQuiz(deck),
+    quiz: getQuiz(deck),
+    quizProgress:
+      ((getQuizLength(deck) - getQuiz(deck).length) / getQuizLength(deck)) *
+      100,
   };
 }
