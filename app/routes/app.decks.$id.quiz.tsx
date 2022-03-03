@@ -20,6 +20,7 @@ import { Input } from "~/components/Input";
 import { createAnswer } from "~/models/answer.server";
 import { getCard } from "~/models/card.server";
 import {
+  getCompleteDeck,
   getDailyQuiz,
   getDeckWithAnswers,
   getQuizLength,
@@ -73,7 +74,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.id, "params.id must be a string");
 
-  const deck = await getDeckWithAnswers(params.id);
+  const deck = await getCompleteDeck(params.id)
 
   if (!deck) {
     throw new Response("What a deck! Not found.", {

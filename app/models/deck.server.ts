@@ -138,6 +138,8 @@ export function getDecksWithAnswers(userId: string) {
   });
 }
 
+// TODO: quiz progress
+// TODO: measure performance / cache this w redis
 /*
   CompleteDeck
   - Deck with quiz
@@ -148,9 +150,11 @@ export type CompleteDeck = Deck & {
   cards: (Card & {
     answers: Answer[];
   } & { score: number })[];
-} & { quiz: (Card & { answers: Answer[] })[] }
+} & { quiz: (Card & { answers: Answer[] })[] };
 
-export async function getCompleteDeck(id: string): Promise<CompleteDeck | null> {
+export async function getCompleteDeck(
+  id: string,
+): Promise<CompleteDeck | null> {
   const deck = await prisma.deck.findUnique({
     where: { id },
     include: {
