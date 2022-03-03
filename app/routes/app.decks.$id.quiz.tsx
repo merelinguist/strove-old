@@ -170,6 +170,7 @@ export default function QuizPage() {
       <Input>
         <Input.Label>Translate into English</Input.Label>
         <Input.Field
+        style={{padding: '0.75rem 1.5rem', fontSize: '1rem'}}
           required
           ref={inputRef}
           disabled={status === "validate"}

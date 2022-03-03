@@ -1,13 +1,13 @@
-import type { Card } from "@prisma/client";
+import type { Answer, Card } from "@prisma/client";
 import { useState } from "react";
 import {
-  ActionFunction,
+
   HeadersFunction,
   json,
   Link,
   LoaderFunction,
   MetaFunction,
-  redirect,
+
   useCatch,
   useLoaderData,
   useParams,
@@ -18,45 +18,18 @@ import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
-import { prisma } from "~/db.server";
+
 import {
-  DeckWithAnswers,
-  getDailyQuiz,
-  getDeck,
-  getDeckWithAnswers,
-  Quiz,
-  score,
+  getCompleteDeck,
+  CompleteDeck,
+
+
+
+
 } from "~/models/deck.server";
 import { requireUser } from "~/models/user.server";
-import { getFormData } from "~/utils/getFormData";
 
-export const action: ActionFunction = async ({ request, params }) => {
-  const { _method: method } = await getFormData(request, ["_method"] as const);
 
-  if (method === "delete") {
-    const user = await requireUser(request, route("/login"));
-
-    invariant(params.id, "params.id must be a string");
-
-    const deck = await getDeck(params.id);
-
-    if (!deck) {
-      throw new Response("Can't delete what does not exist", { status: 404 });
-    }
-
-    if (deck.userId !== user.id) {
-      throw new Response("Pssh, nice try. That's not your deck", {
-        status: 401,
-      });
-    }
-
-    await prisma.deck.delete({ where: { id: params.id } });
-
-    return redirect("/");
-  }
-
-  return {};
-};
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
   return {
@@ -66,10 +39,8 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 type LoaderData = {
-  deck: DeckWithAnswers;
-  scores: number[];
+  deck: CompleteDeck;
   isOwner: boolean;
-  quiz: Quiz;
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -77,7 +48,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   invariant(params.id, "params.id must be a string");
 
-  const deck = await getDeckWithAnswers(params.id);
+  const deck = await getCompleteDeck(params.id);
 
   if (!deck) {
     throw new Response("What a deck! Not found.", {
@@ -85,14 +56,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     });
   }
 
-  const scores = deck.cards.map((card) => score(card.answers));
-
   return json<LoaderData>(
     {
       deck,
-      scores,
       isOwner: user.id === deck.userId,
-      quiz: getDailyQuiz(deck),
     },
     {
       headers: {
@@ -124,11 +91,9 @@ export const meta: MetaFunction = ({
 function CardItem({
   card,
   index,
-  scores,
 }: {
-  card: Card;
+  card: CompleteDeck["cards"][number];
   index: number;
-  scores: number[];
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -138,11 +103,7 @@ function CardItem({
         {isEditing ? <input /> : card.front}
       </td>
       <td className="whitespace-nowrap px-6 py-4">{card.back}</td>
-      <td className="whitespace-nowrap px-6 py-4">
-        {Math.round(scores[index] * 100) === -100
-          ? 0
-          : Math.round(scores[index] * 100)}
-      </td>
+      <td className="whitespace-nowrap px-6 py-4">{card.score}</td>
       <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
         <button
           type="button"
@@ -217,11 +178,7 @@ export default function ShowDeckPage() {
                   </thead>
                   <tbody>
                     {data.deck.cards.map((card, index) => (
-                      <CardItem
-                        card={card}
-                        index={index}
-                        scores={data.scores}
-                      />
+                      <CardItem card={card} index={index} />
                     ))}
                   </tbody>
                 </table>

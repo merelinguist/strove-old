@@ -137,3 +137,42 @@ export function getDecksWithAnswers(userId: string) {
     },
   });
 }
+
+/*
+  CompleteDeck
+  - Deck with quiz
+    - Cards with score
+      - Answers
+*/
+export type CompleteDeck = Deck & {
+  cards: (Card & {
+    answers: Answer[];
+  } & { score: number })[];
+} & { quiz: (Card & { answers: Answer[] })[] }
+
+export async function getCompleteDeck(id: string): Promise<CompleteDeck | null> {
+  const deck = await prisma.deck.findUnique({
+    where: { id },
+    include: {
+      cards: {
+        include: { answers: true },
+      },
+    },
+  });
+
+  if (!deck) {
+    return null;
+  }
+
+  return {
+    ...deck,
+    cards: deck.cards.map((card) => ({
+      ...card,
+      score:
+        Math.round(score(card.answers) * 100) === -100
+          ? 0
+          : Math.round(score(card.answers) * 100),
+    })),
+    quiz: getDailyQuiz(deck),
+  };
+}
