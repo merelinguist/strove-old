@@ -15,7 +15,7 @@ import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Main } from "~/components/Main";
-import { CompleteDeck, getCompleteDeck } from "~/models/deck.server";
+import { Deck, getDeck } from "~/models/deck.server";
 import { requireUser } from "~/models/user.server";
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
@@ -26,7 +26,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 type LoaderData = {
-  deck: CompleteDeck;
+  deck: Deck;
   isOwner: boolean;
 };
 
@@ -35,7 +35,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   invariant(params.id, "params.id must be a string");
 
-  const deck = await getCompleteDeck(params.id);
+  const deck = await getDeck(params.id);
 
   if (!deck) {
     throw new Response("What a deck! Not found.", {
@@ -79,7 +79,7 @@ function CardItem({
   card,
   index,
 }: {
-  card: CompleteDeck["cards"][number];
+  card: Deck["cards"][number];
   index: number;
 }) {
   const [isEditing, setIsEditing] = useState(false);

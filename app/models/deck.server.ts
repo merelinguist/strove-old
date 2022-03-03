@@ -84,20 +84,8 @@ function getQuiz(deck: StubDeck) {
   return quiz.filter((card) => !cardIdsToday.includes(card.id));
 }
 
-export async function getDeck(id: string): Promise<Deck | null> {
-  const deck = await prisma.deck.findUnique({
-    where: { id },
-    include: {
-      cards: {
-        include: { answers: true },
-      },
-    },
-  });
-
-  if (!deck) {
-    return null;
-  }
-
+// TODO: swr redis cache
+function buildDeck(deck: StubDeck): Deck {
   return {
     ...deck,
     cards: deck.cards.map((card) => ({
@@ -112,4 +100,34 @@ export async function getDeck(id: string): Promise<Deck | null> {
       ((getQuizLength(deck) - getQuiz(deck).length) / getQuizLength(deck)) *
       100,
   };
+}
+
+export async function getDeck(id: string): Promise<Deck | null> {
+  const deck = await prisma.deck.findUnique({
+    where: { id },
+    include: {
+      cards: {
+        include: { answers: true },
+      },
+    },
+  });
+
+  if (!deck) {
+    return null;
+  }
+
+  return buildDeck(deck);
+}
+
+export async function getDecks(userId: string): Promise<Deck[]> {
+  const decks = await prisma.deck.findMany({
+    where: { userId },
+    include: {
+      cards: {
+        include: { answers: true },
+      },
+    },
+  });
+
+  return decks.map(buildDeck);
 }

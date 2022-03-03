@@ -18,7 +18,7 @@ import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { createAnswer } from "~/models/answer.server";
 import { getCard } from "~/models/card.server";
-import { CompleteDeck, getCompleteDeck } from "~/models/deck.server";
+import { Deck, getDeck } from "~/models/deck.server";
 import { getFormData } from "~/utils/getFormData";
 
 type ActionData =
@@ -59,13 +59,13 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 type LoaderData = {
-  deck: CompleteDeck;
+  deck: Deck;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.id, "params.id must be a string");
 
-  const deck = await getCompleteDeck(params.id);
+  const deck = await getDeck(params.id);
 
   if (!deck) {
     throw new Response("What a deck! Not found.", {

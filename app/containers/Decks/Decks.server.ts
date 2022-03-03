@@ -1,28 +1,29 @@
 import { json, LoaderFunction } from "remix";
 import { route } from "routes-gen";
 
-import { prisma } from "~/db.server";
-import { DeckWithAnswers, getDailyQuiz, Quiz } from "~/models/deck.server";
+import { Deck, getDecks } from "~/models/deck.server";
 import { requireUser } from "~/models/user.server";
 
 export type LoaderData = {
-  decks: (DeckWithAnswers & { quiz: Quiz })[];
+  decks: Deck[];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await requireUser(request, route("/login"));
 
-  const decks = await prisma.deck.findMany({
-    include: { cards: { include: { answers: true } } },
-    where: {
-      userId: user.id,
-    },
+  const decks = await getDecks(user.id);
+
+  decks.sort((deckA, deckB) => {
+    if ((deckA.quiz.length === 0) === (deckB.quiz.length === 0)) {
+      return 0;
+    }
+
+    if (deckA.quiz.length === 0) {
+      return 1;
+    }
+
+    return -1;
   });
 
-  const decksWithQuizzes = decks.map((deck) => ({
-    ...deck,
-    quiz: getDailyQuiz(deck),
-  }));
-
-  return json<LoaderData>({ decks: decksWithQuizzes });
+  return json<LoaderData>({ decks });
 };

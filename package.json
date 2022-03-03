@@ -49,6 +49,7 @@
     "react-dom": "^17.0.2",
     "react-polymorphic-types": "^2.0.0",
     "remix": "^1.2.1",
+    "remix-utils": "^2.5.0",
     "routes-gen": "^0.3.0",
     "string-similarity": "^4.0.4",
     "tailwindcss": "^3.0.23",
