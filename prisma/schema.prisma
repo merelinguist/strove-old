@@ -14,6 +14,7 @@ model User {
   updatedAt DateTime @updatedAt
   email    String @unique
   password String
+
   decks    Deck[]
 }
 
@@ -24,7 +25,7 @@ model Deck {
   updatedAt DateTime @updatedAt
   name      String
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   cards Card[]
 }
@@ -36,7 +37,7 @@ model Card {
   front     String
   back      String
 
-  deck    Deck     @relation(fields: [deckId], references: [id])
+  deck    Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId  String
   answers Answer[]
 }
@@ -47,6 +48,6 @@ model Answer {
   updatedAt   DateTime @updatedAt
   correctness Float
 
-  card   Card   @relation(fields: [cardId], references: [id])
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
   cardId String
 }

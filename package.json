@@ -2,8 +2,9 @@
   "name": "strove",
   "private": true,
   "scripts": {
-    "build": "npm run build:prisma && npm run build:css && remix build",
+    "build": "npm run build:metronome && npm run build:prisma && npm run build:css && remix build",
     "build:css": "tailwindcss -o ./app/styles.css",
+    "build:metronome": "metronome setup",
     "build:prisma": "npm run prisma migrate deploy",
     "clean": "git clean --interactive -dx --exclude .env.local --exclude .env.*.local --exclude node_modules/ --exclude .husky/",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:remix\"",
@@ -16,7 +17,7 @@
     "lint:eslint": "eslint --ext .ts,.tsx,.js,.jsx --ignore-path .gitignore .",
     "lint:prettier": "prettier --check --ignore-path .gitignore .",
     "lint:typescript": "tsc",
-    "postinstall": "remix setup node && metronome setup",
+    "postinstall": "remix setup node",
     "prepare": "husky install",
     "prisma": "prisma",
     "routes-gen": "routes-gen -d @routes-gen/remix"
@@ -29,6 +30,7 @@
     "seed": "node --require esbuild-register prisma/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.7",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.5",
     "@kripod/uuidv7": "^0.2.3",
@@ -71,6 +73,7 @@
     "@typescript-eslint/parser": "^5.12.0",
     "concurrently": "^7.0.0",
     "dotenv": "^16.0.0",
+    "esbuild": "^0.14.25",
     "esbuild-register": "^3.3.2",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",

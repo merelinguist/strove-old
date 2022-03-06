@@ -2,7 +2,6 @@ import { ElementType, ForwardedRef, forwardRef } from "react";
 import type {
   PolymorphicForwardRefExoticComponent,
   PolymorphicPropsWithoutRef,
-  PolymorphicPropsWithRef,
 } from "react-polymorphic-types";
 
 import { classNames } from "~/utils/classNames";
@@ -23,11 +22,11 @@ const sizeMaps = createMaps({
 
 const variantMaps = createMaps({
   primary:
-    "border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    "border-transparent bg-sky-500 text-white hover:bg-sky-600 focus:ring-sky-500",
   white:
-    "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+    "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-sky-500",
   danger:
-    "border-transparent bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+    "border-transparent bg-rose-500 text-white hover:bg-rose-600 focus:ring-rose-500",
 });
 
 const ButtonDefaultElement = "button";
@@ -37,10 +36,6 @@ type ButtonOwnProps = {
   size?: keyof typeof sizeMaps;
   variant?: keyof typeof variantMaps;
 };
-
-export type ButtonProps<
-  T extends React.ElementType = typeof ButtonDefaultElement,
-> = PolymorphicPropsWithRef<ButtonOwnProps, T>;
 
 export const Button: PolymorphicForwardRefExoticComponent<
   ButtonOwnProps,

@@ -84,7 +84,6 @@ function getQuiz(deck: StubDeck) {
   return quiz.filter((card) => !cardIdsToday.includes(card.id));
 }
 
-// TODO: swr redis cache
 function buildDeck(deck: StubDeck): Deck {
   return {
     ...deck,
@@ -104,12 +103,12 @@ function buildDeck(deck: StubDeck): Deck {
 
 export async function getDeck(id: string): Promise<Deck | null> {
   const deck = await prisma.deck.findUnique({
-    where: { id },
     include: {
       cards: {
         include: { answers: true },
       },
     },
+    where: { id },
   });
 
   if (!deck) {
@@ -121,13 +120,19 @@ export async function getDeck(id: string): Promise<Deck | null> {
 
 export async function getDecks(userId: string): Promise<Deck[]> {
   const decks = await prisma.deck.findMany({
-    where: { userId },
     include: {
       cards: {
         include: { answers: true },
       },
     },
+    where: { userId },
   });
 
   return decks.map(buildDeck);
+}
+
+export function deleteDeck(id: string) {
+  return prisma.deck.delete({
+    where: { id },
+  });
 }

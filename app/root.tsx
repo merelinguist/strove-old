@@ -1,6 +1,4 @@
-import splitbee from "@splitbee/web";
 import Inspect from "inspx";
-import { useEffect } from "react";
 import type { LinksFunction, MetaFunction } from "remix";
 import {
   Links,
@@ -12,6 +10,8 @@ import {
 } from "remix";
 
 import styles from "~/styles.css";
+
+import { useSplitbee } from "./utils/useSplitbee";
 
 export const links: LinksFunction = () => {
   return [
@@ -25,14 +25,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function App() {
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      splitbee.init({
-        scriptUrl: "/bee.js",
-        apiUrl: "/_hive",
-      });
-    }
-  }, []);
+  useSplitbee();
 
   return (
     <html className="h-full text-gray-900 antialiased" lang="en">
@@ -43,9 +36,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Inspect disabled={process.env.NODE_ENV === "production"}>
-          <Outlet />
-        </Inspect>
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

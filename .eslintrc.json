@@ -41,7 +41,8 @@
 
     // Custom
     "@typescript-eslint/no-throw-literal": "off",
-    "jsx-a11y/label-has-associated-control": "off"
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/jsx-sort-props": "error"
   },
 
   "overrides": [

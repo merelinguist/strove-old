@@ -16,84 +16,62 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 const USER_SESSION_KEY = "userId";
-const FLASH_SESSION_KEY = "flash";
-
-export async function destroySession(request: Request, redirectTo: string) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
-
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await sessionStorage.destroySession(session),
-    },
-  });
-}
-
-export type Flash = {
-  type: "error";
-  message: string;
-};
-
-export async function setFlash(
-  request: Request,
-  redirectTo: string,
-  { type, message }: Flash,
-) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
-
-  session.flash(FLASH_SESSION_KEY, { type, message });
-
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session),
-    },
-  });
-}
 
 export async function getSession(request: Request) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
-
-  const unsafeUserId = session.get(USER_SESSION_KEY);
-  const userId = typeof unsafeUserId === "string" ? unsafeUserId : null;
-
-  const unsafeFlash = session.get(FLASH_SESSION_KEY);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function isFlash(flash: any): flash is Flash {
-    return (
-      typeof flash === "object" &&
-      "type" in flash &&
-      "message" in flash &&
-      flash.type === "error"
-    );
-  }
-
-  const flash = isFlash(unsafeFlash) ? unsafeFlash : null;
-
-  return { session, userId, flash };
+  return sessionStorage.getSession(request.headers.get("Cookie"));
 }
 
-export async function setSession(
-  request: Request,
-  redirectTo: string,
-  { userId }: { userId?: string },
-) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
+export async function getUserId(request: Request) {
+  const session = await getSession(request);
 
-  if (userId) {
-    session.set(USER_SESSION_KEY, userId);
+  const userId = session.get(USER_SESSION_KEY);
+
+  if (typeof userId !== "string") {
+    return null;
   }
+
+  return userId;
+}
+
+export async function requireUserId(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname,
+) {
+  const session = await getSession(request);
+
+  const userId = session.get("userId");
+
+  if (typeof userId !== "string") {
+    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+
+    throw redirect(`/login?${searchParams}`);
+  }
+
+  return userId;
+}
+
+export async function createUserSession(
+  request: Request,
+  userId: string,
+  redirectTo: string,
+) {
+  const session = await getSession(request);
+
+  session.set(USER_SESSION_KEY, userId);
 
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session),
+    },
+  });
+}
+
+export async function logout(request: Request) {
+  const session = await getSession(request);
+
+  return redirect("/login", {
+    headers: {
+      "Set-Cookie": await sessionStorage.destroySession(session),
     },
   });
 }
