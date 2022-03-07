@@ -1,6 +1,5 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -42,18 +41,11 @@ model Card {
   updatedAt DateTime @updatedAt
   front     String
   back      String
+  interval Int @default(0)
+  repetition Int @default(0)
+  easiness Float @default(2.5)
+  dueDate DateTime @default(now())
 
   deck    Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId  String
-  answers Answer[]
-}
-
-model Answer {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  correctness Float
-
-  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  cardId String
 }
