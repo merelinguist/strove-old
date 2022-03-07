@@ -1,15 +1,21 @@
 import { faker } from "@faker-js/faker";
+import bcrypt from "@node-rs/bcrypt";
 import { Card, Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const seed = async () => {
+async function seed() {
   const email = "me@here.com";
+  const hash = await bcrypt.hash("mysupergoodpassword", 10);
 
   const me = await prisma.user.upsert({
     create: {
       email,
-      password: "$2b$12$VSy8oq0VOcSiNCiH1oBfIuLBoS6LaAywIl2XfAOiWKI5MaqAzZoy.",
+      password: {
+        create: {
+          hash,
+        },
+      },
     },
     update: {},
     where: { email },
@@ -32,6 +38,14 @@ const seed = async () => {
   }
 
   await Promise.all(cards);
-};
+}
 
-seed();
+try {
+  seed().then(() => {
+    process.exit(0);
+  });
+} catch (error: unknown) {
+  // eslint-disable-next-line no-console
+  console.error(error);
+  process.exit(1);
+}

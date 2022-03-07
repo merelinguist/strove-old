@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -9,15 +9,21 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  email    String @unique
-  password String
+  email     String   @unique
 
+  password Password?
   decks    Deck[]
 }
 
+model Password {
+  hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
 
 model Deck {
   id        String   @id @default(cuid())
@@ -25,9 +31,9 @@ model Deck {
   updatedAt DateTime @updatedAt
   name      String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-  cards Card[]
+  cards  Card[]
 }
 
 model Card {
