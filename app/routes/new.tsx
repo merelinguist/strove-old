@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { ActionFunction, MetaFunction } from "remix";
 import { Form, redirect } from "remix";
 
@@ -38,6 +39,8 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const [cards, setCards] = useState("");
+
   return (
     <div className="prose mx-auto p-8">
       <h1>Notes</h1>
@@ -50,9 +53,9 @@ export default function Index() {
 
         <Input>
           <Input.Label>Cards</Input.Label>
-          <textarea
-            className="mt-1 block w-full font-mono"
+          <Input.Textarea
             name="cards"
+            onChange={(event) => setCards(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Tab") {
                 const textarea = document.querySelector("textarea");
@@ -76,11 +79,39 @@ export default function Index() {
               }
             }}
             rows={8}
+            style={{
+              fontFamily:
+                'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            }}
+            value={cards}
           />
         </Input>
 
         <Button type="submit">Create</Button>
       </Form>
+
+      <hr />
+
+      <table>
+        <thead>
+          <tr>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th />
+            <th>Front</th>
+            <th>Back</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cards.split("\n").map((line, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{line.split("\t")[0]}</td>
+              <td>{line.split("\t")[1]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

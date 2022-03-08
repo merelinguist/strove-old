@@ -1,4 +1,4 @@
-import { json, Link, LoaderFunction, useLoaderData } from "remix";
+import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
 
 import { Deck, getDecks } from "~/models/deck.server";
 import { requireUserId } from "~/session.server";
@@ -25,6 +25,16 @@ export default function IndexPage() {
       <ul>
         <li>
           <Link to="new">Create deck</Link>
+        </li>
+        <li>
+          <Form action="logout" method="post" reloadDocument>
+            <button
+              className="font-medium text-gray-900 underline"
+              type="submit"
+            >
+              Logout
+            </button>
+          </Form>
         </li>
       </ul>
 

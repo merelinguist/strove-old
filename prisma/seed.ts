@@ -27,7 +27,7 @@ async function seed() {
 
   const cards: Prisma.Prisma__CardClient<Card>[] = [];
 
-  for (let index = 0; index < 20; index += 1) {
+  for (let index = 0; index < 100; index += 1) {
     const animal = faker.animal.type();
 
     cards.push(

@@ -8,7 +8,11 @@ type StubDeck = PrismaDeck & {
 
 export type Deck = PrismaDeck & {
   cards: Card[];
-} & { quiz: Card[] };
+} & { quiz: Question[] };
+
+export type Question =
+  | { type: "simple"; card: Card }
+  | { type: "multi"; card: Card; cards: Card[] };
 
 function getQuiz(deck: StubDeck) {
   const cards = deck.cards.filter(
@@ -17,7 +21,28 @@ function getQuiz(deck: StubDeck) {
       card.dueDate.toDateString() === new Date().toDateString(),
   );
 
-  return cards;
+  const questions: Question[] = cards.map((card) => {
+    if (card.repetition === 0) {
+      return {
+        type: "multi",
+        card,
+        cards: [
+          card,
+          ...deck.cards.filter((_, index) => index > 0).slice(0, 3),
+        ].sort((cardA, cardB) => {
+          function shuffle(id: string) {
+            return id.split(/[a-z]/g).reverse().join();
+          }
+
+          return shuffle(cardA.id).localeCompare(shuffle(cardB.id));
+        }),
+      };
+    }
+
+    return { type: "simple", card };
+  });
+
+  return questions;
 }
 
 function buildDeck(deck: StubDeck): Deck {

@@ -3,6 +3,7 @@ import {
   InputHTMLAttributes,
   LabelHTMLAttributes,
   ReactNode,
+  TextareaHTMLAttributes,
 } from "react";
 
 export function Input({ children }: { children: ReactNode }) {
@@ -31,3 +32,18 @@ const Field = forwardRef<
 });
 
 Input.Field = Field;
+
+const Textarea = forwardRef<
+  HTMLTextAreaElement,
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className">
+>((props, ref) => {
+  return (
+    <textarea
+      ref={ref}
+      {...props}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+    />
+  );
+});
+
+Input.Textarea = Textarea;

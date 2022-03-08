@@ -1,6 +1,6 @@
 import { RadioGroup } from "@headlessui/react";
-import { CheckCircleIcon } from "@heroicons/react/solid";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { Card } from "@prisma/client";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActionFunction,
   Form,
@@ -9,6 +9,7 @@ import {
   LoaderFunction,
   useActionData,
   useLoaderData,
+  useLocation,
   useTransition,
 } from "remix";
 import { notFound } from "remix-utils";
@@ -18,94 +19,98 @@ import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { prisma } from "~/db.server";
 import { getCard } from "~/models/card.server";
-import { Deck, getDeck } from "~/models/deck.server";
+import { Deck, getDeck, Question } from "~/models/deck.server";
 import { classNames } from "~/utils/classNames";
 import { getFormData } from "~/utils/getFormData";
 import { getGrade, practiceCard } from "~/utils/supermemo";
 
-const plans = [
-  {
-    name: "Hobby",
-    ram: "8GB",
-    cpus: "4 CPUs",
-    disk: "160 GB SSD disk",
-    price: "$40",
-  },
-  {
-    name: "Startup",
-    ram: "12GB",
-    cpus: "6 CPUs",
-    disk: "256 GB SSD disk",
-    price: "$80",
-  },
-  {
-    name: "Business",
-    ram: "16GB",
-    cpus: "8 CPUs",
-    disk: "512 GB SSD disk",
-    price: "$160",
-  },
-  {
-    name: "Enterprise",
-    ram: "32GB",
-    cpus: "12 CPUs",
-    disk: "1024 GB SSD disk",
-    price: "$240",
-  },
-];
+function useStatus() {
+  const actionData = useActionData<ActionData>();
 
-function Example() {
-  const [selected, setSelected] = useState(plans[0]);
+  const status = useMemo<ActionData>(
+    () => actionData || { status: "ask" },
+    [actionData],
+  );
+
+  return status;
+}
+
+function Multi({ inputRef }: { inputRef: RefObject<HTMLInputElement> }) {
+  const transition = useTransition();
+  const data = useLoaderData<LoaderData>();
+
+  if (!data.question || data.question.type !== "multi") {
+    return null;
+  }
 
   return (
-    <RadioGroup onChange={setSelected} value={selected}>
-      <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
-      <div className="grid grid-cols-2 gap-4">
-        {plans.map((plan, index) => (
-          <RadioGroup.Option
-            key={plan.name}
-            className={({ checked, active }) =>
-              classNames(
-                checked ? "border-transparent" : "border-gray-300",
-                active ? "border-sky-500 ring-2 ring-sky-500" : "",
-                "relative block cursor-pointer rounded-lg border bg-white px-4 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between",
-              )
-            }
-            value={plan}
-          >
-            {({ active, checked }) => (
-              <>
-                <div className="flex items-center gap-4">
-                  <span
-                    aria-hidden
-                    className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-800"
-                  >
-                    {index + 1}
-                  </span>
-                  <RadioGroup.Label
-                    as="p"
-                    className="m-0 text-sm font-medium text-gray-900"
-                  >
-                    {plan.name}
-                  </RadioGroup.Label>
-                </div>
+    <div>
+      <label className="text-base font-medium">
+        {transition.state === "loading" ? "..." : data.question.card.front}
+      </label>
 
-                <div
-                  aria-hidden
-                  className={classNames(
-                    active ? "border" : "border-2",
-                    checked ? "border-sky-500" : "border-transparent",
-                    "pointer-events-none absolute -inset-px rounded-lg",
-                  )}
-                />
-              </>
-            )}
-          </RadioGroup.Option>
-        ))}
-      </div>
-    </RadioGroup>
+      <fieldset key={data.question.card.id} className="mt-4">
+        <legend className="sr-only">Notification method</legend>
+        <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+          {data.question.cards.map((card, index) => (
+            <div key={card.id} className="flex items-center">
+              <input
+                ref={index === 0 ? inputRef : undefined}
+                className="h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500"
+                defaultChecked={index === 0}
+                id={card.id}
+                name="answer"
+                required
+                type="radio"
+                value={card.back}
+              />
+              <label
+                className="ml-3 block text-sm font-medium text-gray-700"
+                htmlFor={card.id}
+              >
+                {card.back}
+              </label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+    </div>
   );
 }
+
+function Simple({ inputRef }: { inputRef: RefObject<HTMLInputElement> }) {
+  const transition = useTransition();
+  const status = useStatus();
+  const data = useLoaderData<LoaderData>();
+
+  if (!data.question || data.question.type !== "simple") {
+    return null;
+  }
+
+  return (
+    <Input>
+      <Input.Label>
+        {transition.state === "loading" ? "..." : data.question.card.front}
+      </Input.Label>
+      <input
+        ref={inputRef}
+        className={classNames(
+          "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+          // eslint-disable-next-line no-nested-ternary
+          status.status === "validate"
+            ? status.isCorrect
+              ? "border-emerald-500 ring-1 ring-emerald-500"
+              : "border-rose-500 ring-1 ring-rose-500"
+            : "border-gray-300 focus:border-sky-500 focus:ring-sky-500",
+        )}
+        disabled={status.status === "validate"}
+        name="answer"
+        type="text"
+      />
+    </Input>
+  );
+}
+
 type ActionData =
   | {
       status: "ask";
@@ -153,6 +158,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 type LoaderData = {
   deck: Deck;
+  question: Question | null;
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -162,7 +168,9 @@ export const loader: LoaderFunction = async ({ params }) => {
     throw notFound("deck not found");
   }
 
-  return json<LoaderData>({ deck });
+  const question = deck.quiz[0];
+
+  return json<LoaderData>({ deck, question });
 };
 
 export default function LearnDeckPage() {
@@ -170,10 +178,9 @@ export default function LearnDeckPage() {
   const data = useLoaderData<LoaderData>();
   const transition = useTransition();
 
-  const status = useMemo<ActionData>(
-    () => actionData || { status: "ask" },
-    [actionData],
-  );
+  console.log(data);
+
+  const status = useStatus();
 
   let buttonText: string;
 
@@ -200,11 +207,9 @@ export default function LearnDeckPage() {
     if (status.status === "validate") {
       buttonRef.current?.focus();
     }
-  }, [status]);
+  }, [status, data.question?.card]);
 
-  const card = data.deck.quiz[0];
-
-  if (!card) {
+  if (!data.question) {
     return (
       <div className="prose mx-auto p-8">
         <h1>All done!</h1>
@@ -223,39 +228,20 @@ export default function LearnDeckPage() {
         type="hidden"
         value="blah"
       />
-      <input name="cardId" type="hidden" value={card.id} />
+      <input name="cardId" type="hidden" value={data.question.card.id} />
       <input name="status" type="hidden" value={status.status} />
 
       {status.status === "validate" && (
         <p>{status.isCorrect ? "Yay well done!" : "Oh no :("}</p>
       )}
 
-      {/* <Example /> */}
-      <Input>
-        <Input.Label>
-          {transition.state === "loading" ? "..." : card.front}
-        </Input.Label>
-        <input
-          ref={inputRef}
-          className={classNames(
-            "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
-            // eslint-disable-next-line no-nested-ternary
-            status.status === "validate"
-              ? status.isCorrect
-                ? "border-emerald-500 ring-1 ring-emerald-500"
-                : "border-rose-500 ring-1 ring-rose-500"
-              : "border-gray-300 focus:border-sky-500 focus:ring-sky-500",
-          )}
-          disabled={status.status === "validate"}
-          name="answer"
-          type="text"
-        />
-      </Input>
+      <Simple inputRef={inputRef} />
+      <Multi inputRef={inputRef} />
 
       <hr />
 
       {status.status === "validate" && !status.isCorrect && (
-        <p>Correct answer: {card.back} </p>
+        <p>Correct answer: {data.question.card.back}</p>
       )}
 
       <Button ref={buttonRef} type="submit">
