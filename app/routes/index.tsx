@@ -2,7 +2,6 @@ import { json, Link, LoaderFunction, useLoaderData } from "remix";
 
 import { Deck, getDecks } from "~/models/deck.server";
 import { requireUserId } from "~/session.server";
-import { classNames } from "~/utils/classNames";
 
 type LoaderData = {
   decks: Deck[];
@@ -21,7 +20,15 @@ export default function IndexPage() {
 
   return (
     <div className="prose mx-auto p-8">
-      <h1>Decks</h1>
+      <h1>Strove</h1>
+
+      <ul>
+        <li>
+          <Link to="new">Create deck</Link>
+        </li>
+      </ul>
+
+      <h2>Decks</h2>
       <ul>
         {data.decks.map((deck) => (
           <li>

@@ -12,14 +12,14 @@ function Logo() {
   return (
     <div className="flex flex-shrink-0 items-center">
       <img
+        alt="Strove"
         className="block h-8 w-auto lg:hidden"
         src="/img/logos/logo.svg"
-        alt="Strove"
       />
       <img
+        alt="Strove"
         className="hidden h-8 w-auto lg:block"
         src="/img/logos/wordmark.svg"
-        alt="Strove"
       />
     </div>
   );
@@ -29,7 +29,6 @@ function Links() {
   return (
     <div className="hidden sm:-my-px lg:ml-6 lg:flex lg:space-x-8">
       <NavLink
-        to={route("/app")}
         className={({ isActive }) =>
           classNames(
             "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
@@ -38,11 +37,11 @@ function Links() {
               : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
           )
         }
+        to={route("/app")}
       >
         Home
       </NavLink>
       <NavLink
-        to={route("/login")}
         className={({ isActive }) =>
           classNames(
             "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium",
@@ -51,6 +50,7 @@ function Links() {
               : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
           )
         }
+        to={route("/login")}
       >
         Login
       </NavLink>
@@ -61,18 +61,18 @@ function Links() {
 function Search() {
   return (
     <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
-      <Form method="get" className="w-full max-w-lg lg:max-w-xs">
-        <label htmlFor="search" className="sr-only">
+      <Form className="w-full max-w-lg lg:max-w-xs" method="get">
+        <label className="sr-only" htmlFor="search">
           Search
         </label>
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden />
+            <SearchIcon aria-hidden className="h-5 w-5 text-gray-400" />
           </div>
           <input
+            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
             id="search"
             name="search"
-            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 leading-5 placeholder-gray-500 focus:border-blue-500 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
             placeholder="Search"
             type="search"
           />
@@ -88,9 +88,9 @@ function MenuButton({ open }: { open: boolean }) {
       <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
         <span className="sr-only">Open main menu</span>
         {open ? (
-          <XIcon className="block h-6 w-6" aria-hidden />
+          <XIcon aria-hidden className="block h-6 w-6" />
         ) : (
-          <MenuIcon className="block h-6 w-6" aria-hidden />
+          <MenuIcon aria-hidden className="block h-6 w-6" />
         )}
       </Disclosure.Button>
     </div>
@@ -100,12 +100,12 @@ function MenuButton({ open }: { open: boolean }) {
 function NotificationButton() {
   return (
     <button
-      type="button"
       className="flex flex-shrink-0 rounded-full bg-white p-1 text-orange-400 hover:text-orange-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      type="button"
     >
       <span className="sr-only">View notifications</span>
       <span>8</span>
-      <FireIcon className="h-6 w-6" aria-hidden />
+      <FireIcon aria-hidden className="h-6 w-6" />
     </button>
   );
 }
@@ -140,11 +140,11 @@ function ProfileDropdown({ user }: { user: User }) {
           <Menu.Item>
             {({ active }) => (
               <a
-                href="#"
                 className={classNames(
                   active ? "bg-gray-100" : "",
                   "block px-4 py-2 text-sm text-gray-700",
                 )}
+                href="#"
               >
                 Your Profile ({user.email})
               </a>
@@ -153,11 +153,11 @@ function ProfileDropdown({ user }: { user: User }) {
           <Menu.Item>
             {({ active }) => (
               <a
-                href="#"
                 className={classNames(
                   active ? "bg-gray-100" : "",
                   "block px-4 py-2 text-sm text-gray-700",
                 )}
+                href="#"
               >
                 Settings
               </a>
@@ -166,16 +166,16 @@ function ProfileDropdown({ user }: { user: User }) {
           <Menu.Item>
             {({ active }) => (
               <Form
-                method="post"
                 action={route("/actions/logout")}
+                method="post"
                 reloadDocument
               >
                 <button
-                  type="submit"
                   className={classNames(
                     active ? "bg-gray-100" : "",
                     "block w-full px-4 py-2 text-left text-sm text-gray-700",
                   )}
+                  type="submit"
                 >
                   Sign out
                 </button>
@@ -195,15 +195,15 @@ function MobilePanel({ user }: { user: User }) {
         {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800" */}
         <Disclosure.Button
           as={Link}
-          to={route("/app")}
           className="block border-l-4 border-blue-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-blue-700"
+          to={route("/app")}
         >
           Dashboard
         </Disclosure.Button>
         <Disclosure.Button
           as={Link}
-          to={route("/app")}
           className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
+          to={route("/app")}
         >
           Team
         </Disclosure.Button>
@@ -228,32 +228,32 @@ function MobilePanel({ user }: { user: User }) {
             </div>
           </div>
           <button
-            type="button"
             className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            type="button"
           >
             <span className="sr-only">View notifications</span>
-            <BellIcon className="h-6 w-6" aria-hidden />
+            <BellIcon aria-hidden className="h-6 w-6" />
           </button>
         </div>
         <div className="mt-3 space-y-1">
           <Disclosure.Button
             as="a"
-            href="#"
             className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            href="#"
           >
             Your Profile
           </Disclosure.Button>
           <Disclosure.Button
             as="a"
-            href="#"
             className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            href="#"
           >
             Settings
           </Disclosure.Button>
-          <Form reloadDocument method="post" action={route("/actions/logout")}>
+          <Form action={route("/actions/logout")} method="post" reloadDocument>
             <button
-              type="submit"
               className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+              type="submit"
             >
               Sign out
             </button>

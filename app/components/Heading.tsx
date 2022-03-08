@@ -1,14 +1,14 @@
 import type { ElementType } from "react";
 import type { PolymorphicPropsWithoutRef } from "react-polymorphic-types";
-import { createMaps } from "~/utils/createMaps";
+
 import { classNames } from "~/utils/classNames";
+import { createMaps } from "~/utils/createMaps";
 
 const sizeMaps = createMaps({
   h1: "text-5xl font-semibold",
   h2: "text-[32px] font-medium",
   h3: "text-[24px] font-medium",
   h4: "text-[16px] font-medium",
-
 });
 
 const HeadingDefaultElement = "h2";

@@ -30,19 +30,22 @@ export default function ShowDeck() {
         </li>
       </ul>
 
+      <h2>Cards</h2>
       <table>
         <thead>
           {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
           <th />
           <th>Front</th>
           <th>Back</th>
+          <th>Due date</th>
         </thead>
         <tbody>
           {data.deck.cards.map((card, index) => (
             <tr>
               <td>{index + 1}</td>
-              <td contentEditable>{card.front}</td>
+              <td>{card.front}</td>
               <td>{card.back}</td>
+              <td>{new Date(card.dueDate).toDateString()}</td>
             </tr>
           ))}
         </tbody>

@@ -13,7 +13,8 @@ export type Deck = PrismaDeck & {
 function getQuiz(deck: StubDeck) {
   const cards = deck.cards.filter(
     (card) =>
-      new Date(card.dueDate).toDateString() === new Date().toDateString(),
+      card.dueDate < new Date() ||
+      card.dueDate.toDateString() === new Date().toDateString(),
   );
 
   return cards;
