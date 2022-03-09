@@ -33,15 +33,17 @@ export default function ShowDeck() {
       <h2>Cards</h2>
       <table>
         <thead>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th />
-          <th>Front</th>
-          <th>Back</th>
-          <th>Due date</th>
+          <tr>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th />
+            <th>Front</th>
+            <th>Back</th>
+            <th>Due date</th>
+          </tr>
         </thead>
         <tbody>
           {data.deck.cards.map((card, index) => (
-            <tr>
+            <tr key={card.id}>
               <td>{index + 1}</td>
               <td>{card.front}</td>
               <td>{card.back}</td>
