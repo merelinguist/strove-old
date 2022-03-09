@@ -41,7 +41,7 @@ export default function IndexPage() {
       <h2>Decks</h2>
       <ul>
         {data.decks.map((deck) => (
-          <li>
+          <li key={deck.id}>
             <Link to={deck.id}>{deck.name}</Link>
             <p>{deck.cards.length} cards</p>
             <p>{deck.quiz.length} left to learn</p>
