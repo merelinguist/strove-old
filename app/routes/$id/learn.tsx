@@ -12,7 +12,6 @@ import {
 } from "remix";
 import { notFound } from "remix-utils";
 import invariant from "tiny-invariant";
-
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { prisma } from "~/db.server";
@@ -25,18 +24,19 @@ import { getGrade, practiceCard } from "~/utils/supermemo";
 function Multi({
   inputRef,
   status,
+  state,
 }: {
   inputRef: RefObject<HTMLInputElement>;
   status: ActionData;
+  state: UIStates;
 }) {
   const data = useLoaderData<LoaderData>();
-
   if (!data.question || data.question.type !== "multi") {
     return null;
   }
-
+  const answer = data.question.card.back;
   const getClassNames = (card: Card) => {
-    if (status.status === "validate") {
+    if (state === "showresult" && status.status === "validate") {
       if (status.isCorrect && card.back === status.response) {
         return "border rounded border-green-300 bg-green-100";
       }
@@ -45,7 +45,7 @@ function Multi({
           return "border rounded border-red-300 bg-red-100";
         }
         // highlight the correct answer
-        if (card.back === data.question?.card.back) {
+        if (card.back === answer) {
           return "border rounded border-green-300 bg-green-100";
         }
       }
@@ -55,7 +55,11 @@ function Multi({
 
   return (
     <div>
-      <label className="text-base font-medium">
+      <label
+        className={`text-base font-medium ${
+          state === "loadingnext" ? "text-gray-400" : ""
+        }`}
+      >
         {data.question.card.front}
       </label>
 
@@ -69,13 +73,13 @@ function Multi({
             >
               <input
                 ref={index === 0 ? inputRef : undefined}
-                className="h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500"
-                defaultChecked={
-                  (status.status === "validate" &&
-                    status.response === card.back) ||
-                  (status.status === "ask" && index === 0)
-                }
-                disabled={status.status === "validate"}
+                className={`h-4 w-4 border-gray-300 ${
+                  state === "showcard" || state === "showresult"
+                    ? "text-sky-600 focus:ring-sky-500"
+                    : "text-gray-400 focus:ring-gray-400"
+                }`}
+                defaultChecked={index === 0}
+                disabled={state !== "showcard"}
                 id={card.id}
                 name="answer"
                 required
@@ -84,9 +88,7 @@ function Multi({
               />
               <label
                 className={`ml-3 block text-sm font-medium ${
-                  status.status === "validate"
-                    ? "text-gray-400"
-                    : "text-gray-700"
+                  state !== "showcard" ? "text-gray-400" : "text-gray-700"
                 }`}
                 htmlFor={card.id}
               >
@@ -103,9 +105,11 @@ function Multi({
 function Simple({
   inputRef,
   status,
+  state,
 }: {
   inputRef: RefObject<HTMLInputElement>;
   status: ActionData;
+  state: UIStates;
 }) {
   const data = useLoaderData<LoaderData>();
 
@@ -189,6 +193,7 @@ type LoaderData = {
   question: Question | null;
 };
 
+type UIStates = "showcard" | "checking" | "showresult" | "loadingnext";
 export const loader: LoaderFunction = async ({ params }) => {
   const deck = await getDeck(params.id as string);
 
@@ -208,12 +213,14 @@ export default function LearnDeckPage() {
   const defaultActionData: ActionData = { status: "ask" };
   const status = actionData ?? defaultActionData;
 
-  const state =
+  const state: UIStates =
     transition.state === "submitting" && status.status === "ask"
-      ? "loadingnext"
-      : transition.state === "submitting" && status.status === "validate"
       ? "checking"
-      : transition.state === "idle" && status.status === "validate"
+      : (transition.state === "submitting" && status.status === "validate") ||
+        (transition.state === "loading" && status.status === "ask")
+      ? "loadingnext"
+      : (transition.state === "idle" && status.status === "validate") ||
+        (transition.state === "loading" && status.status === "validate")
       ? "showresult"
       : "showcard";
 
@@ -245,6 +252,15 @@ export default function LearnDeckPage() {
       break;
   }
 
+  console.log({
+    state,
+    transition: transition.state,
+    status: status.status,
+    buttonText,
+    statusText,
+    question: data.question?.card.front,
+  });
+
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -260,7 +276,7 @@ export default function LearnDeckPage() {
 
   if (!data.question) {
     return (
-      <div className="prose mx-auto p-8">
+      <div className="p-8 mx-auto prose">
         <h1>All done!</h1>
         <Link to="/">Back home</Link>
       </div>
@@ -268,7 +284,7 @@ export default function LearnDeckPage() {
   }
 
   return (
-    <Form ref={formRef} className="prose mx-auto p-8" method="post" replace>
+    <Form ref={formRef} className="p-8 mx-auto prose" method="post" replace>
       <h1>Learn</h1>
 
       <input
@@ -282,11 +298,15 @@ export default function LearnDeckPage() {
 
       <p className="text-lg font-bold">{statusText}</p>
 
-      <Simple inputRef={inputRef} status={status} />
-      <Multi inputRef={inputRef} status={status} />
+      <Simple inputRef={inputRef} state={state} status={status} />
+      <Multi inputRef={inputRef} state={state} status={status} />
       <hr />
 
-      <Button ref={buttonRef} type="submit">
+      <Button
+        ref={buttonRef}
+        disabled={state === "checking" || state === "loadingnext"}
+        type="submit"
+      >
         {buttonText}
       </Button>
     </Form>
