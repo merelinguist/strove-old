@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function seed() {
   const email = "me@here.com";
-  const hash = await bcrypt.hash("mysupergoodpassword", 10);
+  const hash = await bcrypt.hash("pass", 10);
 
   const me = await prisma.user.upsert({
     create: {

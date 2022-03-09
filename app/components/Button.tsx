@@ -58,7 +58,7 @@ export const Button: PolymorphicForwardRefExoticComponent<
     <Element
       ref={ref}
       className={classNames(
-        "inline-flex items-center border font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2",
+        "inline-flex items-center border font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50",
         shapeMaps[shape],
         sizeMaps[size],
         variantMaps[variant],
