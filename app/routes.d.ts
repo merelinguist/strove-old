@@ -1,26 +1,22 @@
 declare module "routes-gen" {
   export type RouteParams = {
-    "/actions/logout": { [key: string]: never };
-    "/": { [key: string]: never };
-    "/login": { [key: string]: never };
-    "/home": { [key: string]: never };
-    "/join": { [key: string]: never };
-    "/app": { [key: string]: never };
-    "/app/decks/:id": { id: string };
-    "/app/decks/:id/quiz": { id: string };
-    "/app/decks/new": { [key: string]: never };
+    "/:id": { id: string };
+    "/:id/learn": { id: string };
+    "/logout": {};
+    "/": {};
+    "/login": {};
+    "/join": {};
+    "/new": {};
   };
 
   export function route<
     T extends
-      | ["/actions/logout"]
+      | ["/:id", RouteParams["/:id"]]
+      | ["/:id/learn", RouteParams["/:id/learn"]]
+      | ["/logout"]
       | ["/"]
       | ["/login"]
-      | ["/home"]
       | ["/join"]
-      | ["/app"]
-      | ["/app/decks/:id", RouteParams["/app/decks/:id"]]
-      | ["/app/decks/:id/quiz", RouteParams["/app/decks/:id/quiz"]]
-      | ["/app/decks/new"],
+      | ["/new"]
   >(...args: T): typeof args[0];
 }

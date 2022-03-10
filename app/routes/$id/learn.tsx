@@ -1,5 +1,5 @@
 import type { Card } from "@prisma/client";
-import { RefObject, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   ActionFunction,
   Form,
@@ -12,133 +12,17 @@ import {
 } from "remix";
 import { notFound } from "remix-utils";
 import invariant from "tiny-invariant";
+
 import { Button } from "~/components/Button";
-import { Input } from "~/components/Input";
+import { Multi } from "~/components/Multi";
+import { Simple } from "~/components/Simple";
 import { prisma } from "~/db.server";
 import { getCard } from "~/models/card.server";
 import { getDeck, Question } from "~/models/deck.server";
-import { classNames } from "~/utils/classNames";
 import { getFormData } from "~/utils/getFormData";
 import { getGrade, practiceCard } from "~/utils/supermemo";
 
-function Multi({
-  inputRef,
-  status,
-  state,
-}: {
-  inputRef: RefObject<HTMLInputElement>;
-  status: ActionData;
-  state: UIStates;
-}) {
-  const data = useLoaderData<LoaderData>();
-  if (!data.question || data.question.type !== "multi") {
-    return null;
-  }
-  const answer = data.question.card.back;
-  const getClassNames = (card: Card) => {
-    if (state === "showresult" && status.status === "validate") {
-      if (status.isCorrect && card.back === status.response) {
-        return "border rounded border-green-300 bg-green-100";
-      }
-      if (!status.isCorrect) {
-        if (card.back === status.response) {
-          return "border rounded border-red-300 bg-red-100";
-        }
-        // highlight the correct answer
-        if (card.back === answer) {
-          return "border rounded border-green-300 bg-green-100";
-        }
-      }
-    }
-    return "";
-  };
-
-  return (
-    <div>
-      <label
-        className={`text-base font-medium ${
-          state === "loadingnext" ? "text-gray-400" : ""
-        }`}
-      >
-        {data.question.card.front}
-      </label>
-
-      <fieldset key={data.question.card.id} className="mt-4">
-        <legend className="sr-only">Notification method</legend>
-        <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
-          {data.question.cards.map((card, index) => (
-            <div
-              key={card.id}
-              className={`flex items-center p-4 ${getClassNames(card)}`}
-            >
-              <input
-                ref={index === 0 ? inputRef : undefined}
-                className={`h-4 w-4 border-gray-300 ${
-                  state === "showcard" || state === "showresult"
-                    ? "text-sky-600 focus:ring-sky-500"
-                    : "text-gray-400 focus:ring-gray-400"
-                }`}
-                defaultChecked={index === 0}
-                disabled={state !== "showcard"}
-                id={card.id}
-                name="answer"
-                required
-                type="radio"
-                value={card.back}
-              />
-              <label
-                className={`ml-3 block text-sm font-medium ${
-                  state !== "showcard" ? "text-gray-400" : "text-gray-700"
-                }`}
-                htmlFor={card.id}
-              >
-                {card.back}
-              </label>
-            </div>
-          ))}
-        </div>
-      </fieldset>
-    </div>
-  );
-}
-
-function Simple({
-  inputRef,
-  status,
-  state,
-}: {
-  inputRef: RefObject<HTMLInputElement>;
-  status: ActionData;
-  state: UIStates;
-}) {
-  const data = useLoaderData<LoaderData>();
-
-  if (!data.question || data.question.type !== "simple") {
-    return null;
-  }
-
-  return (
-    <Input>
-      <Input.Label>{data.question.card.front}</Input.Label>
-      <input
-        ref={inputRef}
-        className={classNames(
-          "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
-          status.status === "validate"
-            ? status.isCorrect
-              ? "border-emerald-500 ring-1 ring-emerald-500"
-              : "border-rose-500 ring-1 ring-rose-500"
-            : "border-gray-300 focus:border-sky-500 focus:ring-sky-500",
-        )}
-        disabled={status.status === "validate"}
-        name="answer"
-        type="text"
-      />
-    </Input>
-  );
-}
-
-type ActionData =
+export type ActionData =
   | {
       status: "ask";
     }
@@ -188,12 +72,12 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-type LoaderData = {
+export type LoaderData = {
   // deck: Deck;
   question: Question | null;
 };
 
-type UIStates = "showcard" | "checking" | "showresult" | "loadingnext";
+export type UIStates = "showcard" | "checking" | "showresult" | "loadingnext";
 export const loader: LoaderFunction = async ({ params }) => {
   const deck = await getDeck(params.id as string);
 
@@ -252,15 +136,6 @@ export default function LearnDeckPage() {
       break;
   }
 
-  console.log({
-    state,
-    transition: transition.state,
-    status: status.status,
-    buttonText,
-    statusText,
-    question: data.question?.card.front,
-  });
-
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -276,7 +151,7 @@ export default function LearnDeckPage() {
 
   if (!data.question) {
     return (
-      <div className="p-8 mx-auto prose">
+      <div className="prose mx-auto p-8">
         <h1>All done!</h1>
         <Link to="/">Back home</Link>
       </div>
@@ -284,7 +159,7 @@ export default function LearnDeckPage() {
   }
 
   return (
-    <Form ref={formRef} className="p-8 mx-auto prose" method="post" replace>
+    <Form ref={formRef} className="prose mx-auto p-8" method="post" replace>
       <h1>Learn</h1>
 
       <input
@@ -298,8 +173,9 @@ export default function LearnDeckPage() {
 
       <p className="text-lg font-bold">{statusText}</p>
 
-      <Simple inputRef={inputRef} state={state} status={status} />
+      <Simple inputRef={inputRef} status={status} />
       <Multi inputRef={inputRef} state={state} status={status} />
+
       <hr />
 
       <Button
