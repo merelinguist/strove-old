@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -30,8 +30,19 @@ model Deck {
   updatedAt DateTime @updatedAt
   name      String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+  lesson Lesson?
+  cards  Card[]
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deckId String @unique
   cards  Card[]
 }
 
@@ -41,11 +52,19 @@ model Card {
   updatedAt DateTime @updatedAt
   front     String
   back      String
-  interval Int @default(0)
-  repetition Int @default(0)
-  easiness Float @default(2.5)
-  dueDate DateTime @default(now())
 
   deck    Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId  String
+  lessons Lesson[]
+  answers Answer[]
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  correctness Float
+
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  cardId String
 }

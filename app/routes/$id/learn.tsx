@@ -1,67 +1,121 @@
 import type { Card } from "@prisma/client";
-import { useEffect, useRef } from "react";
 import {
   ActionFunction,
   Form,
   json,
-  Link,
   LoaderFunction,
+  redirect,
   useActionData,
+  useCatch,
   useLoaderData,
   useTransition,
 } from "remix";
-import { notFound } from "remix-utils";
-import invariant from "tiny-invariant";
+import { serverError } from "remix-utils";
 
-import { Button } from "~/components/Button";
-import { Multi } from "~/components/Multi";
-import { Simple } from "~/components/Simple";
 import { prisma } from "~/db.server";
-import { getCard } from "~/models/card.server";
-import { getDeck, Question } from "~/models/deck.server";
-import { getFormData } from "~/utils/getFormData";
-import { getGrade, practiceCard } from "~/utils/supermemo";
 
-export type ActionData =
+async function getLesson(deckId: string) {
+  const deck = await prisma.deck.findUnique({
+    include: {
+      user: true,
+      lesson: { include: { cards: true } },
+      cards: { include: { answers: true } },
+    },
+    where: { id: deckId },
+  });
+
+  if (!deck) {
+    throw serverError("deck not found");
+  }
+
+  if (!deck.lesson) {
+    return prisma.lesson.create({
+      include: { cards: true },
+      data: {
+        deckId: deck.id,
+        cards: {
+          connect: deck.cards.map((card) => ({ id: card.id })).slice(0, 10),
+        },
+      },
+    });
+  }
+
+  return deck.lesson;
+}
+
+type ActionData =
   | {
       status: "ask";
     }
   | {
       status: "validate";
-      response: string;
+      answer: string;
       isCorrect: boolean;
     };
 
-export const action: ActionFunction = async ({ request }) => {
-  const { answer, cardId, status } = await getFormData(request, [
-    "answer",
-    "cardId",
-    "status",
-  ] as const);
+export const action: ActionFunction = async ({ params, request }) => {
+  if (!params.id) {
+    throw serverError("params.id is not a string");
+  }
 
-  const card = await getCard(cardId);
+  const formData = await request.formData();
 
-  invariant(card, "card is not defined");
+  const status = formData.get("status");
 
-  const grade = getGrade(card, answer);
+  if (typeof status !== "string") {
+    throw serverError({ message: "formData.get('status') is not a string" });
+  }
 
   switch (status) {
-    case "ask": {
+    case "finish": {
+      await prisma.lesson.delete({ where: { deckId: params.id } });
+
+      return redirect(`/decks/${params.id}/learn`);
+    }
+
+    case "ask":
+    case "validate": {
+      const cardId = formData.get("cardId");
+      const answer = formData.get("answer");
+      if (typeof cardId !== "string") {
+        throw serverError({
+          message: "formData.get('cardId') is not a string",
+        });
+      }
+
+      const card = await prisma.card.findUnique({ where: { id: cardId } });
+
+      if (!card) {
+        throw serverError({ message: `cannot find card with id ${cardId}` });
+      }
+
+      switch (status) {
+      }
+      if (typeof answer !== "string") {
+        throw serverError({
+          message: "formData.get('answer') is not a string",
+        });
+      }
+
       return json<ActionData>({
         status: "validate",
-        response: answer,
-        isCorrect: grade > 2,
+        answer,
+        isCorrect: true,
       });
     }
-    case "validate": {
-      const { interval, repetition, easiness, dueDate } = practiceCard(
-        card,
-        grade,
-      );
 
-      await prisma.card.update({
-        data: { interval, repetition, easiness, dueDate },
-        where: { id: card.id },
+    case "validate": {
+      const lesson = await getLesson(params.id);
+
+      await prisma.lesson.update({
+        data: {
+          cards: {
+            set: lesson.cards
+              .map((lessonCard) => ({ id: lessonCard.id }))
+              .filter((lessonCard) => lessonCard.id !== card.id),
+          },
+        },
+        where: { id: lesson.id },
       });
 
       return json<ActionData>({ status: "ask" });
@@ -72,61 +126,60 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export type LoaderData = {
-  // deck: Deck;
-  question: Question | null;
+type LoaderData = {
+  challenge: { type: string; card: Card } | null;
 };
 
-export type UIStates = "showcard" | "checking" | "showresult" | "loadingnext";
 export const loader: LoaderFunction = async ({ params }) => {
-  const deck = await getDeck(params.id as string);
-
-  if (!deck) {
-    throw notFound("deck not found");
+  if (!params.id) {
+    throw serverError("params.id is not a string");
   }
 
-  const question = deck.quiz[0];
+  const lesson = await getLesson(params.id);
 
-  return json<LoaderData>({ question });
+  const challenge = lesson.cards[0]
+    ? { type: "simple", card: lesson.cards[0] }
+    : null;
+
+  return json<LoaderData>({ challenge });
 };
 
-export default function LearnDeckPage() {
-  const actionData = useActionData<ActionData>();
-  const data = useLoaderData<LoaderData>();
+function useState() {
+  const actionData = useActionData<ActionData>() ?? { status: "ask" };
   const transition = useTransition();
-  const defaultActionData: ActionData = { status: "ask" };
-  const status = actionData ?? defaultActionData;
 
-  const state: UIStates =
-    transition.state === "submitting" && status.status === "ask"
-      ? "checking"
-      : (transition.state === "submitting" && status.status === "validate") ||
-        (transition.state === "loading" && status.status === "ask")
-      ? "loadingnext"
-      : (transition.state === "idle" && status.status === "validate") ||
-        (transition.state === "loading" && status.status === "validate")
-      ? "showresult"
-      : "showcard";
+  const state: "ask" | "loadingValidate" | "validate" | "loadingAsk" =
+    transition.state === "submitting" && actionData.status === "ask"
+      ? "loadingValidate"
+      : (transition.state === "submitting" &&
+          actionData.status === "validate") ||
+        (transition.state === "loading" && actionData.status === "ask")
+      ? "loadingAsk"
+      : (transition.state === "idle" && actionData.status === "validate") ||
+        (transition.state === "loading" && actionData.status === "validate")
+      ? "validate"
+      : "ask";
 
   let buttonText: string;
   let statusText: string;
+
   switch (state) {
-    case "showcard":
+    case "ask":
       buttonText = "Check";
       statusText = "Submit your answer";
       break;
-    case "checking":
+    case "loadingValidate":
       buttonText = "Checking...";
       statusText = "Checking...";
       break;
-    case "showresult":
+    case "validate":
       buttonText = "Next Card";
       statusText =
-        status.status === "validate" && status.isCorrect
+        actionData.status === "validate" && actionData.isCorrect
           ? "🎉 Yay Well Done!"
           : "😭 Oh no!";
       break;
-    case "loadingnext":
+    case "loadingAsk":
       buttonText = "Loading...";
       statusText = "Loading next card...";
       break;
@@ -136,55 +189,63 @@ export default function LearnDeckPage() {
       break;
   }
 
-  const formRef = useRef<HTMLFormElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  return { actionData, state, buttonText, statusText };
+}
 
-  useEffect(() => {
-    if (state === "showcard") {
-      inputRef.current?.focus();
-      formRef.current?.reset();
-    } else if (state === "showresult") {
-      buttonRef.current?.focus();
-    }
-  }, [state]);
+export default function LearnDeckPage() {
+  const data = useLoaderData<LoaderData>();
 
-  if (!data.question) {
+  const state = useState();
+
+  if (!data.challenge) {
     return (
       <div className="prose mx-auto p-8">
         <h1>All done!</h1>
-        <Link to="/">Back home</Link>
+        <Form method="post" replace>
+          <button name="status" type="submit" value="finish">
+            Finish
+          </button>
+        </Form>
       </div>
     );
   }
 
   return (
-    <Form ref={formRef} className="prose mx-auto p-8" method="post" replace>
-      <h1>Learn</h1>
+    <div className="prose mx-auto p-8">
+      <Form method="post" replace>
+        <input name="status" type="hidden" value={state.actionData.status} />
+        <input name="cardId" type="hidden" value={data.challenge.card.id} />
 
-      <input
-        disabled={status.status === "ask"}
-        name="answer"
-        type="hidden"
-        value="blah"
-      />
-      <input name="cardId" type="hidden" value={data.question.card.id} />
-      <input name="status" type="hidden" value={status.status} />
+        <h2>{state.statusText}</h2>
 
-      <p className="text-lg font-bold">{statusText}</p>
+        <label className="block">
+          <span className="text-gray-700">Full name</span>
+          <input className="mt-1 block w-full" name="answer" type="text" />
+        </label>
+      </Form>
+    </div>
+  );
+}
 
-      <Simple inputRef={inputRef} status={status} />
-      <Multi inputRef={inputRef} state={state} status={status} />
+export function CatchBoundary() {
+  const caught = useCatch();
 
-      <hr />
+  return (
+    <div className="prose">
+      <h1>
+        {caught.status} {caught.statusText}
+      </h1>
+    </div>
+  );
+}
 
-      <Button
-        ref={buttonRef}
-        disabled={state === "checking" || state === "loadingnext"}
-        type="submit"
-      >
-        {buttonText}
-      </Button>
-    </Form>
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return (
+    <div className="prose">
+      <h1>App Error</h1>
+      <pre>{error.message}</pre>
+    </div>
   );
 }

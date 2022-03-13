@@ -1,14 +1,18 @@
+import type { Card, Deck } from "@prisma/client";
 import { json, Link, LoaderFunction, useLoaderData } from "remix";
 import { notFound } from "remix-utils";
 
-import { Deck, getDeck } from "~/models/deck.server";
+import { prisma } from "~/db.server";
 
 type LoaderData = {
-  deck: Deck;
+  deck: Deck & { cards: Card[] };
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const deck = await getDeck(params.id as string);
+  const deck = await prisma.deck.findUnique({
+    include: { cards: true },
+    where: { id: params.id },
+  });
 
   if (!deck) {
     throw notFound("deck not found");
@@ -38,7 +42,6 @@ export default function ShowDeck() {
             <th />
             <th>Front</th>
             <th>Back</th>
-            <th>Due date</th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +50,6 @@ export default function ShowDeck() {
               <td>{index + 1}</td>
               <td>{card.front}</td>
               <td>{card.back}</td>
-              <td>{new Date(card.dueDate).toDateString()}</td>
             </tr>
           ))}
         </tbody>

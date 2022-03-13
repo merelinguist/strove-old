@@ -1,16 +1,20 @@
+import type { Card, Deck } from "@prisma/client";
 import { Form, json, Link, LoaderFunction, useLoaderData } from "remix";
 
-import { Deck, getDecks } from "~/models/deck.server";
+import { prisma } from "~/db.server";
 import { requireUserId } from "~/session.server";
 
 type LoaderData = {
-  decks: Deck[];
+  decks: (Deck & { cards: Card[] })[];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
 
-  const decks = await getDecks(userId);
+  const decks = await prisma.deck.findMany({
+    include: { cards: true },
+    where: { userId },
+  });
 
   return json<LoaderData>({ decks });
 };
@@ -44,7 +48,6 @@ export default function IndexPage() {
           <li key={deck.id}>
             <Link to={deck.id}>{deck.name}</Link>
             <p>{deck.cards.length} cards</p>
-            <p>{deck.quiz.length} left to learn</p>
           </li>
         ))}
       </ul>

@@ -6,7 +6,8 @@
       "~/*": ["*"],
       "*": [""]
     },
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "noUncheckedIndexedAccess": true
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
   "exclude": ["node_modules/"]
