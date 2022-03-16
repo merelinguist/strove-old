@@ -32,17 +32,6 @@ model Deck {
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-  lesson Lesson?
-  cards  Card[]
-}
-
-model Lesson {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  deckId String @unique
   cards  Card[]
 }
 
@@ -55,7 +44,6 @@ model Card {
 
   deck    Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId  String
-  lessons Lesson[]
   answers Answer[]
 }
 

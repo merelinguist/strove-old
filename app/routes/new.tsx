@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ActionFunction, MetaFunction } from "remix";
 import { Form, redirect } from "remix";
 
@@ -40,6 +40,16 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const [cards, setCards] = useState("");
+
+  useEffect(() => {
+    function handleKeydown() {}
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []);
 
   return (
     <div className="prose mx-auto p-8">
@@ -106,8 +116,8 @@ export default function Index() {
             // eslint-disable-next-line react/no-array-index-key
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{line.split("\t")[0]}</td>
-              <td>{line.split("\t")[1]}</td>
+              <td className="break-all">{line.split("\t")[0]}</td>
+              <td className="break-all">{line.split("\t")[1]}</td>
             </tr>
           ))}
         </tbody>

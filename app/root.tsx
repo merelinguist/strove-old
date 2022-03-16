@@ -1,4 +1,3 @@
-import Inspect from "inspx";
 import type { LinksFunction, MetaFunction } from "remix";
 import {
   Links,
@@ -44,3 +43,5 @@ export default function App() {
     </html>
   );
 }
+
+export { ErrorBoundary } from "remix-crash";
