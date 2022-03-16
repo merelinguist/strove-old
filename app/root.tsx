@@ -7,7 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "remix";
-import { DevErrorBoundary } from "remix-crash";
 
 import styles from "~/styles.css";
 import { useSplitbee } from "~/utils/useSplitbee";
@@ -41,17 +40,5 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
-  );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  if (process.env.NODE_ENV === "development") {
-    return <DevErrorBoundary error={error} />;
-  }
-
-  return (
-    <div>
-      <p>Oops something very wrong happened...</p>
-    </div>
   );
 }
