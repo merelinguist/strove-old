@@ -5,7 +5,7 @@
     "build": "npm run build:metronome && npm run build:prisma && npm run build:css && remix build",
     "build:css": "tailwindcss -o ./app/styles.css",
     "build:metronome": "metronome setup",
-    "build:prisma": "npm run prisma migrate deploy --force && npm run prisma db seed",
+    "build:prisma": "npm run prisma migrate deploy -- --force && npm run prisma db seed",
     "clean": "git clean --interactive -dx --exclude .env.local --exclude .env.*.local --exclude node_modules/ --exclude .husky/",
     "dev": "run-p dev:*",
     "dev:css": "tailwindcss -o ./app/styles.css --watch",
