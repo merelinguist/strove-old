@@ -2,31 +2,52 @@
 
 A friendly and smart learning app.
 
-[→ **Try using Strove now**][site]
+[→ **Try using Strove now**](https://strove.co)
 
-[site]: https://strove.co
+## Stack
 
-## Develop
+- [Multi-region Fly app deployment](https://fly.io/docs/reference/scaling/) with [Docker](https://www.docker.com/)
+- [Multi-region Fly PostgreSQL Cluster](https://fly.io/docs/getting-started/multi-region-databases/)
+- Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
+- [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging environments
+- Email/Password Authentication with [cookie-based sessions](https://remix.run/docs/en/v1/api/remix#createcookiesessionstorage)
+- Database ORM with [Prisma](https://prisma.io)
+- Styling with [Tailwind](https://tailwindcss.com/)
+- End-to-end testing with [Cypress](https://cypress.io)
+- Local third party request mocking with [MSW](https://mswjs.io)
+- Unit testing with [Vitest](https://vitest.dev) and [Testing Library](https://testing-library.com)
+- Code formatting with [Prettier](https://prettier.io)
+- Linting with [ESLint](https://eslint.org)
+- Static Types with [TypeScript](https://typescriptlang.org)
 
-Clone this project:
 
-```
-git clone https://github.com/merelinguist/strove.git
-cd strove
-```
+## Development
 
-Then install the project requirements:
+- Start the Postgres Database in [Docker](https://www.docker.com/get-started):
 
-```
-npm i
-```
+  ```sh
+  npm run docker
+  ```
 
-You need to set some environment variables for the app to run:
+- Initial setup:
 
-```
-cp example.env > .env
-```
+  ```sh
+  npm run setup
+  ```
 
-Edit the value of `DATABASE_URL` with your own username and password
+- Start dev server:
 
-4. Run `npm run dev` and go to http://localhost:3000
+  ```sh
+  npm run dev
+  ```
+
+This starts the app in development mode, rebuilding assets on file changes.
+
+The database seed script creates a new user with some data you can use to get started:
+
+- Email: `me@here.com`
+- Password: `pass`
+
+If you’d prefer not to use Docker, you can also connect to a development database.
+
+### Relevant code:
